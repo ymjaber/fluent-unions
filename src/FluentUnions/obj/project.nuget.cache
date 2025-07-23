@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "62/QWHZSfFA=",
+  "success": true,
+  "projectFilePath": "/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions/FluentUnions.csproj",
+  "expectedPackageFiles": [
+    "/home/yousef/.nuget/packages/microsoft.build.tasks.git/8.0.0/microsoft.build.tasks.git.8.0.0.nupkg.sha512",
+    "/home/yousef/.nuget/packages/microsoft.sourcelink.common/8.0.0/microsoft.sourcelink.common.8.0.0.nupkg.sha512",
+    "/home/yousef/.nuget/packages/microsoft.sourcelink.github/8.0.0/microsoft.sourcelink.github.8.0.0.nupkg.sha512",
+    "/home/yousef/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.5/microsoft.aspnetcore.app.ref.9.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}

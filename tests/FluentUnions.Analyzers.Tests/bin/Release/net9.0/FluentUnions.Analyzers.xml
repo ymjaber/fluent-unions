@@ -1,0 +1,1279 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FluentUnions.Analyzers</name>
+    </assembly>
+    <members>
+        <member name="T:FluentUnions.Analyzers.Common.Categories">
+            <summary>
+            Defines diagnostic categories used by FluentUnions analyzers to classify the types of issues they detect.
+            </summary>
+            <remarks>
+            These categories help developers and tools (like IDE filters) organize and prioritize diagnostics.
+            Each category represents a specific aspect of code quality that the analyzers evaluate.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Common.Categories.Usage">
+            <summary>
+            Category for diagnostics related to incorrect or suboptimal usage of FluentUnions types.
+            </summary>
+            <remarks>
+            This category includes issues such as accessing values without proper checks,
+            comparing Option types with null, or using patterns that could lead to runtime errors.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Common.Categories.Design">
+            <summary>
+            Category for diagnostics related to design patterns and best practices with FluentUnions.
+            </summary>
+            <remarks>
+            This category includes recommendations for using more idiomatic patterns,
+            such as preferring Match over if-else chains or using None instead of default constructors.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Common.Categories.Performance">
+            <summary>
+            Category for diagnostics related to performance considerations when using FluentUnions.
+            </summary>
+            <remarks>
+            This category includes issues that might impact runtime performance,
+            such as unnecessary allocations or inefficient patterns.
+            </remarks>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Common.DiagnosticIds">
+            <summary>
+            Defines unique diagnostic IDs for all FluentUnions analyzers.
+            </summary>
+            <remarks>
+            Diagnostic IDs follow a consistent pattern:
+            - FU0001-FU0099: Option-related diagnostics
+            - FU0101-FU0199: Result-related diagnostics
+            Each ID uniquely identifies a specific diagnostic rule that can be suppressed or configured independently.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Common.DiagnosticIds.OptionValueAccessWithoutCheck">
+            <summary>
+            Diagnostic ID for detecting unsafe access to Option.Value without checking if the option has a value.
+            </summary>
+            <remarks>
+            This diagnostic warns when code accesses the Value property of an Option without first
+            verifying that IsSome is true, which could lead to an InvalidOperationException at runtime.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Common.DiagnosticIds.OptionPreferMatchOverIfElse">
+            <summary>
+            Diagnostic ID for suggesting the use of Match method instead of if-else chains with Option types.
+            </summary>
+            <remarks>
+            This diagnostic promotes more functional and idiomatic code by suggesting Match
+            when developers use if (option.IsSome) else patterns.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Common.DiagnosticIds.OptionNullComparison">
+            <summary>
+            Diagnostic ID for detecting null comparisons with Option types.
+            </summary>
+            <remarks>
+            Since Option is a value type (struct), it can never be null. This diagnostic warns
+            when code compares an Option with null and suggests using IsNone or IsSome instead.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Common.DiagnosticIds.OptionPreferNoneOverDefault">
+            <summary>
+            Diagnostic ID for suggesting Option.None instead of default(Option) or new Option().
+            </summary>
+            <remarks>
+            This diagnostic promotes clearer intent by suggesting the explicit use of Option.None
+            when creating an empty option value.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Common.DiagnosticIds.OptionNoneMisuse">
+            <summary>
+            Diagnostic ID for detecting misuse of Option.None when assigned to non-generic Option variable.
+            </summary>
+            <remarks>
+            This diagnostic warns when Option.None is assigned to a variable of type Option (non-generic)
+            instead of being used directly or assigned to a properly typed Option&lt;T&gt; variable.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Common.DiagnosticIds.UnhandledOption">
+            <summary>
+            Diagnostic ID for detecting Option values that are created but never consumed or checked.
+            </summary>
+            <remarks>
+            This diagnostic helps prevent bugs where operations that return Option are called
+            but their value is never examined, potentially ignoring important data.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Common.DiagnosticIds.ResultValueAccessWithoutCheck">
+            <summary>
+            Diagnostic ID for detecting unsafe access to Result.Value without checking if the result is successful.
+            </summary>
+            <remarks>
+            This diagnostic warns when code accesses the Value property of a Result without first
+            verifying that IsSuccess is true, which could lead to an InvalidOperationException at runtime.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Common.DiagnosticIds.ResultErrorAccessWithoutCheck">
+            <summary>
+            Diagnostic ID for detecting unsafe access to Result.Error without checking if the result has failed.
+            </summary>
+            <remarks>
+            This diagnostic warns when code accesses the Error property of a Result without first
+            verifying that IsFailure is true, which could lead to an InvalidOperationException at runtime.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Common.DiagnosticIds.ResultPreferMatchOverIfElse">
+            <summary>
+            Diagnostic ID for suggesting the use of Match method instead of if-else chains with Result types.
+            </summary>
+            <remarks>
+            This diagnostic promotes more functional and idiomatic code by suggesting Match
+            when developers use if (result.IsSuccess) else patterns.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Common.DiagnosticIds.UnhandledResult">
+            <summary>
+            Diagnostic ID for detecting Result values that are created but never consumed or checked.
+            </summary>
+            <remarks>
+            This diagnostic helps prevent bugs where operations that return Result are called
+            but their success/failure status is never examined, potentially ignoring errors.
+            </remarks>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Common.SymbolHelpers">
+            <summary>
+            Provides helper methods for identifying FluentUnions types in the Roslyn semantic model.
+            </summary>
+            <remarks>
+            These utilities are used by analyzers to determine if a given type symbol represents
+            one of the FluentUnions types (Option or Result). This is essential for ensuring
+            analyzers only trigger on relevant code.
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Common.SymbolHelpers.IsOptionType(Microsoft.CodeAnalysis.ITypeSymbol)">
+            <summary>
+            Determines whether the specified type symbol represents an Option&lt;T&gt; type.
+            </summary>
+            <param name="typeSymbol">The type symbol to check.</param>
+            <returns>true if the type symbol represents Option&lt;T&gt;; otherwise, false.</returns>
+            <remarks>
+            This method checks that:
+            - The type name is "Option"
+            - It belongs to the "FluentUnions" namespace
+            - It is a generic type with exactly one type argument
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Common.SymbolHelpers.IsResultType(Microsoft.CodeAnalysis.ITypeSymbol)">
+            <summary>
+            Determines whether the specified type symbol represents any Result type (generic or non-generic).
+            </summary>
+            <param name="typeSymbol">The type symbol to check.</param>
+            <returns>true if the type symbol represents any Result type; otherwise, false.</returns>
+            <remarks>
+            This method checks if the type is named "Result" and belongs to the "FluentUnions" namespace,
+            regardless of whether it's the generic Result&lt;T&gt; or non-generic Result type.
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Common.SymbolHelpers.IsValueResultType(Microsoft.CodeAnalysis.ITypeSymbol)">
+            <summary>
+            Determines whether the specified type symbol represents a generic Result&lt;T&gt; type with a value.
+            </summary>
+            <param name="typeSymbol">The type symbol to check.</param>
+            <returns>true if the type symbol represents Result&lt;T&gt;; otherwise, false.</returns>
+            <remarks>
+            This method specifically checks for the generic Result&lt;T&gt; type that can carry a value.
+            Use this when you need to distinguish between Result&lt;T&gt; and the non-generic Result.
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Common.SymbolHelpers.IsUnitResultType(Microsoft.CodeAnalysis.ITypeSymbol)">
+            <summary>
+            Determines whether the specified type symbol represents a non-generic Result type (unit result).
+            </summary>
+            <param name="typeSymbol">The type symbol to check.</param>
+            <returns>true if the type symbol represents non-generic Result; otherwise, false.</returns>
+            <remarks>
+            This method checks for the non-generic Result type that represents operations
+            that can succeed or fail but don't return a value on success.
+            </remarks>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Option.CodeFixes.OptionNoneMisuseCodeFixProvider">
+            <summary>
+            Provides code fixes for the OptionNoneMisuse diagnostic.
+            </summary>
+            <remarks>
+            This code fix provider offers two solutions for Option.None misuse:
+            1. Remove the variable declaration and use Option.None directly (when possible)
+            2. Change the variable type to Option&lt;T&gt; where T needs to be specified by the user
+            
+            The first fix is preferred when the variable is only used once, while the second
+            fix is offered when the variable needs to be retained for multiple uses.
+            </remarks>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Option.CodeFixes.OptionNoneMisuseCodeFixProvider.FixableDiagnosticIds">
+            <summary>
+            Gets the list of diagnostic IDs that this provider can fix.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionNoneMisuseCodeFixProvider.GetFixAllProvider">
+            <summary>
+            Gets the fix all provider for applying the fix to multiple diagnostics at once.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionNoneMisuseCodeFixProvider.RegisterCodeFixesAsync(Microsoft.CodeAnalysis.CodeFixes.CodeFixContext)">
+            <summary>
+            Registers code fixes for the detected Option.None misuse diagnostics.
+            </summary>
+            <param name="context">The code fix context containing the diagnostics and document.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionNoneMisuseCodeFixProvider.RegisterVariableDeclarationFixesAsync(Microsoft.CodeAnalysis.CodeFixes.CodeFixContext,Microsoft.CodeAnalysis.CSharp.Syntax.VariableDeclaratorSyntax)">
+            <summary>
+            Registers code fixes for variable declaration misuse.
+            </summary>
+            <param name="context">The code fix context.</param>
+            <param name="variableDeclarator">The variable declarator with Option.None assignment.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionNoneMisuseCodeFixProvider.RegisterAssignmentFixesAsync(Microsoft.CodeAnalysis.CodeFixes.CodeFixContext,Microsoft.CodeAnalysis.CSharp.Syntax.AssignmentExpressionSyntax)">
+            <summary>
+            Registers code fixes for assignment expression misuse.
+            </summary>
+            <param name="context">The code fix context.</param>
+            <param name="assignment">The assignment expression with Option.None.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionNoneMisuseCodeFixProvider.InlineOptionNoneAsync(Microsoft.CodeAnalysis.Document,Microsoft.CodeAnalysis.CSharp.Syntax.VariableDeclaratorSyntax,System.Threading.CancellationToken)">
+            <summary>
+            Inlines Option.None by removing the variable and using Option.None directly at usage sites.
+            </summary>
+            <param name="document">The document to modify.</param>
+            <param name="variableDeclarator">The variable declarator to remove.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>The modified document.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionNoneMisuseCodeFixProvider.ChangeToGenericOptionAsync(Microsoft.CodeAnalysis.Document,Microsoft.CodeAnalysis.CSharp.Syntax.VariableDeclarationSyntax,System.Threading.CancellationToken)">
+            <summary>
+            Changes the variable type from Option to Option&lt;T&gt; with a placeholder for T.
+            </summary>
+            <param name="document">The document to modify.</param>
+            <param name="variableDeclaration">The variable declaration to modify.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>The modified document.</returns>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Option.CodeFixes.OptionNullComparisonCodeFixProvider">
+            <summary>
+            Provides code fixes for the OptionNullComparison diagnostic by replacing null comparisons with appropriate Option property checks.
+            </summary>
+            <remarks>
+            This code fix provider handles two types of null comparison patterns:
+            - Binary expressions (== null, != null): Replaced with IsNone or IsSome respectively
+            - Is pattern expressions (is null): Replaced with IsNone
+            
+            The code fix maintains the semantic meaning of the original comparison while using the proper Option API.
+            </remarks>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Option.CodeFixes.OptionNullComparisonCodeFixProvider.FixableDiagnosticIds">
+            <summary>
+            Gets the list of diagnostic IDs that this provider can fix.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionNullComparisonCodeFixProvider.GetFixAllProvider">
+            <summary>
+            Gets the fix all provider for applying the fix to multiple diagnostics at once.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionNullComparisonCodeFixProvider.RegisterCodeFixesAsync(Microsoft.CodeAnalysis.CodeFixes.CodeFixContext)">
+            <summary>
+            Registers code fixes for the detected null comparison diagnostics.
+            </summary>
+            <param name="context">The code fix context containing the diagnostics and document.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionNullComparisonCodeFixProvider.RegisterBinaryExpressionFixesAsync(Microsoft.CodeAnalysis.CodeFixes.CodeFixContext,Microsoft.CodeAnalysis.CSharp.Syntax.BinaryExpressionSyntax)">
+            <summary>
+            Registers code fixes for binary expression null comparisons (== null, != null).
+            </summary>
+            <param name="context">The code fix context.</param>
+            <param name="binaryExpression">The binary expression comparing with null.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionNullComparisonCodeFixProvider.RegisterIsPatternFixesAsync(Microsoft.CodeAnalysis.CodeFixes.CodeFixContext,Microsoft.CodeAnalysis.CSharp.Syntax.IsPatternExpressionSyntax)">
+            <summary>
+            Registers code fixes for 'is null' pattern expressions.
+            </summary>
+            <param name="context">The code fix context.</param>
+            <param name="isPattern">The is pattern expression.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionNullComparisonCodeFixProvider.ReplaceWithPropertyCheckAsync(Microsoft.CodeAnalysis.Document,Microsoft.CodeAnalysis.CSharp.Syntax.BinaryExpressionSyntax,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Replaces a binary null comparison expression with an Option property check.
+            </summary>
+            <param name="document">The document to modify.</param>
+            <param name="binaryExpression">The binary expression to replace.</param>
+            <param name="propertyName">The name of the Option property to use (IsNone or IsSome).</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>The modified document.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionNullComparisonCodeFixProvider.ReplaceIsPatternWithPropertyCheckAsync(Microsoft.CodeAnalysis.Document,Microsoft.CodeAnalysis.CSharp.Syntax.IsPatternExpressionSyntax,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Replaces an 'is null' pattern expression with an Option property check.
+            </summary>
+            <param name="document">The document to modify.</param>
+            <param name="isPattern">The is pattern expression to replace.</param>
+            <param name="propertyName">The name of the Option property to use (typically IsNone).</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>The modified document.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionNullComparisonCodeFixProvider.IsNullLiteral(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax)">
+            <summary>
+            Determines whether the specified expression is a null literal.
+            </summary>
+            <param name="expression">The expression to check.</param>
+            <returns>true if the expression is a null literal; otherwise, false.</returns>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Option.CodeFixes.OptionValueAccessCodeFixProvider">
+            <summary>
+            Provides code fixes for the OptionValueAccessWithoutCheck diagnostic by adding proper safety checks.
+            </summary>
+            <remarks>
+            This code fix provider offers two approaches to fix unsafe Option.Value access:
+            1. Add IsSome check: Wraps the value access in an if statement that checks IsSome
+            2. Use Match method: Replaces the value access with a Match call that handles both Some and None cases
+            
+            The Match approach is generally preferred as it forces handling of both cases explicitly,
+            while the IsSome check is simpler for cases where None handling is not needed.
+            </remarks>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Option.CodeFixes.OptionValueAccessCodeFixProvider.FixableDiagnosticIds">
+            <summary>
+            Gets the list of diagnostic IDs that this provider can fix.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionValueAccessCodeFixProvider.GetFixAllProvider">
+            <summary>
+            Gets the fix all provider for applying the fix to multiple diagnostics at once.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionValueAccessCodeFixProvider.RegisterCodeFixesAsync(Microsoft.CodeAnalysis.CodeFixes.CodeFixContext)">
+            <summary>
+            Registers code fixes for unsafe Option.Value access diagnostics.
+            </summary>
+            <param name="context">The code fix context containing the diagnostics and document.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionValueAccessCodeFixProvider.AddIsSomeCheckAsync(Microsoft.CodeAnalysis.Document,Microsoft.CodeAnalysis.CSharp.Syntax.MemberAccessExpressionSyntax,System.Threading.CancellationToken)">
+            <summary>
+            Adds an IsSome check around the unsafe value access.
+            </summary>
+            <param name="document">The document to modify.</param>
+            <param name="memberAccess">The member access expression accessing Value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>The modified document with the IsSome check added.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.CodeFixes.OptionValueAccessCodeFixProvider.UseMatchMethodAsync(Microsoft.CodeAnalysis.Document,Microsoft.CodeAnalysis.CSharp.Syntax.MemberAccessExpressionSyntax,System.Threading.CancellationToken)">
+            <summary>
+            Replaces the unsafe value access with a Match method call.
+            </summary>
+            <param name="document">The document to modify.</param>
+            <param name="memberAccess">The member access expression accessing Value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>The modified document with the Match method call.</returns>
+            <remarks>
+            The generated Match call includes a lambda for the Some case that contains the original expression,
+            and a None case that throws an InvalidOperationException to maintain the original behavior.
+            </remarks>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Option.OptionNoneMisuseAnalyzer">
+            <summary>
+            Analyzer that detects misuse of Option.None when assigned to a non-generic Option variable.
+            </summary>
+            <remarks>
+            This analyzer detects patterns like:
+            - var none = Option.None;
+            - Option none = Option.None;
+            
+            These patterns create variables of the non-generic Option type, which has no practical use.
+            The analyzer suggests either using Option.None directly in expressions or assigning it to
+            a properly typed Option&lt;T&gt; variable.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Option.OptionNoneMisuseAnalyzer.Rule">
+            <summary>
+            The diagnostic descriptor for the Option.None misuse rule.
+            </summary>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Option.OptionNoneMisuseAnalyzer.SupportedDiagnostics">
+            <summary>
+            Gets the list of diagnostic descriptors supported by this analyzer.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionNoneMisuseAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)">
+            <summary>
+            Initializes the analyzer by registering analysis actions.
+            </summary>
+            <param name="context">The analysis context used to register actions.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionNoneMisuseAnalyzer.AnalyzeVariableDeclaration(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext)">
+            <summary>
+            Analyzes variable declarations for Option.None misuse.
+            </summary>
+            <param name="context">The syntax node analysis context.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionNoneMisuseAnalyzer.AnalyzeAssignment(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext)">
+            <summary>
+            Analyzes assignment expressions for Option.None misuse.
+            </summary>
+            <param name="context">The syntax node analysis context.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionNoneMisuseAnalyzer.IsOptionNone(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines whether the specified expression is Option.None.
+            </summary>
+            <param name="expression">The expression to check.</param>
+            <param name="semanticModel">The semantic model.</param>
+            <returns>true if the expression is Option.None; otherwise, false.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionNoneMisuseAnalyzer.IsNonGenericOptionType(Microsoft.CodeAnalysis.ITypeSymbol)">
+            <summary>
+            Determines whether the specified type is the non-generic Option type.
+            </summary>
+            <param name="typeSymbol">The type symbol to check.</param>
+            <returns>true if the type is non-generic Option; otherwise, false.</returns>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Option.OptionNullComparisonAnalyzer">
+            <summary>
+            Analyzer that detects null comparisons with Option&lt;T&gt; types and suggests using IsNone or IsSome instead.
+            </summary>
+            <remarks>
+            Since Option&lt;T&gt; is a value type (struct), it can never be null. This analyzer detects common mistakes
+            where developers treat Option like a reference type and compare it with null. The analyzer will trigger on:
+            - Direct null comparisons: option == null, option != null
+            - Pattern matching with null: option is null
+            
+            The analyzer suggests using the appropriate Option properties:
+            - Use IsNone to check if the option has no value
+            - Use IsSome to check if the option has a value
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Option.OptionNullComparisonAnalyzer.Rule">
+            <summary>
+            The diagnostic descriptor for the null comparison rule.
+            </summary>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Option.OptionNullComparisonAnalyzer.SupportedDiagnostics">
+            <summary>
+            Gets the list of diagnostic descriptors supported by this analyzer.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionNullComparisonAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)">
+            <summary>
+            Initializes the analyzer by registering analysis actions for relevant syntax nodes.
+            </summary>
+            <param name="context">The analysis context used to register actions.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionNullComparisonAnalyzer.AnalyzeBinaryExpression(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext)">
+            <summary>
+            Analyzes binary expressions (== and !=) to detect null comparisons with Option types.
+            </summary>
+            <param name="context">The syntax node analysis context.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionNullComparisonAnalyzer.AnalyzeIsPattern(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext)">
+            <summary>
+            Analyzes 'is' pattern expressions to detect null pattern matching with Option types.
+            </summary>
+            <param name="context">The syntax node analysis context.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionNullComparisonAnalyzer.IsNullLiteral(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax)">
+            <summary>
+            Determines whether the specified expression is a null literal.
+            </summary>
+            <param name="expression">The expression to check.</param>
+            <returns>true if the expression is a null literal; otherwise, false.</returns>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Option.OptionPreferMatchAnalyzer">
+            <summary>
+            Analyzer that suggests using the Match method instead of if/else patterns when handling Option types.
+            </summary>
+            <remarks>
+            This analyzer promotes a more functional programming style by detecting if/else statements that check
+            IsSome or IsNone properties and suggesting the use of the Match method instead. The analyzer triggers when:
+            - An if statement checks option.IsSome or option.IsNone (or their negations)
+            - The if statement has an else clause
+            - At least one branch accesses the Option value
+            
+            The Match method provides better type safety and a more idiomatic approach to handling Option values,
+            ensuring both Some and None cases are handled explicitly.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Option.OptionPreferMatchAnalyzer.Rule">
+            <summary>
+            The diagnostic descriptor for the prefer Match rule.
+            </summary>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Option.OptionPreferMatchAnalyzer.SupportedDiagnostics">
+            <summary>
+            Gets the list of diagnostic descriptors supported by this analyzer.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionPreferMatchAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)">
+            <summary>
+            Initializes the analyzer by registering analysis actions for if statements.
+            </summary>
+            <param name="context">The analysis context used to register actions.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionPreferMatchAnalyzer.AnalyzeIfStatement(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext)">
+            <summary>
+            Analyzes if statements to detect patterns that could be replaced with Match method calls.
+            </summary>
+            <param name="context">The syntax node analysis context.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionPreferMatchAnalyzer.GetOptionCheckInfo(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines if the condition expression is checking an Option's IsSome or IsNone property.
+            </summary>
+            <param name="condition">The condition expression to analyze.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>Information about the Option check if found; otherwise, null.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionPreferMatchAnalyzer.BothBranchesHandleOption(Microsoft.CodeAnalysis.CSharp.Syntax.IfStatementSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ElseClauseSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines whether both branches of an if/else statement access the Option value.
+            </summary>
+            <param name="ifStatement">The if statement to analyze.</param>
+            <param name="elseClause">The else clause to analyze.</param>
+            <param name="optionExpression">The Option expression being checked.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>true if at least one branch accesses the Option; otherwise, false.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionPreferMatchAnalyzer.IsAccessingOption(Microsoft.CodeAnalysis.CSharp.Syntax.MemberAccessExpressionSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines whether a member access expression is accessing the specified Option.
+            </summary>
+            <param name="memberAccess">The member access expression to check.</param>
+            <param name="optionExpression">The Option expression to compare against.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>true if the member access is accessing the specified Option; otherwise, false.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionPreferMatchAnalyzer.GetOptionTypeArgument(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Gets the type argument of an Option&lt;T&gt; type.
+            </summary>
+            <param name="expression">The expression of Option type.</param>
+            <param name="semanticModel">The semantic model for type information.</param>
+            <returns>The type argument T from Option&lt;T&gt;; otherwise, null.</returns>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Option.OptionPreferMatchAnalyzer.OptionCheckInfo">
+            <summary>
+            Contains information about an Option check in a condition.
+            </summary>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Option.OptionPreferMatchAnalyzer.OptionCheckInfo.Expression">
+            <summary>
+            Gets or sets the Option expression being checked.
+            </summary>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Option.OptionPreferMatchAnalyzer.OptionCheckInfo.IsCheckingIsSome">
+            <summary>
+            Gets or sets a value indicating whether the check is for IsSome (true) or IsNone (false).
+            </summary>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Option.OptionPreferNoneAnalyzer">
+            <summary>
+            Analyzer that suggests using Option.None instead of default expressions when creating empty Option values.
+            </summary>
+            <remarks>
+            This analyzer promotes clarity and intent by detecting uses of default(Option&lt;T&gt;) or default literal
+            expressions and suggesting the more expressive Option.None. The analyzer triggers on:
+            - Explicit default expressions: default(Option&lt;T&gt;)
+            - Default literal expressions: default when the target type is Option&lt;T&gt;
+            
+            Using Option.None makes the code more readable and clearly expresses the intent to create
+            an empty option value, rather than relying on the default value semantics.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Option.OptionPreferNoneAnalyzer.Rule">
+            <summary>
+            The diagnostic descriptor for the prefer None rule.
+            </summary>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Option.OptionPreferNoneAnalyzer.SupportedDiagnostics">
+            <summary>
+            Gets the list of diagnostic descriptors supported by this analyzer.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionPreferNoneAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)">
+            <summary>
+            Initializes the analyzer by registering analysis actions for default expressions.
+            </summary>
+            <param name="context">The analysis context used to register actions.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionPreferNoneAnalyzer.AnalyzeDefaultExpression(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext)">
+            <summary>
+            Analyzes explicit default expressions like default(Option&lt;T&gt;).
+            </summary>
+            <param name="context">The syntax node analysis context.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionPreferNoneAnalyzer.AnalyzeDefaultLiteral(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext)">
+            <summary>
+            Analyzes default literal expressions where the target type is Option&lt;T&gt;.
+            </summary>
+            <param name="context">The syntax node analysis context.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionPreferNoneAnalyzer.CheckAndReportIfOptionType(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.ITypeSymbol)">
+            <summary>
+            Checks if the given type is an Option type and reports a diagnostic if it is.
+            </summary>
+            <param name="context">The syntax node analysis context.</param>
+            <param name="expression">The expression to report the diagnostic on.</param>
+            <param name="type">The type to check.</param>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Option.OptionValueAccessAnalyzer">
+            <summary>
+            Analyzer that detects potentially unsafe access to Option.Value property without proper null checks.
+            </summary>
+            <remarks>
+            This analyzer helps prevent runtime InvalidOperationException by detecting when code accesses
+            the Value property of an Option without first verifying that the option contains a value.
+            The analyzer considers access safe when:
+            - It's inside an if statement that checks IsSome
+            - It's in the true branch of a conditional expression that checks IsSome
+            - It's inside a Match method call
+            - It's preceded by a logical AND condition that includes an IsSome check
+            
+            This analyzer is crucial for maintaining runtime safety when working with Option types.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Option.OptionValueAccessAnalyzer.Rule">
+            <summary>
+            The diagnostic descriptor for the unsafe value access rule.
+            </summary>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Option.OptionValueAccessAnalyzer.SupportedDiagnostics">
+            <summary>
+            Gets the list of diagnostic descriptors supported by this analyzer.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionValueAccessAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)">
+            <summary>
+            Initializes the analyzer by registering analysis actions for member access expressions.
+            </summary>
+            <param name="context">The analysis context used to register actions.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionValueAccessAnalyzer.AnalyzeMemberAccess(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext)">
+            <summary>
+            Analyzes member access expressions to detect unsafe access to Option.Value.
+            </summary>
+            <param name="context">The syntax node analysis context.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionValueAccessAnalyzer.IsInSafeContext(Microsoft.CodeAnalysis.CSharp.Syntax.MemberAccessExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines whether the Value access occurs in a safe context where IsSome has been checked.
+            </summary>
+            <param name="valueAccess">The Value property access expression.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>true if the access is in a safe context; otherwise, false.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionValueAccessAnalyzer.HasIsSomeCheck(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Checks if the given condition expression contains an IsSome check for the specified option.
+            </summary>
+            <param name="condition">The condition expression to analyze.</param>
+            <param name="optionExpression">The option expression to look for.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>true if the condition checks IsSome for the option; otherwise, false.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionValueAccessAnalyzer.AreExpressionsEquivalent(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines whether two expressions refer to the same symbol.
+            </summary>
+            <param name="expr1">The first expression.</param>
+            <param name="expr2">The second expression.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>true if both expressions refer to the same symbol; otherwise, false.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionValueAccessAnalyzer.IsMatchMethodCall(Microsoft.CodeAnalysis.CSharp.Syntax.InvocationExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines whether the invocation is a call to the Option.Match method.
+            </summary>
+            <param name="invocation">The invocation expression to check.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>true if the invocation is an Option.Match call; otherwise, false.</returns>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Option.UnhandledOptionAnalyzer">
+            <summary>
+            Analyzer that detects Option values that are created but never consumed or checked.
+            </summary>
+            <remarks>
+            This analyzer helps prevent bugs where operations that return Option are called
+            but their value is never examined, potentially ignoring important data.
+            The analyzer detects when an Option is created (through method calls or constructors)
+            but is not:
+            - Assigned to a variable
+            - Returned from a method
+            - Passed as an argument
+            - Checked with IsSome/IsNone properties
+            - Handled with methods like Match, Map, Bind, or GetValueOrThrow
+            
+            Example of code that triggers this diagnostic:
+            <code>
+            // Option is created but never handled
+            GetUserById(userId); // Warning if GetUserById returns Option&lt;User&gt;
+            
+            // Option from TryParse is ignored
+            Option.TryParse&lt;int&gt;("123"); // Warning
+            </code>
+            
+            Example of properly handled Option:
+            <code>
+            var userOption = GetUserById(userId);
+            if (userOption.IsSome)
+            {
+                Console.WriteLine($"Found user: {userOption.Value.Name}");
+            }
+            
+            // Or using method chaining
+            GetUserById(userId)
+                .Match(
+                    onSome: user => Console.WriteLine($"Found user: {user.Name}"),
+                    onNone: () => Console.WriteLine("User not found")
+                );
+            </code>
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Option.UnhandledOptionAnalyzer.Rule">
+            <summary>
+            The diagnostic descriptor for unhandled Option values.
+            </summary>
+            <remarks>
+            This rule produces warning FU0006 when an Option is created but not handled.
+            This helps catch potential bugs where optional values are silently ignored.
+            </remarks>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Option.UnhandledOptionAnalyzer.SupportedDiagnostics">
+            <summary>
+            Gets the collection of diagnostics supported by this analyzer.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.UnhandledOptionAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)">
+            <summary>
+            Initializes the analyzer by registering actions to be performed during compilation.
+            </summary>
+            <param name="context">The analysis context used to register analyzer actions.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.UnhandledOptionAnalyzer.AnalyzeInvocation(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext)">
+            <summary>
+            Analyzes method invocations to detect unhandled Option return values.
+            </summary>
+            <param name="context">The syntax node analysis context containing the invocation to analyze.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.UnhandledOptionAnalyzer.AnalyzeObjectCreation(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext)">
+            <summary>
+            Analyzes object creation expressions to detect unhandled Option instances.
+            </summary>
+            <param name="context">The syntax node analysis context containing the object creation to analyze.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.UnhandledOptionAnalyzer.IsOptionHandled(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel,System.String)">
+            <summary>
+            Determines whether an Option expression is being properly handled.
+            </summary>
+            <param name="optionExpression">The Option expression to check.</param>
+            <param name="semanticModel">The semantic model for analysis.</param>
+            <param name="methodName">The name of the method that created the Option.</param>
+            <returns>True if the Option is being handled; otherwise, false.</returns>
+            <remarks>
+            An Option is considered handled if it is:
+            - Assigned to a variable or field
+            - Returned from a method
+            - Passed as an argument to another method
+            - Used with property access (IsSome, IsNone, Value)
+            - Used with handling methods (Match, Map, Bind, GetValueOrThrow, etc.)
+            - Used in pattern matching or conditional expressions
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.UnhandledOptionAnalyzer.IsPureFunction(System.String)">
+            <summary>
+            Determines if a method is a pure function (returns a value without side effects).
+            </summary>
+            <param name="methodName">The name of the method to check.</param>
+            <returns>True if the method is a pure function; otherwise, false.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.UnhandledOptionAnalyzer.IsHandlingMethod(System.String)">
+            <summary>
+            Determines if a method name represents an Option handling method.
+            </summary>
+            <param name="methodName">The name of the method to check.</param>
+            <returns>True if the method handles Option; otherwise, false.</returns>
+            <remarks>
+            Handling methods are those that consume or transform the Option in a meaningful way,
+            ensuring that the presence/absence of values is properly addressed.
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.UnhandledOptionAnalyzer.GetSuggestionMessage(System.String)">
+            <summary>
+            Gets an appropriate suggestion message based on the method.
+            </summary>
+            <param name="methodName">The name of the method that created the Option.</param>
+            <returns>A suggestion message for handling the Option.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.UnhandledOptionAnalyzer.GetOptionTypeString(Microsoft.CodeAnalysis.ITypeSymbol)">
+            <summary>
+            Gets a display string for an Option type symbol.
+            </summary>
+            <param name="type">The type symbol to convert to string.</param>
+            <returns>A string representation of the Option type (e.g., "Option&lt;int&gt;").</returns>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Result.ResultErrorAccessAnalyzer">
+            <summary>
+            Analyzer that detects unsafe access to Result.Error property without proper failure checks.
+            </summary>
+            <remarks>
+            This analyzer helps prevent runtime InvalidOperationException errors by ensuring that 
+            Result.Error is only accessed after verifying that IsFailure is true (or IsSuccess is false). 
+            The analyzer recognizes several safe patterns including:
+            - Access within if (result.IsFailure) blocks
+            - Access within if (!result.IsSuccess) blocks
+            - Access within the failure branch of conditional expressions
+            - Access within Match method failure callbacks (second argument)
+            
+            Example of unsafe code that triggers this diagnostic:
+            <code>
+            Result&lt;int&gt; result = GetResult();
+            string error = result.Error; // Warning: accessing Error without checking IsFailure
+            </code>
+            
+            Example of safe code:
+            <code>
+            Result&lt;int&gt; result = GetResult();
+            if (result.IsFailure)
+            {
+                string error = result.Error; // Safe: checked IsFailure first
+            }
+            
+            // Or using IsSuccess negation:
+            if (!result.IsSuccess)
+            {
+                string error = result.Error; // Safe: verified failure state
+            }
+            </code>
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Result.ResultErrorAccessAnalyzer.Rule">
+            <summary>
+            The diagnostic descriptor for unsafe Result.Error access.
+            </summary>
+            <remarks>
+            This rule produces warning FU0102 when Result.Error is accessed without proper checks.
+            The warning can be suppressed if the developer is certain the access is safe.
+            </remarks>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Result.ResultErrorAccessAnalyzer.SupportedDiagnostics">
+            <summary>
+            Gets the collection of diagnostics supported by this analyzer.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultErrorAccessAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)">
+            <summary>
+            Initializes the analyzer by registering actions to be performed during compilation.
+            </summary>
+            <param name="context">The analysis context used to register analyzer actions.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultErrorAccessAnalyzer.AnalyzeMemberAccess(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext)">
+            <summary>
+            Analyzes member access expressions to detect unsafe Result.Error access.
+            </summary>
+            <param name="context">The syntax node analysis context containing the member access expression to analyze.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultErrorAccessAnalyzer.IsInSafeContext(Microsoft.CodeAnalysis.CSharp.Syntax.MemberAccessExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines whether a Result.Error access is in a safe context where IsFailure has been checked.
+            </summary>
+            <param name="errorAccess">The member access expression for Result.Error.</param>
+            <param name="semanticModel">The semantic model for the compilation.</param>
+            <returns>True if the access is in a safe context; otherwise, false.</returns>
+            <remarks>
+            This method checks various patterns to determine safety:
+            - If statements with IsFailure conditions
+            - If statements with negated IsSuccess conditions
+            - Conditional expressions with failure checks
+            - Inside Match method failure callbacks (second argument)
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultErrorAccessAnalyzer.HasIsFailureCheck(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Checks if an expression contains an IsFailure property check or negated IsSuccess check for the given result expression.
+            </summary>
+            <param name="condition">The condition expression to examine.</param>
+            <param name="resultExpression">The result expression to match against.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>True if the condition checks failure state on the same result instance; otherwise, false.</returns>
+            <remarks>
+            This method recognizes both direct IsFailure checks and negated IsSuccess checks (!result.IsSuccess).
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultErrorAccessAnalyzer.AreExpressionsEquivalent(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines if two expressions refer to the same symbol (variable, property, etc.).
+            </summary>
+            <param name="expr1">The first expression to compare.</param>
+            <param name="expr2">The second expression to compare.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>True if both expressions refer to the same symbol; otherwise, false.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultErrorAccessAnalyzer.IsMatchMethodCall(Microsoft.CodeAnalysis.CSharp.Syntax.InvocationExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Checks if an invocation is a call to the Match method on a Result type.
+            </summary>
+            <param name="invocation">The invocation expression to check.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>True if the invocation is a Result.Match method call; otherwise, false.</returns>
+            <remarks>
+            In Match method calls, the Error property can be safely accessed within the failure handler (typically the second argument).
+            </remarks>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Result.ResultPreferMatchAnalyzer">
+            <summary>
+            Analyzer that suggests using the Match method instead of if/else patterns for Result handling.
+            </summary>
+            <remarks>
+            This analyzer promotes a more functional programming style by detecting if/else patterns
+            that check IsSuccess or IsFailure properties and suggesting the use of the Match method instead.
+            The Match method provides a more idiomatic way to handle both success and failure cases
+            with better type safety and readability.
+            
+            Example of code that triggers this diagnostic:
+            <code>
+            if (result.IsSuccess)
+            {
+                Console.WriteLine($"Success: {result.Value}");
+            }
+            else
+            {
+                Console.WriteLine($"Error: {result.Error}");
+            }
+            </code>
+            
+            Suggested improvement:
+            <code>
+            result.Match(
+                onSuccess: value => Console.WriteLine($"Success: {value}"),
+                onFailure: error => Console.WriteLine($"Error: {error}")
+            );
+            </code>
+            
+            The analyzer only triggers when:
+            - The if condition checks IsSuccess or IsFailure (or their negations)
+            - There is an else clause
+            - At least one branch accesses Result.Value or Result.Error
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Result.ResultPreferMatchAnalyzer.Rule">
+            <summary>
+            The diagnostic descriptor for suggesting Match over if/else patterns.
+            </summary>
+            <remarks>
+            This rule produces info-level diagnostic FU0103 to suggest a more idiomatic approach.
+            It's an informational suggestion rather than a warning, as if/else patterns are still valid.
+            </remarks>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Result.ResultPreferMatchAnalyzer.SupportedDiagnostics">
+            <summary>
+            Gets the collection of diagnostics supported by this analyzer.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultPreferMatchAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)">
+            <summary>
+            Initializes the analyzer by registering actions to be performed during compilation.
+            </summary>
+            <param name="context">The analysis context used to register analyzer actions.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultPreferMatchAnalyzer.AnalyzeIfStatement(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext)">
+            <summary>
+            Analyzes if statements to detect if/else patterns that could be replaced with Match.
+            </summary>
+            <param name="context">The syntax node analysis context containing the if statement to analyze.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultPreferMatchAnalyzer.GetResultCheckInfo(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Extracts information about Result property checks from a condition expression.
+            </summary>
+            <param name="condition">The condition expression to analyze.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>Information about the Result check if found; otherwise, null.</returns>
+            <remarks>
+            This method handles both direct property access (result.IsSuccess, result.IsFailure)
+            and negated forms (!result.IsSuccess, !result.IsFailure).
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultPreferMatchAnalyzer.BothBranchesHandleResult(Microsoft.CodeAnalysis.CSharp.Syntax.IfStatementSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ElseClauseSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines if both branches of an if/else statement handle the Result value.
+            </summary>
+            <param name="ifStatement">The if statement to analyze.</param>
+            <param name="elseClause">The else clause to analyze.</param>
+            <param name="resultExpression">The Result expression being checked.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>True if at least one branch accesses Result.Value or Result.Error; otherwise, false.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultPreferMatchAnalyzer.IsAccessingResult(Microsoft.CodeAnalysis.CSharp.Syntax.MemberAccessExpressionSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Checks if a member access expression is accessing Value or Error properties of a specific Result instance.
+            </summary>
+            <param name="memberAccess">The member access expression to check.</param>
+            <param name="resultExpression">The Result expression to match against.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>True if the member access is accessing Value or Error on the same Result instance; otherwise, false.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultPreferMatchAnalyzer.GetResultTypeString(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Gets a display string for the Result type of an expression.
+            </summary>
+            <param name="expression">The expression whose type to get.</param>
+            <param name="semanticModel">The semantic model for type information.</param>
+            <returns>A string representation of the Result type (e.g., "Result&lt;int&gt;" or "Result").</returns>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Result.ResultPreferMatchAnalyzer.ResultCheckInfo">
+            <summary>
+            Holds information about a Result property check in a condition.
+            </summary>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Result.ResultPreferMatchAnalyzer.ResultCheckInfo.Expression">
+            <summary>
+            Gets or sets the expression that represents the Result instance being checked.
+            </summary>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Result.ResultPreferMatchAnalyzer.ResultCheckInfo.IsCheckingIsSuccess">
+            <summary>
+            Gets or sets a value indicating whether the check is for IsSuccess (true) or IsFailure (false).
+            </summary>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Result.ResultValueAccessAnalyzer">
+            <summary>
+            Analyzer that detects unsafe access to Result.Value property without proper success checks.
+            </summary>
+            <remarks>
+            This analyzer helps prevent runtime InvalidOperationException errors by ensuring that 
+            Result.Value is only accessed after verifying that IsSuccess is true. The analyzer
+            recognizes several safe patterns including:
+            - Access within if (result.IsSuccess) blocks
+            - Access within the success branch of conditional expressions
+            - Access after calling ThrowIfFailure()
+            - Access within Match method callbacks
+            
+            Example of unsafe code that triggers this diagnostic:
+            <code>
+            Result&lt;int&gt; result = GetResult();
+            int value = result.Value; // Warning: accessing Value without checking IsSuccess
+            </code>
+            
+            Example of safe code:
+            <code>
+            Result&lt;int&gt; result = GetResult();
+            if (result.IsSuccess)
+            {
+                int value = result.Value; // Safe: checked IsSuccess first
+            }
+            </code>
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Result.ResultValueAccessAnalyzer.Rule">
+            <summary>
+            The diagnostic descriptor for unsafe Result.Value access.
+            </summary>
+            <remarks>
+            This rule produces warning FU0101 when Result.Value is accessed without proper checks.
+            The warning can be suppressed if the developer is certain the access is safe.
+            </remarks>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Result.ResultValueAccessAnalyzer.SupportedDiagnostics">
+            <summary>
+            Gets the collection of diagnostics supported by this analyzer.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultValueAccessAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)">
+            <summary>
+            Initializes the analyzer by registering actions to be performed during compilation.
+            </summary>
+            <param name="context">The analysis context used to register analyzer actions.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultValueAccessAnalyzer.AnalyzeMemberAccess(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext)">
+            <summary>
+            Analyzes member access expressions to detect unsafe Result.Value access.
+            </summary>
+            <param name="context">The syntax node analysis context containing the member access expression to analyze.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultValueAccessAnalyzer.IsInSafeContext(Microsoft.CodeAnalysis.CSharp.Syntax.MemberAccessExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines whether a Result.Value access is in a safe context where IsSuccess has been checked.
+            </summary>
+            <param name="valueAccess">The member access expression for Result.Value.</param>
+            <param name="semanticModel">The semantic model for the compilation.</param>
+            <returns>True if the access is in a safe context; otherwise, false.</returns>
+            <remarks>
+            This method checks various patterns to determine safety:
+            - If statements with IsSuccess conditions
+            - Conditional expressions with IsSuccess checks
+            - Inside Match method callbacks
+            - After ThrowIfFailure method calls
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultValueAccessAnalyzer.HasIsSuccessCheck(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Checks if an expression contains an IsSuccess property check for the given result expression.
+            </summary>
+            <param name="condition">The condition expression to examine.</param>
+            <param name="resultExpression">The result expression to match against.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>True if the condition checks IsSuccess on the same result instance; otherwise, false.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultValueAccessAnalyzer.IsAfterThrowIfFailureCall(Microsoft.CodeAnalysis.CSharp.Syntax.MemberAccessExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines if a Result.Value access occurs after a ThrowIfFailure method call on the same result instance.
+            </summary>
+            <param name="valueAccess">The member access expression for Result.Value.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>True if the access is after a ThrowIfFailure call; otherwise, false.</returns>
+            <remarks>
+            ThrowIfFailure ensures the result is successful or throws an exception, making subsequent Value access safe.
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultValueAccessAnalyzer.AreExpressionsEquivalent(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines if two expressions refer to the same symbol (variable, property, etc.).
+            </summary>
+            <param name="expr1">The first expression to compare.</param>
+            <param name="expr2">The second expression to compare.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>True if both expressions refer to the same symbol; otherwise, false.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultValueAccessAnalyzer.IsMatchMethodCall(Microsoft.CodeAnalysis.CSharp.Syntax.InvocationExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Checks if an invocation is a call to the Match method on a Result type.
+            </summary>
+            <param name="invocation">The invocation expression to check.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>True if the invocation is a Result.Match method call; otherwise, false.</returns>
+            <remarks>
+            Match method provides safe pattern matching on Result, making Value access within its callbacks safe.
+            </remarks>
+        </member>
+        <member name="T:FluentUnions.Analyzers.Result.UnhandledResultAnalyzer">
+            <summary>
+            Analyzer that detects Result values that are created but never consumed or checked.
+            </summary>
+            <remarks>
+            This analyzer helps prevent bugs where operations that return Result are called
+            but their success/failure status is never examined, potentially ignoring errors.
+            The analyzer detects when a Result is created (through method calls or constructors)
+            but is not:
+            - Assigned to a variable
+            - Returned from a method
+            - Passed as an argument
+            - Checked with IsSuccess/IsFailure properties
+            - Handled with methods like Match, Map, Bind, or ThrowIfFailure
+            
+            Example of code that triggers this diagnostic:
+            <code>
+            // Result is created but never handled
+            repository.SaveData(data); // Warning if SaveData returns Result
+            
+            // Result from TryParse is ignored
+            Result.TryParse&lt;int&gt;("123"); // Warning
+            </code>
+            
+            Example of properly handled Result:
+            <code>
+            var result = repository.SaveData(data);
+            if (result.IsFailure)
+            {
+                Console.WriteLine($"Save failed: {result.Error}");
+            }
+            
+            // Or using method chaining
+            repository.SaveData(data)
+                .Match(
+                    onSuccess: () => Console.WriteLine("Saved successfully"),
+                    onFailure: error => Console.WriteLine($"Save failed: {error}")
+                );
+            </code>
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Result.UnhandledResultAnalyzer.Rule">
+            <summary>
+            The diagnostic descriptor for unhandled Result values.
+            </summary>
+            <remarks>
+            This rule produces warning FU0104 when a Result is created but not handled.
+            This helps catch potential bugs where errors are silently ignored.
+            </remarks>
+        </member>
+        <member name="P:FluentUnions.Analyzers.Result.UnhandledResultAnalyzer.SupportedDiagnostics">
+            <summary>
+            Gets the collection of diagnostics supported by this analyzer.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.UnhandledResultAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)">
+            <summary>
+            Initializes the analyzer by registering actions to be performed during compilation.
+            </summary>
+            <param name="context">The analysis context used to register analyzer actions.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.UnhandledResultAnalyzer.AnalyzeInvocation(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext)">
+            <summary>
+            Analyzes method invocations to detect unhandled Result return values.
+            </summary>
+            <param name="context">The syntax node analysis context containing the invocation to analyze.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.UnhandledResultAnalyzer.AnalyzeObjectCreation(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext)">
+            <summary>
+            Analyzes object creation expressions to detect unhandled Result instances.
+            </summary>
+            <param name="context">The syntax node analysis context containing the object creation to analyze.</param>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.UnhandledResultAnalyzer.IsResultHandled(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel,System.String)">
+            <summary>
+            Determines whether a Result expression is being properly handled.
+            </summary>
+            <param name="resultExpression">The Result expression to check.</param>
+            <param name="semanticModel">The semantic model for analysis.</param>
+            <param name="methodName">The name of the method that created the Result.</param>
+            <returns>True if the Result is being handled; otherwise, false.</returns>
+            <remarks>
+            A Result is considered handled if it is:
+            - Assigned to a variable or field
+            - Returned from a method
+            - Passed as an argument to another method
+            - Used with property access (IsSuccess, IsFailure, Value, Error)
+            - Used with handling methods (Match, Map, Bind, ThrowIfFailure, etc.)
+            - Used in pattern matching or conditional expressions
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.UnhandledResultAnalyzer.IsPureFunction(System.String)">
+            <summary>
+            Determines if a method is a pure function (returns a value without side effects).
+            </summary>
+            <param name="methodName">The name of the method to check.</param>
+            <returns>True if the method is a pure function; otherwise, false.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.UnhandledResultAnalyzer.IsHandlingMethod(System.String)">
+            <summary>
+            Determines if a method name represents a Result handling method.
+            </summary>
+            <param name="methodName">The name of the method to check.</param>
+            <returns>True if the method handles Result; otherwise, false.</returns>
+            <remarks>
+            Handling methods are those that consume or transform the Result in a meaningful way,
+            ensuring that success/failure states are properly addressed.
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.UnhandledResultAnalyzer.GetSuggestionMessage(Microsoft.CodeAnalysis.ITypeSymbol,System.String)">
+            <summary>
+            Gets an appropriate suggestion message based on the Result type and method.
+            </summary>
+            <param name="type">The Result type.</param>
+            <param name="methodName">The name of the method that created the Result.</param>
+            <returns>A suggestion message for handling the Result.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.UnhandledResultAnalyzer.GetResultTypeString(Microsoft.CodeAnalysis.ITypeSymbol)">
+            <summary>
+            Gets a display string for a Result type symbol.
+            </summary>
+            <param name="type">The type symbol to convert to string.</param>
+            <returns>A string representation of the Result type (e.g., "Result&lt;int&gt;" or "Result").</returns>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>FluentUnions.AwesomeAssertions</id>
+    <version>1.0.0</version>
+    <authors>Yousef Jaber</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/PalJaber/fluent-unions</projectUrl>
+    <description>FluentUnions.AwesomeAssertions adds fluent assertion methods for Result and Option types from FluentUnions, integrating with AwesomeAssertions testing library.</description>
+    <tags>fluent unions testing assertions result option awesomeassertions</tags>
+    <repository type="git" url="https://github.com/PalJaber/fluent-unions" commit="1504313dc0e3cf6c8d4789b352033f4ca05a9ad9" />
+    <dependencies>
+      <group targetFramework="net9.0">
+        <dependency id="FluentUnions" version="1.0.0" exclude="Build,Analyzers" />
+        <dependency id="AwesomeAssertions" version="9.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.AwesomeAssertions/bin/Debug/net9.0/FluentUnions.AwesomeAssertions.dll" target="lib/net9.0/FluentUnions.AwesomeAssertions.dll" />
+    <file src="/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.AwesomeAssertions/bin/Debug/net9.0/FluentUnions.AwesomeAssertions.xml" target="lib/net9.0/FluentUnions.AwesomeAssertions.xml" />
+    <file src="/home/yousef/projects/paljaber/fluent-unions/README.md" target="/README.md" />
+  </files>
+</package>

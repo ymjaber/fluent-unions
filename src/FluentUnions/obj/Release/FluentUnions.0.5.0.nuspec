@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>FluentUnions</id>
+    <version>0.5.0</version>
+    <authors>Yousef Jaber</authors>
+    <description>FluentUnions is a library that provides a fluent API for creating and working with discriminated unions in C#.</description>
+    <tags>fluent, unions, discriminated, csharp, fluent-api</tags>
+    <repository type="git" commit="1504313dc0e3cf6c8d4789b352033f4ca05a9ad9" />
+    <dependencies>
+      <group targetFramework="net9.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions/bin/Release/net9.0/FluentUnions.dll" target="lib/net9.0/FluentUnions.dll" />
+    <file src="/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions/bin/Release/net9.0/FluentUnions.xml" target="lib/net9.0/FluentUnions.xml" />
+    <file src="/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions.Analyzers/bin/Release/netstandard2.0/FluentUnions.Analyzers.dll" target="analyzers/dotnet/cs/FluentUnions.Analyzers.dll" />
+  </files>
+</package>

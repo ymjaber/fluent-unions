@@ -1,0 +1,13 @@
+/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions/bin/Release/net9.0/FluentUnions.deps.json
+/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions/bin/Release/net9.0/FluentUnions.dll
+/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions/bin/Release/net9.0/FluentUnions.pdb
+/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions/bin/Release/net9.0/FluentUnions.xml
+/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions/obj/Release/net9.0/FluentUnions.GeneratedMSBuildEditorConfig.editorconfig
+/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions/obj/Release/net9.0/FluentUnions.AssemblyInfoInputs.cache
+/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions/obj/Release/net9.0/FluentUnions.AssemblyInfo.cs
+/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions/obj/Release/net9.0/FluentUnions.csproj.CoreCompileInputs.cache
+/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions/obj/Release/net9.0/FluentUnions.dll
+/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions/obj/Release/net9.0/refint/FluentUnions.dll
+/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions/obj/Release/net9.0/FluentUnions.xml
+/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions/obj/Release/net9.0/FluentUnions.pdb
+/home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions/obj/Release/net9.0/ref/FluentUnions.dll

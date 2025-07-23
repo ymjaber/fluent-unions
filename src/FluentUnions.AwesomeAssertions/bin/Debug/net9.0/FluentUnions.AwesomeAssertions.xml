@@ -1,0 +1,514 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FluentUnions.AwesomeAssertions</name>
+    </assembly>
+    <members>
+        <member name="T:AwesomeAssertions.OptionAssertions`1">
+            <summary>
+            Contains assertion methods for <see cref="T:FluentUnions.Option`1"/> instances.
+            </summary>
+            <typeparam name="T">The type of the value that may be contained in the option.</typeparam>
+            <remarks>
+            This class provides a fluent API for asserting the state and value of Option instances.
+            It supports assertions for both Some and None states, as well as value-based comparisons
+            and custom predicate matching.
+            </remarks>
+        </member>
+        <member name="M:AwesomeAssertions.OptionAssertions`1.#ctor(FluentUnions.Option{`0},AwesomeAssertions.Execution.AssertionChain)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AwesomeAssertions.OptionAssertions`1"/> class.
+            </summary>
+            <param name="subject">The option instance to assert against.</param>
+            <param name="assertionChain">The assertion chain used to track assertion state.</param>
+        </member>
+        <member name="P:AwesomeAssertions.OptionAssertions`1.Identifier">
+            <summary>
+            Gets the identifier used in assertion failure messages.
+            </summary>
+        </member>
+        <member name="M:AwesomeAssertions.OptionAssertions`1.BeSome(System.String,System.Object[])">
+            <summary>
+            Asserts that the option has a value (is in the Some state).
+            </summary>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>An <see cref="T:AwesomeAssertions.AndWhichConstraint`2"/> which can be used to chain assertions on the contained value.</returns>
+            <exception cref="!:AssertionException">The option is None.</exception>
+            <example>
+            <code>
+            var option = Option.Some(42);
+            option.Should().BeSome("we expect a value to be present")
+                .Which.Should().BeGreaterThan(0);
+            </code>
+            </example>
+        </member>
+        <member name="M:AwesomeAssertions.OptionAssertions`1.BeSomeWithValue(`0,System.String,System.Object[])">
+            <summary>
+            Asserts that the option has a specific value.
+            </summary>
+            <param name="expectedValue">The expected value contained in the option.</param>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>An <see cref="T:AwesomeAssertions.AndWhichConstraint`2"/> which can be used to chain additional assertions.</returns>
+            <exception cref="!:AssertionException">The option is None or contains a different value.</exception>
+            <example>
+            <code>
+            var option = Option.Some("Hello");
+            option.Should().BeSomeWithValue("Hello");
+            </code>
+            </example>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:AwesomeAssertions.OptionAssertions`1.BeSomeMatching(System.Func{`0,System.Boolean},System.String,System.Object[])" -->
+        <member name="M:AwesomeAssertions.OptionAssertions`1.NotBeSomeWithValue(`0,System.String,System.Object[])">
+            <summary>
+            Asserts that the option does not contain a specific value.
+            </summary>
+            <param name="unexpectedValue">The value that should not be contained in the option.</param>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>An <see cref="T:AwesomeAssertions.AndConstraint`1"/> which can be used to chain additional assertions.</returns>
+            <exception cref="!:AssertionException">The option contains the unexpected value.</exception>
+            <remarks>
+            This assertion passes if the option is None or if it contains a different value than the unexpected one.
+            </remarks>
+            <example>
+            <code>
+            var option = Option.Some(42);
+            option.Should().NotBeSomeWithValue(100);
+            
+            var none = Option&lt;int&gt;.None;
+            none.Should().NotBeSomeWithValue(42); // Also passes
+            </code>
+            </example>
+        </member>
+        <member name="M:AwesomeAssertions.OptionAssertions`1.BeSomeSatisfying(System.Action{`0},System.String,System.Object[])">
+            <summary>
+            Asserts that the option has a value and that the value satisfies the specified assertions.
+            </summary>
+            <param name="assertions">An action containing assertions to be performed on the option's value.</param>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>An <see cref="T:AwesomeAssertions.AndWhichConstraint`2"/> which can be used to chain additional assertions.</returns>
+            <exception cref="!:AssertionException">The option is None or the contained assertions fail.</exception>
+            <remarks>
+            This method is useful for performing multiple assertions on the contained value in a fluent manner.
+            </remarks>
+            <example>
+            <code>
+            var option = Option.Some(new Person { Name = "John", Age = 30 });
+            option.Should().BeSomeSatisfying(person => 
+            {
+                person.Name.Should().Be("John");
+                person.Age.Should().BeGreaterThan(18);
+            });
+            </code>
+            </example>
+        </member>
+        <member name="M:AwesomeAssertions.OptionAssertions`1.BeNone(System.String,System.Object[])">
+            <summary>
+            Asserts that the option has no value (is in the None state).
+            </summary>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>An <see cref="T:AwesomeAssertions.AndConstraint`1"/> which can be used to chain additional assertions.</returns>
+            <exception cref="!:AssertionException">The option has a value.</exception>
+            <example>
+            <code>
+            var option = Option&lt;string&gt;.None;
+            option.Should().BeNone("we expect no value to be present");
+            </code>
+            </example>
+        </member>
+        <member name="T:AwesomeAssertions.FailedResultAssertions">
+            <summary>
+            Contains assertion methods for <see cref="T:FluentUnions.Error"/> instances from failed results.
+            </summary>
+            <remarks>
+            This class provides a fluent API for asserting against error details when a Result has failed.
+            It supports various validations including error type, code, message content, and custom predicates.
+            All methods return the same FailedResultAssertions instance to enable method chaining.
+            </remarks>
+        </member>
+        <member name="P:AwesomeAssertions.FailedResultAssertions.Identifier">
+            <summary>
+            Gets the identifier used in assertion failure messages.
+            </summary>
+        </member>
+        <member name="M:AwesomeAssertions.FailedResultAssertions.#ctor(FluentUnions.Error,AwesomeAssertions.Execution.AssertionChain)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AwesomeAssertions.FailedResultAssertions"/> class.
+            </summary>
+            <param name="subject">The error instance to assert against.</param>
+            <param name="assertionChain">The assertion chain used to track assertion state.</param>
+        </member>
+        <member name="M:AwesomeAssertions.FailedResultAssertions.WithErrorType``1(System.String,System.Object[])">
+            <summary>
+            Asserts that the error is of a specific type.
+            </summary>
+            <typeparam name="TType">The expected error type.</typeparam>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for chaining additional assertions.</returns>
+            <exception cref="!:AssertionException">The error is not of the expected type.</exception>
+            <example>
+            <code>
+            var result = Result.Failure(new ValidationError("VAL001", "Invalid input"));
+            result.Should().Fail()
+                .WithErrorType&lt;ValidationError&gt;();
+            </code>
+            </example>
+        </member>
+        <member name="M:AwesomeAssertions.FailedResultAssertions.WithErrorCode(System.String,System.String,System.Object[])">
+            <summary>
+            Asserts that the error has a specific code.
+            </summary>
+            <param name="expectedCode">The expected error code.</param>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for chaining additional assertions.</returns>
+            <exception cref="!:AssertionException">The error code does not match the expected value.</exception>
+            <example>
+            <code>
+            var result = Result.Failure(new Error("ERR_NETWORK", "Network timeout"));
+            result.Should().Fail()
+                .WithErrorCode("ERR_NETWORK");
+            </code>
+            </example>
+        </member>
+        <member name="M:AwesomeAssertions.FailedResultAssertions.WithErrorMessage(System.String,System.String,System.Object[])">
+            <summary>
+            Asserts that the error has a specific message.
+            </summary>
+            <param name="expectedMessage">The expected error message.</param>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for chaining additional assertions.</returns>
+            <exception cref="!:AssertionException">The error message does not match the expected value.</exception>
+            <example>
+            <code>
+            var result = Result.Failure(new Error("ERR001", "Operation failed"));
+            result.Should().Fail()
+                .WithErrorMessage("Operation failed");
+            </code>
+            </example>
+        </member>
+        <member name="M:AwesomeAssertions.FailedResultAssertions.WithError(FluentUnions.Error,System.String,System.Object[])">
+            <summary>
+            Asserts that the error equals the expected error instance.
+            </summary>
+            <param name="expectedError">The expected error instance.</param>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for chaining additional assertions.</returns>
+            <exception cref="!:AssertionException">The error does not equal the expected error.</exception>
+            <remarks>
+            This method performs a full equality comparison including type, code, message, and metadata.
+            </remarks>
+            <example>
+            <code>
+            var expectedError = new ValidationError("VAL001", "Invalid email format");
+            var result = Result.Failure(expectedError);
+            result.Should().Fail()
+                .WithError(expectedError);
+            </code>
+            </example>
+        </member>
+        <member name="M:AwesomeAssertions.FailedResultAssertions.WithErrorMessageContaining(System.String,System.String,System.Object[])">
+            <summary>
+            Asserts that the error message contains a specific substring.
+            </summary>
+            <param name="expectedSubstring">The substring that should be contained in the error message.</param>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for chaining additional assertions.</returns>
+            <exception cref="!:AssertionException">The error message does not contain the expected substring.</exception>
+            <example>
+            <code>
+            var result = Result.Failure(new Error("ERR001", "Connection to database failed"));
+            result.Should().Fail()
+                .WithErrorMessageContaining("database");
+            </code>
+            </example>
+        </member>
+        <member name="M:AwesomeAssertions.FailedResultAssertions.WithErrorMessageStartingWith(System.String,System.String,System.Object[])">
+            <summary>
+            Asserts that the error message starts with a specific prefix.
+            </summary>
+            <param name="expectedPrefix">The prefix that the error message should start with.</param>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for chaining additional assertions.</returns>
+            <exception cref="!:AssertionException">The error message does not start with the expected prefix.</exception>
+            <example>
+            <code>
+            var result = Result.Failure(new Error("ERR001", "Validation failed: Invalid email"));
+            result.Should().Fail()
+                .WithErrorMessageStartingWith("Validation failed");
+            </code>
+            </example>
+        </member>
+        <member name="M:AwesomeAssertions.FailedResultAssertions.WithErrorMessageEndingWith(System.String,System.String,System.Object[])">
+            <summary>
+            Asserts that the error message ends with a specific suffix.
+            </summary>
+            <param name="expectedSuffix">The suffix that the error message should end with.</param>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for chaining additional assertions.</returns>
+            <exception cref="!:AssertionException">The error message does not end with the expected suffix.</exception>
+            <example>
+            <code>
+            var result = Result.Failure(new Error("ERR001", "Operation timed out after 30 seconds"));
+            result.Should().Fail()
+                .WithErrorMessageEndingWith("30 seconds");
+            </code>
+            </example>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:AwesomeAssertions.FailedResultAssertions.WithErrorMessageMatching(System.Func{System.String,System.Boolean},System.String,System.Object[])" -->
+        <member name="T:AwesomeAssertions.ResultAssertions">
+            <summary>
+            Contains assertion methods for <see cref="T:FluentUnions.Result"/> instances (unit results without a value).
+            </summary>
+            <remarks>
+            This class provides a fluent API for asserting the state of Result instances that represent
+            operations that can succeed or fail but don't return a value on success. It supports
+            assertions for both success and failure states, with detailed error assertions available
+            through the Fail() method.
+            </remarks>
+        </member>
+        <member name="P:AwesomeAssertions.ResultAssertions.Identifier">
+            <summary>
+            Gets the identifier used in assertion failure messages.
+            </summary>
+        </member>
+        <member name="M:AwesomeAssertions.ResultAssertions.#ctor(FluentUnions.Result,AwesomeAssertions.Execution.AssertionChain)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AwesomeAssertions.ResultAssertions"/> class.
+            </summary>
+            <param name="subject">The result instance to assert against.</param>
+            <param name="assertionChain">The assertion chain used to track assertion state.</param>
+        </member>
+        <member name="M:AwesomeAssertions.ResultAssertions.Succeed(System.String,System.Object[])">
+            <summary>
+            Asserts that the result represents a successful operation.
+            </summary>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>An <see cref="T:AwesomeAssertions.AndConstraint`1"/> which can be used to chain additional assertions.</returns>
+            <exception cref="!:AssertionException">The result represents a failed operation.</exception>
+            <example>
+            <code>
+            var result = Result.Success();
+            result.Should().Succeed("the operation completed without errors");
+            </code>
+            </example>
+        </member>
+        <member name="M:AwesomeAssertions.ResultAssertions.Fail(System.String,System.Object[])">
+            <summary>
+            Asserts that the result represents a failed operation and provides access to error assertions.
+            </summary>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for asserting against the error details.</returns>
+            <exception cref="!:AssertionException">The result represents a successful operation.</exception>
+            <remarks>
+            This method not only asserts that the result failed but also returns a specialized assertions
+            object that allows for detailed error validation including error type, code, and message.
+            </remarks>
+            <example>
+            <code>
+            var result = Result.Failure(new ValidationError("VAL001", "Invalid input"));
+            result.Should().Fail()
+                .WithErrorType&lt;ValidationError&gt;()
+                .WithErrorCode("VAL001")
+                .WithErrorMessage("Invalid input");
+            </code>
+            </example>
+        </member>
+        <member name="T:AwesomeAssertions.ResultAssertions`1">
+            <summary>
+            Contains assertion methods for <see cref="T:FluentUnions.Result`1"/> instances (results with a value).
+            </summary>
+            <typeparam name="T">The type of the value that may be contained in a successful result.</typeparam>
+            <remarks>
+            This class provides a fluent API for asserting the state and value of Result instances that
+            represent operations that can succeed with a value or fail with an error. It supports
+            assertions for both success and failure states, with value-based comparisons and custom
+            validation for successful results.
+            </remarks>
+        </member>
+        <member name="M:AwesomeAssertions.ResultAssertions`1.#ctor(FluentUnions.Result{`0},AwesomeAssertions.Execution.AssertionChain)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AwesomeAssertions.ResultAssertions`1"/> class.
+            </summary>
+            <param name="subject">The result instance to assert against.</param>
+            <param name="assertionChain">The assertion chain used to track assertion state.</param>
+        </member>
+        <member name="P:AwesomeAssertions.ResultAssertions`1.Identifier">
+            <summary>
+            Gets the identifier used in assertion failure messages.
+            </summary>
+        </member>
+        <member name="M:AwesomeAssertions.ResultAssertions`1.Succeed(System.String,System.Object[])">
+            <summary>
+            Asserts that the result represents a successful operation.
+            </summary>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>An <see cref="T:AwesomeAssertions.AndWhichConstraint`2"/> which can be used to chain assertions on the contained value.</returns>
+            <exception cref="!:AssertionException">The result represents a failed operation.</exception>
+            <example>
+            <code>
+            var result = Result.Success(42);
+            result.Should().Succeed()
+                .Which.Should().BeGreaterThan(0);
+            </code>
+            </example>
+        </member>
+        <member name="M:AwesomeAssertions.ResultAssertions`1.SucceedWithValue(`0,System.String,System.Object[])">
+            <summary>
+            Asserts that the result is successful and contains a specific value.
+            </summary>
+            <param name="expectedValue">The expected value of the successful result.</param>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>An <see cref="T:AwesomeAssertions.AndWhichConstraint`2"/> which can be used to chain additional assertions.</returns>
+            <exception cref="!:AssertionException">The result is failed or contains a different value.</exception>
+            <example>
+            <code>
+            var result = Result.Success("Hello World");
+            result.Should().SucceedWithValue("Hello World");
+            </code>
+            </example>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:AwesomeAssertions.ResultAssertions`1.SucceedMatching(System.Func{`0,System.Boolean},System.String,System.Object[])" -->
+        <member name="M:AwesomeAssertions.ResultAssertions`1.SucceedSatisfying(System.Action{`0},System.String,System.Object[])">
+            <summary>
+            Asserts that the result is successful and its value satisfies the specified assertions.
+            </summary>
+            <param name="assertions">An action containing assertions to be performed on the result's value.</param>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>An <see cref="T:AwesomeAssertions.AndWhichConstraint`2"/> which can be used to chain additional assertions.</returns>
+            <exception cref="!:AssertionException">The result is failed or the contained assertions fail.</exception>
+            <remarks>
+            This method is useful for performing multiple assertions on the result value in a fluent manner.
+            </remarks>
+            <example>
+            <code>
+            var result = Result.Success(new Product { Name = "Widget", Price = 9.99m });
+            result.Should().SucceedSatisfying(product => 
+            {
+                product.Name.Should().NotBeEmpty();
+                product.Price.Should().BePositive();
+            });
+            </code>
+            </example>
+        </member>
+        <member name="M:AwesomeAssertions.ResultAssertions`1.Fail(System.String,System.Object[])">
+            <summary>
+            Asserts that the result represents a failed operation and provides access to error assertions.
+            </summary>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for asserting against the error details.</returns>
+            <exception cref="!:AssertionException">The result represents a successful operation.</exception>
+            <remarks>
+            This method not only asserts that the result failed but also returns a specialized assertions
+            object that allows for detailed error validation including error type, code, and message.
+            </remarks>
+            <example>
+            <code>
+            var result = Result.Failure&lt;int&gt;(new NotFoundError("ITEM_404", "Item not found"));
+            result.Should().Fail()
+                .WithErrorType&lt;NotFoundError&gt;()
+                .WithErrorCode("ITEM_404")
+                .WithErrorMessage("Item not found");
+            </code>
+            </example>
+        </member>
+        <member name="T:AwesomeAssertions.ShouldExtensions">
+            <summary>
+            Provides extension methods to enable fluent assertions for FluentUnions types.
+            </summary>
+            <remarks>
+            This class serves as the entry point for all FluentUnions assertions. By calling the Should() method
+            on Option or Result types, you gain access to a rich set of assertion methods specific to each type.
+            These extensions integrate seamlessly with the AwesomeAssertions framework.
+            
+            Example usage:
+            <code>
+            // Option assertions
+            var option = Option.Some(42);
+            option.Should().BeSome();
+            option.Should().BeSomeWithValue(42);
+            
+            // Result assertions
+            var result = Result.Success();
+            result.Should().Succeed();
+            
+            // Result with value assertions
+            var valueResult = Result.Success("Hello");
+            valueResult.Should().SucceedWithValue("Hello");
+            </code>
+            </remarks>
+        </member>
+        <member name="M:AwesomeAssertions.ShouldExtensions.Should``1(FluentUnions.Option{``0})">
+            <summary>
+            Returns an <see cref="T:AwesomeAssertions.OptionAssertions`1"/> object that can be used to assert against an <see cref="T:FluentUnions.Option`1"/> instance.
+            </summary>
+            <typeparam name="T">The type of the value contained in the option.</typeparam>
+            <param name="instance">The option instance to assert against.</param>
+            <returns>An assertions object providing fluent assertion methods for the option.</returns>
+            <example>
+            <code>
+            var option = Option.Some("test");
+            option.Should().BeSome();
+            option.Should().BeSomeWithValue("test");
+            
+            var none = Option&lt;string&gt;.None;
+            none.Should().BeNone();
+            </code>
+            </example>
+        </member>
+        <member name="M:AwesomeAssertions.ShouldExtensions.Should(FluentUnions.Result)">
+            <summary>
+            Returns a <see cref="T:AwesomeAssertions.ResultAssertions"/> object that can be used to assert against a <see cref="T:FluentUnions.Result"/> instance.
+            </summary>
+            <param name="instance">The result instance to assert against.</param>
+            <returns>An assertions object providing fluent assertion methods for the unit result.</returns>
+            <example>
+            <code>
+            var success = Result.Success();
+            success.Should().Succeed();
+            
+            var failure = Result.Failure(new Error("ERR001", "Something went wrong"));
+            failure.Should().Fail()
+                .WithErrorCode("ERR001")
+                .WithErrorMessage("Something went wrong");
+            </code>
+            </example>
+        </member>
+        <member name="M:AwesomeAssertions.ShouldExtensions.Should``1(FluentUnions.Result{``0})">
+            <summary>
+            Returns a <see cref="T:AwesomeAssertions.ResultAssertions`1"/> object that can be used to assert against a <see cref="T:FluentUnions.Result`1"/> instance.
+            </summary>
+            <typeparam name="T">The type of the value contained in the result.</typeparam>
+            <param name="instance">The result instance to assert against.</param>
+            <returns>An assertions object providing fluent assertion methods for the value result.</returns>
+            <example>
+            <code>
+            var success = Result.Success(42);
+            success.Should().Succeed();
+            success.Should().SucceedWithValue(42);
+            
+            var failure = Result.Failure&lt;int&gt;(new ValidationError("VAL001", "Invalid input"));
+            failure.Should().Fail()
+                .WithErrorType&lt;ValidationError&gt;()
+                .WithErrorCode("VAL001");
+            </code>
+            </example>
+        </member>
+    </members>
+</doc>

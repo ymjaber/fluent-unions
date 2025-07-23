@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "3pR/f4pmw3g=",
+  "success": true,
+  "projectFilePath": "/home/yousef/projects/paljaber/projects/FluentUnions/TestError.csproj",
+  "expectedPackageFiles": [
+    "/home/yousef/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.5/microsoft.aspnetcore.app.ref.9.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}

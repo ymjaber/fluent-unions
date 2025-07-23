@@ -1,0 +1,5 @@
+/home/yousef/projects/paljaber/projects/FluentUnions/obj/Debug/net9.0/TestError.csproj.AssemblyReference.cache
+/home/yousef/projects/paljaber/projects/FluentUnions/obj/Debug/net9.0/TestError.GeneratedMSBuildEditorConfig.editorconfig
+/home/yousef/projects/paljaber/projects/FluentUnions/obj/Debug/net9.0/TestError.AssemblyInfoInputs.cache
+/home/yousef/projects/paljaber/projects/FluentUnions/obj/Debug/net9.0/TestError.AssemblyInfo.cs
+/home/yousef/projects/paljaber/projects/FluentUnions/obj/Debug/net9.0/TestError.csproj.CoreCompileInputs.cache
