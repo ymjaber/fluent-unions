@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute(("FluentUnions.AwesomeAssertions adds fluent assertion methods for Result and Optio" +
     "n types from FluentUnions, integrating with AwesomeAssertions testing library."))]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1504313dc0e3cf6c8d4789b352033f4ca05a9ad9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8ea0db4ec642158552fc0b287ca5927502e5ea27")]
 [assembly: System.Reflection.AssemblyProductAttribute("FluentUnions.AwesomeAssertions")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FluentUnions.AwesomeAssertions")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

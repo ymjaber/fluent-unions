@@ -25,8 +25,8 @@
     <NoWarn>CS1591</NoWarn>
     
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/PalJaber/fluent-unions</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/PalJaber/fluent-unions</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/ymjaber/fluent-unions</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ymjaber/fluent-unions</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     

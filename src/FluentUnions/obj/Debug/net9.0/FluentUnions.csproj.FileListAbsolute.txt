@@ -35,3 +35,4 @@
 /home/yousef/projects/paljaber/fluent-unions/src/FluentUnions/obj/Debug/net9.0/FluentUnions.xml
 /home/yousef/projects/paljaber/fluent-unions/src/FluentUnions/obj/Debug/net9.0/FluentUnions.pdb
 /home/yousef/projects/paljaber/fluent-unions/src/FluentUnions/obj/Debug/net9.0/ref/FluentUnions.dll
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions/obj/Debug/net9.0/FluentUnions.sourcelink.json

@@ -12,8 +12,8 @@
         <Description>FluentUnions handles expected errors with Result and Result&lt;T&gt;, and includes Option&lt;T&gt; for null handling. Features discriminated unions with monadic functions, source generators, and static analyzers to prevent common mistakes.</Description>
         <PackageTags>fluent;unions;result;option;discriminated-unions;error-handling;monads;source-generators</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/PalJaber/fluent-unions</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/PalJaber/fluent-unions</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/ymjaber/fluent-unions</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/ymjaber/fluent-unions</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         

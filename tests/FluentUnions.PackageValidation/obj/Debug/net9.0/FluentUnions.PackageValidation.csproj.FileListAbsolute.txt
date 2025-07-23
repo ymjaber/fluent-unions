@@ -200,3 +200,4 @@
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.PackageValidation/obj/Debug/net9.0/FluentUnions.PackageValidation.pdb
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.PackageValidation/obj/Debug/net9.0/FluentUnions.PackageValidation.genruntimeconfig.cache
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.PackageValidation/obj/Debug/net9.0/ref/FluentUnions.PackageValidation.dll
+/home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.PackageValidation/obj/Debug/net9.0/FluentUnions.PackageValidation.sourcelink.json

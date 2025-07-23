@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/PalJaber/fluent-unions</projectUrl>
     <description>FluentUnions handles expected errors with Result and Result&lt;T&gt;, and includes Option&lt;T&gt; for null handling. Features discriminated unions with monadic functions, source generators, and static analyzers to prevent common mistakes.</description>
     <tags>fluent unions result option discriminated-unions error-handling monads source-generators</tags>
-    <repository type="git" url="https://github.com/PalJaber/fluent-unions" commit="1504313dc0e3cf6c8d4789b352033f4ca05a9ad9" />
+    <repository type="git" url="https://github.com/PalJaber/fluent-unions" commit="8ea0db4ec642158552fc0b287ca5927502e5ea27" />
     <dependencies>
       <group targetFramework="net9.0" />
     </dependencies>

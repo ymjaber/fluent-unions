@@ -22,3 +22,4 @@
 /home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/obj/Debug/netstandard2.0/FluentUnions.Analyzers.dll
 /home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/obj/Debug/netstandard2.0/FluentUnions.Analyzers.xml
 /home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/obj/Debug/netstandard2.0/FluentUnions.Analyzers.pdb
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/obj/Debug/netstandard2.0/FluentUnions.Analyzers.sourcelink.json

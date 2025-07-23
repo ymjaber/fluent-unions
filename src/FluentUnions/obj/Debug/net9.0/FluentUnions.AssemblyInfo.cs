@@ -16,7 +16,7 @@ using System.Reflection;
     "on<T> for null handling. Features discriminated unions with monadic functions, s" +
     "ource generators, and static analyzers to prevent common mistakes."))]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1504313dc0e3cf6c8d4789b352033f4ca05a9ad9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8ea0db4ec642158552fc0b287ca5927502e5ea27")]
 [assembly: System.Reflection.AssemblyProductAttribute("FluentUnions")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FluentUnions")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

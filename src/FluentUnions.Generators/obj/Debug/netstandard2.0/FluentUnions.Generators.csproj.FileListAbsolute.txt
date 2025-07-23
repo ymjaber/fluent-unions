@@ -53,3 +53,4 @@ D:/PalJaber/FluentUnions/FluentUnions/src/FluentUnions.Generators/obj/Debug/nets
 /home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Generators/obj/Debug/netstandard2.0/FluentUnions.Generators.dll
 /home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Generators/obj/Debug/netstandard2.0/FluentUnions.Generators.xml
 /home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Generators/obj/Debug/netstandard2.0/FluentUnions.Generators.pdb
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Generators/obj/Debug/netstandard2.0/FluentUnions.Generators.sourcelink.json

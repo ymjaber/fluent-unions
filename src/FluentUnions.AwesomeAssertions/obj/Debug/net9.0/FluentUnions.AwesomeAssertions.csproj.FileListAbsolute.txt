@@ -47,3 +47,4 @@
 /home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.AwesomeAssertions/obj/Debug/net9.0/FluentUnions.AwesomeAssertions.xml
 /home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.AwesomeAssertions/obj/Debug/net9.0/FluentUnions.AwesomeAssertions.pdb
 /home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.AwesomeAssertions/obj/Debug/net9.0/ref/FluentUnions.AwesomeAssertions.dll
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.AwesomeAssertions/obj/Debug/net9.0/FluentUnions.AwesomeAssertions.sourcelink.json
