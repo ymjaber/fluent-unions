@@ -37,7 +37,7 @@ public class ResultAssertions : ReferenceTypeAssertions<Result, ResultAssertions
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>An <see cref="AndConstraint{T}"/> which can be used to chain additional assertions.</returns>
-    /// <exception cref="AssertionException">The result represents a failed operation.</exception>
+    /// <exception>The result represents a failed operation.</exception>
     /// <example>
     /// <code>
     /// var result = Result.Success();
@@ -60,7 +60,7 @@ public class ResultAssertions : ReferenceTypeAssertions<Result, ResultAssertions
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>A <see cref="FailedResultAssertions"/> object for asserting against the error details.</returns>
-    /// <exception cref="AssertionException">The result represents a successful operation.</exception>
+    /// <exception>The result represents a successful operation.</exception>
     /// <remarks>
     /// This method not only asserts that the result failed but also returns a specialized assertions
     /// object that allows for detailed error validation including error type, code, and message.

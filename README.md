@@ -1,324 +1,511 @@
 # FluentUnions
 
 [![NuGet](https://img.shields.io/nuget/v/FluentUnions.svg)](https://www.nuget.org/packages/FluentUnions/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/FluentUnions.svg)](https://www.nuget.org/packages/FluentUnions/)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/ymjaber/fluent-unions/build.yml?branch=main)](https://github.com/ymjaber/fluent-unions/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-FluentUnions handles expected errors with `Result` and `Result<T>`, and includes `Option<T>` for null handling. Features discriminated unions with monadic functions, source generators, and static analyzers to prevent common mistakes.
+A comprehensive .NET library for functional error handling and optional values. FluentUnions provides robust implementations of Result and Option patterns with extensive monadic operations, source generators for enhanced functionality, and static analyzers to prevent common mistakes at compile time.
 
-## 📦 Installation
+## 📚 Documentation
+
+**[View Full Documentation](docs/index.md)** - Comprehensive guides, tutorials, and API reference
+
+### Quick Links
+
+- [Getting Started Guide](docs/getting-started/quick-start.md)
+- [Result Pattern Tutorial](docs/tutorials/result-pattern-basics.md)
+- [Option Pattern Tutorial](docs/tutorials/option-pattern-basics.md)
+- [Error Handling Guide](docs/tutorials/error-handling.md)
+- [Testing Guide](docs/guides/testing-guide.md)
+
+## Features
+
+- **Result Pattern** - Type-safe error handling without exceptions for expected failures
+- **Option Pattern** - Explicit null handling and optional value representation
+- **Rich & Flexible Error Types** - Built-in error types for common scenarios (Validation, NotFound, etc.)
+- **Monadic Operations** - Complete set of functional operations (Map, Bind, Match, etc.)
+- **Railway-Oriented Programming** - Elegant operation chaining with short-circuit evaluation
+- **Source Generators** - Zero-overhead extension methods and performance optimizations for generating monadic functions supporting multi-value results/options
+- **Static Analyzers** - Compile-time safety checks with helpful diagnostics
+- **Integration Libraries** - Extensions for popular testing frameworks (Currently the new AwesomeAssertions)
+- **High Performance** - Struct-based implementations for minimal allocations
+- **Multi-Value Support**: All functions depending on using Result<T>/Option<T> values have overloads to support easier use of value tuples
+
+## Installation
 
 ```bash
 dotnet add package FluentUnions
 ```
 
-## 🚀 Features
+For testing extensions (other frameworks support will be added later):
 
-- **Result Pattern** - Type-safe error handling without exceptions
-- **Option Pattern** - Explicit null handling
-- **Monadic Operations** - Map, Bind, Match for functional composition
-- **Source Generators** - Additional helper methods via code generation
-- **Static Analyzers** - Catch common mistakes at compile time
-- **Railway-Oriented Programming** - Chain operations elegantly
-- **Performance** - Zero allocation for success cases
+```bash
+dotnet add package FluentUnions.AwesomeAssertions
+```
 
-## 📖 Usage
+Or via Package Manager Console:
+
+```powershell
+Install-Package FluentUnions
+```
+
+```powershell
+Install-Package FluentUnions.AwesomeAssertions
+```
+
+## Quick Start
 
 ### Result Pattern
 
-The Result pattern represents the outcome of an operation that can either succeed or fail.
+The Result pattern represents operations that can succeed with a value or fail with an error:
 
 ```csharp
 using FluentUnions;
 
-// Basic Result usage
+// Simple success/failure
 public Result ValidateAge(int age)
 {
-    if (age < 0)
-        return Result.Failure("Age cannot be negative");
-    
-    if (age > 150)
-        return Result.Failure("Age cannot exceed 150");
-        
+    if (age < 0) return Result.Failure("Age cannot be negative");
+
+    Error tooOld = new Error(code: "Age.TooOld", message: "Age cannot exceed 150");
+    if (age > 150) return Result.Failure(tooOld);
+
     return Result.Success();
 }
 
-// Result<T> with value
-public Result<User> GetUserById(Guid id)
+// Result with value
+public Result<User> GetUser(Guid id)
 {
-    var user = database.Users.FirstOrDefault(u => u.Id == id);
-    
-    if (user == null)
-        return Result<User>.Failure("User not found");
-        
-    return Result<User>.Success(user);
+    var user = _repository.FindById(id);
+    return user != null
+        ? Result.Success(user)
+        : Result.Failure<User>(new NotFoundError($"User {id} not found"));
 }
 
-// Using the results
-var result = GetUserById(userId);
+// Using typed errors
+public Result<Order> ProcessOrder(OrderRequest request)
+{
+    if (!request.IsValid())
+    {
+        // Implicit conversion from error types to Result/Result<T>
+        return new ValidationError("Invalid order request");
+    }
 
-if (result.IsSuccess)
-{
-    Console.WriteLine($"Found user: {result.Value.Name}");
-}
-else
-{
-    Console.WriteLine($"Error: {result.Error}");
+    if (!_inventory.HasStock(request.Items))
+    {
+        return new ConflictError("Insufficient inventory");
+    }
+
+    var order = new Order(request);
+
+    // Implicit conversion from T to Result<T>/Option<T>
+    return order;
+
+    // OR
+    // return Result.Success(order);
 }
 ```
 
 ### Option Pattern
 
-The Option pattern represents a value that may or may not exist, replacing null references.
+The Option pattern represents values that may or may not exist:
 
 ```csharp
-// Creating Options
-var some = Option<int>.Some(42);
+// Creating options
+var some = Option.Some(42);
 var none = Option<int>.None;
 
-// From nullable values
-string? nullableString = GetStringOrNull();
-var option = Option<string>.From(nullableString);
+int? a = 5;
+var intOption = a.AsOption();
 
-// Pattern matching
-var message = option.Match(
-    onSome: value => $"Got value: {value}",
-    onNone: () => "No value present"
-);
+// From nullable values (works with both reference types and nullable value types)
+string? nullable = GetNullableString();
+Option<string> option1 = Option.From(nullable);
+// OR
+Option<string> option2 = nullable.AsOption();
 
-// Checking state
-if (option.IsSome)
-{
-    Console.WriteLine(option.Value);
-}
 
-// Safe operations
-var length = option
-    .Map(s => s.Length)
-    .Filter(len => len > 5)
-    .GetValueOrDefault(0);
+// Finding values
+Option<User> user = users
+    .Where(u => u.Email == email)
+    .FirstOrNone();
+
+// Chaining operations
+var result = GetUserOption(id)
+    .Filter(u => u.IsActive)
+    .Map(u => u.Email)
+    .OrElse(() => "default@example.com");
 ```
 
-### Monadic Operations
+## Core Concepts
 
-#### Map - Transform the value
+### Result Types
+
+FluentUnions provides two main Result types:
+
+1. **Result** - Operations that succeed with no value or fail with an error
+2. **Result<T>** - Operations that succeed with a value of type T or fail with an error
 
 ```csharp
+// Unit Result - no value on success
+public Result DeleteUser(Guid id)
+{
+    if (!_repository.Exists(id))
+        return Result.Failure("User not found");
+
+    _repository.Delete(id);
+    return Result.Success();
+}
+
+// Value Result - returns data on success
+public Result<UserDto> CreateUser(CreateUserRequest request)
+{
+    var validation = ValidateRequest(request);
+    if (validation.IsFailure)
+        return Result.Failure<UserDto>(validation.Error);
+
+    var user = new User(request);
+    _repository.Save(user);
+
+    return Result.Success(UserDto.From(user));
+}
+```
+
+### Error Types
+
+FluentUnions includes a rich hierarchy of error types:
+
+```csharp
+// Base Error class
+public class Error
+{
+    public string Code { get; }
+    public string Message { get; }
+    public IReadOnlyDictionary<string, object> Metadata { get; }
+}
+
+// Specialized error types
+var validationError = new ValidationError("Invalid email format");
+var notFoundError = new NotFoundError("User", userId);
+var conflictError = new ConflictError("Email already exists");
+var authenticationError = new AuthenticationError("Invalid credentials");
+var authorizationError = new AuthorizationError("Insufficient permissions");
+
+// Aggregate multiple errors
+var errors = new AggregateError(
+    new ValidationError("Invalid email"),
+    new ValidationError("Password too short")
+);
+
+// Custom errors with metadata
+var error = new Error("CUSTOM_ERROR", "Something went wrong")
+    .WithMetadata("userId", userId)
+    .WithMetadata("timestamp", DateTime.UtcNow);
+```
+
+## Functional Operations
+
+### Map - Transform Success Values
+
+Transform the value inside a Result or Option:
+
+```csharp
+// Result mapping
 Result<string> nameResult = GetUserName(userId);
 Result<int> lengthResult = nameResult.Map(name => name.Length);
 
+// Option mapping
 Option<User> userOption = FindUser(email);
-Option<string> emailOption = userOption.Map(user => user.Email);
+Option<string> upperEmail = userOption.Map(u => u.Email.ToUpper());
+
 ```
 
-#### Bind - Chain operations that return Result/Option
+### Bind - Chain Operations
+
+Chain operations where each can return a Result/Option:
 
 ```csharp
-public Result<Order> ProcessOrder(Guid userId, List<Item> items)
+// Result binding (Railway-oriented programming)
+public Result<OrderConfirmation> PlaceOrder(OrderRequest request)
 {
-    return GetUser(userId)
-        .Bind(user => ValidateUserCanOrder(user))
-        .Bind(user => CreateOrder(user, items))
-        .Bind(order => ChargePayment(order))
-        .Bind(order => SendConfirmation(order));
+    return ValidateRequest(request)
+        .Bind(CreateOrder)
+        .Bind(ReserveInventory)
+        .Bind(ProcessPayment)
+        .Bind(SendConfirmation);
 }
 
-public Option<Config> LoadConfiguration()
+// Option binding
+public Option<Config> LoadConfiguration(string path)
 {
-    return ReadConfigFile()
-        .Bind(content => ParseJson(content))
-        .Bind(json => ValidateConfig(json))
-        .Bind(valid => CreateConfig(valid));
+    return ReadFile(path)
+        .Bind(ParseJson)
+        .Bind(ValidateConfig)
+        .Bind(CreateConfig);
 }
+
 ```
 
-#### Match - Handle both cases
+### Match - Pattern Matching
+
+Handle both success and failure cases:
 
 ```csharp
-var output = result.Match(
+// Result matching
+string message = result.Match(
     onSuccess: user => $"Welcome, {user.Name}!",
-    onFailure: error => $"Login failed: {error}"
+    onFailure: error => $"Error: {error.Message}"
 );
 
+// Option matching
 var display = option.Match(
     onSome: value => value.ToString(),
-    onNone: () => "N/A"
+    onNone: () => "No value"
 );
+
 ```
+
+### Filter - Conditional Operations
+
+Filter values based on predicates:
+
+```csharp
+// Option filtering
+Option<int> positive = Option.Some(-5)
+    .Filter(x => x > 0); // Returns None
+
+// With custom error message
+Option<User> activeUser = GetUser(id)
+    .Filter(u => u.IsActive, "User is not active");
+
+// Result filtering via Ensure
+Result<Order> validOrder = GetOrder(id)
+    .Ensure(o => o.Total > 0, "Order total must be positive")
+    .Ensure(o => o.Items.Any(), "Order must have items");
+```
+
+### Combine - Aggregate Multiple Results
+
+Combine multiple Results or Options:
+
+```csharp
+// Combine Results - fails if any fail
+var results = new[]
+{
+    ValidateName(name),
+    ValidateEmail(email),
+    ValidateAge(age)
+};
+
+Result combined = Result.Combine(results);
+
+// Combine with values
+var userResult = Result.Combine(
+    GetFirstName(),
+    GetLastName(),
+    GetEmail()
+).Map(values => new User(values[0], values[1], values[2]));
+
+// BindAll - combine Results with different types
+public Result<Order> CreateOrder(CustomerId customerId, List<ProductId> productIds)
+{
+    return Result.BindAll(
+        GetCustomer(customerId),
+        GetProducts(productIds)
+    ).Map((customer, products) => new Order(customer, products));
+}
+```
+
+## Advanced Patterns
 
 ### Railway-Oriented Programming
 
-Chain multiple operations where each can fail:
+Chain operations where any failure short-circuits the pipeline:
 
 ```csharp
 public class OrderService
 {
-    public Result<OrderConfirmation> PlaceOrder(OrderRequest request)
+    public Result<OrderId> ProcessOrder(OrderRequest request)
     {
-        return ValidateRequest(request)
-            .Bind(ValidateInventory)
+        return Validate(request)
             .Bind(CalculatePricing)
-            .Bind(ReserveInventory)
-            .Bind(ProcessPayment)
+            .Bind(CheckInventory)
+            .Bind(ReserveItems)
+            .Bind(ChargePayment)
             .Bind(CreateShipment)
-            .Bind(SendConfirmationEmail)
-            .Map(ToOrderConfirmation);
+            .Bind(SendNotification)
+            .Map(order => order.Id);
     }
-    
-    private Result<ValidatedOrder> ValidateRequest(OrderRequest request)
+
+    private Result<ValidatedOrder> Validate(OrderRequest request)
     {
         if (request.Items.Count == 0)
-            return Result<ValidatedOrder>.Failure("Order must contain items");
-            
-        // More validations...
-        return Result<ValidatedOrder>.Success(new ValidatedOrder(request));
+            return new ValidationError("Order must contain items");
+
+        if (request.CustomerId == default)
+            return new ValidationError("Customer ID is required");
+
+        return Result.Success(new ValidatedOrder(request));
     }
-    
-    // Other methods follow similar pattern
+
+    // Each step returns Result<T> and the chain continues only on success
 }
 ```
 
-### Combining Results
+### Try Pattern - Exception Handling
+
+Convert exception-throwing operations to Results:
 
 ```csharp
-// Combine multiple results
-var result1 = ValidateName(name);
-var result2 = ValidateEmail(email);
-var result3 = ValidateAge(age);
-
-var combined = Result.Combine(result1, result2, result3);
-if (combined.IsFailure)
-{
-    // Handle validation errors
-}
-
-// With values
-var userResult = Result<User>.Combine(
-    GetName().Map(n => new { Name = n }),
-    GetEmail().Map(e => new { Email = e }),
-    GetAge().Map(a => new { Age = a })
-).Map(values => new User(values.Name, values.Email, values.Age));
-```
-
-### Try Pattern - Convert Exceptions to Results
-
-```csharp
-public Result<int> ParseInteger(string input)
+// Synchronous Try
+public Result<int> ParseInt(string input)
 {
     return Result.Try(() => int.Parse(input))
-        .MapError(ex => $"Invalid number format: {input}");
+        .MapError(ex => new ValidationError($"Invalid integer: {input}"));
 }
 
-public async Task<Result<string>> FetchDataAsync(string url)
+// Try with resource cleanup
+public Result<string> ReadFile(string path)
 {
-    return await Result.TryAsync(async () => 
+    return Result.Try(() =>
     {
-        using var client = new HttpClient();
-        return await client.GetStringAsync(url);
-    })
-    .MapError(ex => $"Failed to fetch data: {ex.Message}");
+        using var reader = new StreamReader(path);
+        return reader.ReadToEnd();
+    });
 }
 ```
 
-## 🏗️ Architecture Guidelines
+### Option Extensions
 
-### SOLID Principles with Result Pattern
-
-#### Single Responsibility Principle
+Rich set of Option operations:
 
 ```csharp
-// Each method has one responsibility and returns a Result
-public interface IUserValidator
-{
-    Result ValidateEmail(string email);
-    Result ValidatePassword(string password);
-    Result ValidateAge(int age);
-}
+// OrElse - provide alternative
+var email = GetUserEmail(userId)
+    .OrElse(() => GetDefaultEmail())
+    .OrElse("noreply@example.com");
 
-public interface IUserRepository  
-{
-    Result<User> GetById(Guid id);
-    Result Save(User user);
-    Result Delete(Guid id);
-}
+// Coalescing options
+var firstAvailable = Option.Coalesce(
+    TryGetFromCache(key),
+    TryGetFromDatabase(key),
+    TryGetFromRemote(key)
+);
+
+// Converting to Result
+Result<string> result = GetOptionalValue()
+    .ToResult(() => new NotFoundError("Value not found"));
+
+// Filtering with predicates
+var adults = users
+    .Select(u => Option.From(u))
+    .Filter(u => u.Age >= 18)
+    .ToList();
 ```
 
-#### Open/Closed Principle
+## Error Handling Patterns
+
+### Structured Error Handling
 
 ```csharp
-// Easy to extend with new validators without modifying existing code
-public interface IValidator<T>
+public class UserService
 {
-    Result Validate(T value);
-}
-
-public class EmailValidator : IValidator<string> { }
-public class PasswordValidator : IValidator<string> { }
-public class CompositeValidator<T> : IValidator<T> 
-{
-    private readonly IEnumerable<IValidator<T>> _validators;
-    
-    public Result Validate(T value)
+    public Result<User> RegisterUser(RegisterRequest request)
     {
-        return Result.Combine(_validators.Select(v => v.Validate(value)));
+        // Early returns for validation failures
+        var emailValidation = ValidateEmail(request.Email);
+        if (emailValidation.IsFailure)
+            return Result.Failure<User>(emailValidation.Error);
+
+        // Check for conflicts
+        var existingUser = _repository.FindByEmail(request.Email);
+        if (existingUser.IsSome)
+            return new ConflictError($"Email {request.Email} already registered");
+
+        // Create and save user
+        var user = new User(request);
+        var saveResult = _repository.Save(user);
+
+        return saveResult.IsSuccess
+            ? Result.Success(user)
+            : Result.Failure<User>(saveResult.Error);
     }
 }
 ```
 
-#### Dependency Inversion Principle
+### Error Recovery
+
+````csharp
+// Recover from specific errors
+var result = GetUser(id)
+    .MapError(error => error.Code == "NOT_FOUND"
+        ? CreateDefaultUser()
+        : Result.Failure<User>(error));
+
+// Provide fallback values
+var config = LoadConfig()
+    .OrElse(() => LoadDefaultConfig())
+    .GetValueOr(new Config());
+
+// Retry logic
+public Result<T> Retry<T>(
+    Func<Result<T>> operation,
+    int maxAttempts = 3)
+{
+    for (int i = 0; i < maxAttempts; i++)
+    {
+        var result = operation();
+        if (result.IsSuccess) return result;
+
+        if (i < maxAttempts - 1)
+            Thread.Sleep(TimeSpan.FromSeconds(Math.Pow(2, i)));
+    }
+
+    return Result.Failure<T>("Max retry attempts exceeded");
+}```
+
+## Testing with FluentUnions
+
+### Built-in Assertions
+
+Using FluentUnions.AwesomeAssertions:
 
 ```csharp
-// Depend on abstractions that return Results
-public class OrderService
-{
-    private readonly IOrderRepository _repository;
-    private readonly IPaymentService _payment;
-    private readonly INotificationService _notification;
-    
-    public async Task<Result<Order>> PlaceOrderAsync(OrderRequest request)
-    {
-        return await ValidateOrder(request)
-            .BindAsync(order => _repository.SaveAsync(order))
-            .BindAsync(order => _payment.ProcessAsync(order))
-            .BindAsync(order => _notification.SendConfirmationAsync(order));
-    }
-}
-```
+// Result assertions
+result.Should().BeSuccess();
+result.Should().BeSuccessWithValue(expectedValue);
+result.Should().BeFailure();
+result.Should().BeFailureWithError<ValidationError>();
+result.Should().BeFailureWithMessage("Expected error message");
 
-### Error Handling Best Practices
+// Option assertions
+option.Should().BeSome();
+option.Should().BeSomeWithValue(42);
+option.Should().BeNone();
 
-1. **Use Result for Expected Errors**
-   - Business rule violations
-   - Validation failures  
-   - Not found scenarios
-   - Permission denied
+// Custom assertions
+result.Should().Satisfy(r => r.IsSuccess && r.Value.Id == expectedId);
+````
 
-2. **Use Exceptions for Unexpected Errors**
-   - Infrastructure failures
-   - Programming errors
-   - Network issues
-   - Resource exhaustion
-
-3. **Use Option for Optional Values**
-   - Configuration settings
-   - Cache lookups
-   - First/Last operations
-   - Nullable references
-
-### Testing with Results
+### Testing Patterns
 
 ```csharp
 [Test]
-public void CreateUser_WithInvalidEmail_ReturnsFailure()
+public void ProcessOrder_WithInvalidRequest_ReturnsValidationError()
 {
     // Arrange
-    var service = new UserService();
-    
+    var request = new OrderRequest { Items = new List<Item>() };
+    var service = new OrderService();
+
     // Act
-    var result = service.CreateUser("invalid-email", "password");
-    
+    var result = service.ProcessOrder(request);
+
     // Assert
-    result.Should().BeFailure()
-        .WithError("Invalid email format");
+    result.Should()
+        .BeFailure()
+        .WithError<ValidationError>()
+        .WithMessage("Order must contain items");
 }
 
 [Test]
@@ -327,84 +514,322 @@ public void GetUser_WhenExists_ReturnsSome()
     // Arrange
     var repository = new UserRepository();
     var userId = Guid.NewGuid();
-    
+    repository.Add(new User { Id = userId });
+
     // Act
     var option = repository.FindById(userId);
-    
+
     // Assert
-    option.Should().BeSome()
-        .WithValue(user => user.Id == userId);
+    option.Should()
+        .BeSome()
+        .WithValueMatching(u => u.Id == userId);
 }
 ```
 
-## 🔧 Advanced Features
+## Source Generators
 
-### Custom Result Types
+FluentUnions includes source generators that provide additional functionality:
 
-```csharp
-public class ValidationResult : Result
-{
-    public List<string> Errors { get; }
-    
-    public static ValidationResult WithErrors(params string[] errors)
-    {
-        return new ValidationResult(errors.ToList());
-    }
-}
-
-public class Result<TValue, TError> where TError : class
-{
-    // Custom error type instead of string
-}
-```
-
-### Async Operations
+### Generated Extension Methods
 
 ```csharp
-public async Task<Result<User>> CreateUserAsync(CreateUserDto dto)
-{
-    return await ValidateAsync(dto)
-        .BindAsync(valid => CheckEmailAvailableAsync(valid.Email))
-        .BindAsync(async _ => await HashPasswordAsync(dto.Password))
-        .BindAsync(hash => SaveUserAsync(dto, hash));
-}
-```
-
-### Source Generator Features
-
-The included source generators provide additional extension methods:
-
-```csharp
-// Generated tuple support
+// Tuple deconstruction
 var (isSuccess, value, error) = result;
+if (isSuccess)
+{
+    Console.WriteLine($"Value: {value}");
+}
 
-// Generated GetValueOr methods  
+// GetValueOr extensions
 var value = result.GetValueOr(defaultValue);
 var value = result.GetValueOr(() => ComputeDefault());
 
-// Generated async extensions
-await result.MapAsync(async value => await ProcessAsync(value));
+// Collection extensions
+IEnumerable<Result<T>> results = GetResults();
+Result<IEnumerable<T>> combined = results.Combine();
 ```
 
-### Static Analyzer Rules
+### Performance Optimizations
 
-The analyzers help catch common mistakes:
+The generators provide specialized implementations for common patterns:
 
-- Accessing Value without checking IsSuccess
-- Not handling all cases in Match
-- Ignoring Result return values
-- Incorrect Option usage patterns
+```csharp
+// Optimized for common cases
+result.Map(x => x.ToString()); // Avoids allocations for success case
+option.Filter(x => x > 0);      // Inline filtering without delegates
 
-## 📚 Additional Resources
+```
 
-- [Railway Oriented Programming](https://fsharpforfunandprofit.com/posts/recipe-part2/)
-- [Functional Error Handling](https://enterprisecraftsmanship.com/posts/functional-c-handling-failures-input-errors/)
-- [Option Type Pattern](https://en.wikipedia.org/wiki/Option_type)
+## Static Analyzers
 
-## 🤝 Contributing
+FluentUnions includes Roslyn analyzers to catch common mistakes:
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+### Analyzer Rules
 
-## 📄 License
+1. **FU001** - Accessing Value without checking IsSuccess
 
-This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
+```csharp
+// ❌ Warning: Possible InvalidOperationException
+var value = result.Value;
+
+// ✅ Correct
+if (result.IsSuccess)
+{
+    var value = result.Value;
+}
+```
+
+2. **FU002** - Not handling all cases in Match
+
+```csharp
+// ❌ Warning: Match expression not exhaustive
+var output = result.Match(
+    onSuccess: v => v.ToString()
+    // Missing onFailure
+);
+```
+
+3. **FU003** - Ignoring Result return values
+
+```csharp
+// ❌ Warning: Result not used
+service.ProcessData(data);
+
+// ✅ Correct
+var result = service.ProcessData(data);
+if (result.IsFailure) { /* handle */ }
+```
+
+4. **FU004** - Comparing Option with null
+
+```csharp
+// ❌ Warning: Use IsNone instead
+if (option == null)
+
+// ✅ Correct
+if (option.IsNone)
+```
+
+## Best Practices
+
+### When to Use Result vs Exceptions
+
+**Use Result for:**
+
+- Expected failures (validation, business rules)
+- Operations that can fail in normal flow
+- External service calls
+- User input validation
+
+**Use Exceptions for:**
+
+- Programming errors (null arguments, index out of range)
+- Infrastructure failures
+- Truly exceptional cases
+- Constructor failures
+
+### When to Use Option vs Null
+
+**Use Option for:**
+
+- Optional return values
+- Configuration settings
+- Cache lookups
+- Find operations
+
+**Use Null for:**
+
+- Internal implementation details
+- Performance-critical paths (after profiling)
+- Interop with external libraries
+
+### Design Guidelines
+
+1. **Return Early on Failure**
+
+```csharp
+public Result<Order> ProcessOrder(OrderRequest request)
+{
+    var validation = Validate(request);
+    if (validation.IsFailure) return validation.Error;
+
+    var inventory = CheckInventory(request.Items);
+    if (inventory.IsFailure) return inventory.Error;
+
+    // Continue processing...
+}
+```
+
+2. **Use Railway-Oriented Programming for Complex Flows**
+
+```csharp
+public Result<Invoice> GenerateInvoice(OrderId orderId)
+{
+    return GetOrder(orderId)
+        .Bind(EnrichWithCustomer)
+        .Bind(CalculateTaxes)
+        .Bind(ApplyDiscounts)
+        .Bind(GeneratePdf);
+}
+```
+
+3. **Create Domain-Specific Error Types**
+
+```csharp
+public class InsufficientFundsError : Error
+{
+    public decimal Required { get; }
+    public decimal Available { get; }
+
+    public InsufficientFundsError(decimal required, decimal available)
+        : base("INSUFFICIENT_FUNDS",
+               $"Required {required:C} but only {available:C} available")
+    {
+        Required = required;
+        Available = available;
+    }
+}
+```
+
+## Performance Considerations
+
+- **Zero Allocation Success Path** - Result<T> is a struct with no heap allocations for success cases
+- **Minimal Overhead** - Thin wrapper around values with negligible performance impact
+- **Optimized Delegates** - Source generators create specialized implementations avoiding delegate allocations
+- **Struct-Based** - Both Result<T> and Option<T> are value types
+- **Short-Circuit Evaluation** - Operations stop at first failure in chains
+
+## Migration Guide
+
+### From Nullable References to Option
+
+```csharp
+// Before
+public string? FindUserEmail(int id)
+{
+    var user = GetUser(id);
+    return user?.Email;
+}
+
+// After
+public Option<string> FindUserEmail(int id)
+{
+    return GetUser(id)
+        .Map(u => u.Email);
+}
+```
+
+### From Exceptions to Result
+
+```csharp
+// Before
+public User CreateUser(string email)
+{
+    if (!IsValidEmail(email))
+        throw new ArgumentException("Invalid email");
+
+    return new User(email);
+}
+
+// After
+public Result<User> CreateUser(string email)
+{
+    if (!IsValidEmail(email))
+        return new ValidationError("Invalid email");
+
+    return Result.Success(new User(email));
+}
+```
+
+## Integration Examples
+
+### ASP.NET Core
+
+```csharp
+[ApiController]
+public class UserController : ControllerBase
+{
+    [HttpGet("{id}")]
+    public IActionResult GetUser(Guid id)
+    {
+        var result = _userService.GetUser(id);
+
+        return result.Match<IActionResult>(
+            onSuccess: user => Ok(user),
+            onFailure: error => error switch
+            {
+                NotFoundError => NotFound(error.Message),
+                ValidationError => BadRequest(error.Message),
+                _ => StatusCode(500, "Internal server error")
+            }
+        );
+    }
+}
+```
+
+### MediatR
+
+```csharp
+public class CreateOrderCommand : IRequest<Result<OrderId>>
+{
+    public List<Item> Items { get; set; }
+}
+
+public class CreateOrderHandler : IRequestHandler<CreateOrderCommand, Result<OrderId>>
+{
+    public Task<Result<OrderId>> Handle(
+        CreateOrderCommand request,
+        CancellationToken cancellationToken)
+    {
+        var result = ValidateItems(request.Items)
+            .Bind(items => _orderService.CreateOrder(items))
+            .Map(order => order.Id);
+
+        return Task.FromResult(result);
+    }
+}
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/ymjaber/fluent-unions.git
+
+# Restore dependencies
+dotnet restore
+
+# Build the solution
+dotnet build
+
+# Run tests
+dotnet test
+
+# Run with analyzers
+dotnet build -p:EnableAnalyzers=true
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+- **Documentation** - Full API documentation in code
+- **Issues** - Report bugs via [GitHub Issues](https://github.com/ymjaber/fluent-unions/issues)
+- **Discussions** - Join [GitHub Discussions](https://github.com/ymjaber/fluent-unions/discussions)
+- **Examples** - See the [samples](https://github.com/ymjaber/fluent-unions/tree/main/samples) directory
+
+## Acknowledgments
+
+FluentUnions is inspired by functional programming concepts from F#, Rust's Result type, and the Railway-Oriented Programming pattern. Special thanks to the teams behind LanguageExt and CSharpFunctionalExtensions for paving the way.

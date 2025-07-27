@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -219,11 +216,13 @@ public class ErrorJsonConverter : JsonConverter<Error>
         
         return errorType switch
         {
-            "ValidationError" => new ValidationError(code, message),
-            "NotFoundError" => new NotFoundError(code, message),
-            "ConflictError" => new ConflictError(code, message),
+            "ValidationError" => metadata.Count > 0 ? new ValidationError(code, message, metadata) : new ValidationError(code, message),
+            "NotFoundError" => metadata.Count > 0 ? new NotFoundError(code, message, metadata) : new NotFoundError(code, message),
+            "ConflictError" => metadata.Count > 0 ? new ConflictError(code, message, metadata) : new ConflictError(code, message),
+            "AuthenticationError" => metadata.Count > 0 ? new AuthenticationError(code, message, metadata) : new AuthenticationError(code, message),
+            "AuthorizationError" => metadata.Count > 0 ? new AuthorizationError(code, message, metadata) : new AuthorizationError(code, message),
             "AggregateError" => throw new NotSupportedException("AggregateError should use AggregateErrorJsonConverter"),
-            _ => new Error(code, message, metadata)
+            _ => new Error(code, message)
         };
     }
 
@@ -247,10 +246,11 @@ public class ErrorJsonConverter : JsonConverter<Error>
         writer.WriteString("Code", value.Code);
         writer.WriteString("Message", value.Message);
         
-        if (value.Metadata.Count > 0)
+        // Only write metadata for errors that support it
+        if (value is ErrorWithMetadata errorWithMetadata && errorWithMetadata.Metadata.Count > 0)
         {
             writer.WritePropertyName("Metadata");
-            WriteMetadata(writer, value.Metadata, options);
+            WriteMetadata(writer, errorWithMetadata.Metadata, options);
         }
 
         // Handle special properties for derived types

@@ -1,13 +1,8 @@
 using System.Collections.Immutable;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentUnions;
 using FluentUnions.Analyzers.Option;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
-using Xunit;
 
 namespace FluentUnions.Analyzers.Tests;
 

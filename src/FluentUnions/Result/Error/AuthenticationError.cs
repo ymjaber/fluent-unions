@@ -1,74 +1,13 @@
 namespace FluentUnions;
 
 /// <summary>
-/// Represents an error that occurs when authentication fails due to invalid or missing credentials.
-/// This error type is specifically designed for scenarios where user identity cannot be verified.
+/// Represents an error that occurs when authentication fails.
 /// </summary>
 /// <remarks>
-/// <para>
-/// AuthenticationError provides a semantic way to distinguish authentication failures from other types
-/// of errors. This is particularly important in security-conscious applications where authentication
-/// failures need special handling, such as audit logging, rate limiting, or account lockout policies.
-/// </para>
-/// <para>
-/// Common use cases include:
-/// - Invalid username/password combinations
-/// - Expired or invalid authentication tokens (JWT, API keys)
-/// - Missing authentication credentials
-/// - Failed multi-factor authentication attempts
-/// - Expired sessions requiring re-authentication
-/// - Invalid OAuth/SAML responses
-/// </para>
-/// <para>
-/// The error type helps in implementing proper authentication handling strategies, such as:
-/// - Returning HTTP 401 (Unauthorized) responses in web APIs
-/// - Triggering re-authentication flows
-/// - Logging security events for audit purposes
-/// - Implementing account lockout after repeated failures
-/// - Distinguishing between "who you are" (authentication) vs "what you can do" (authorization)
-/// </para>
+/// Used for invalid credentials, expired tokens, or missing authentication. Maps to HTTP 401 in web contexts.
 /// </remarks>
-/// <example>
-/// <code>
-/// // Simple authentication error
-/// var error = new AuthenticationError("Auth.InvalidCredentials", "Invalid username or password");
-/// 
-/// // Authentication error with metadata
-/// var metadata = new Dictionary&lt;string, object&gt;
-/// {
-///     ["Username"] = username,
-///     ["AuthMethod"] = "password",
-///     ["FailedAttempts"] = 3,
-///     ["LastAttempt"] = DateTime.UtcNow
-/// };
-/// var detailedError = new AuthenticationError("Auth.InvalidCredentials", 
-///     "Invalid username or password", metadata);
-/// 
-/// // Used in an authentication service
-/// public Result&lt;AuthToken&gt; Authenticate(string username, string password)
-/// {
-///     var user = userRepository.FindByUsername(username);
-///     if (user == null || !VerifyPassword(password, user.PasswordHash))
-///         return new AuthenticationError("Auth.InvalidCredentials", "Invalid username or password");
-///     
-///     return GenerateToken(user);
-/// }
-/// 
-/// // Token validation
-/// public Result&lt;ClaimsPrincipal&gt; ValidateToken(string token)
-/// {
-///     if (IsTokenExpired(token))
-///         return new AuthenticationError("Auth.TokenExpired", "Authentication token has expired");
-///     
-///     if (!IsTokenValid(token))
-///         return new AuthenticationError("Auth.InvalidToken", "Authentication token is invalid");
-///     
-///     return ExtractClaims(token);
-/// }
-/// </code>
-/// </example>
 [Serializable]
-public class AuthenticationError : Error
+public class AuthenticationError : ErrorWithMetadata
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="AuthenticationError"/> class with the specified code, message, and metadata.

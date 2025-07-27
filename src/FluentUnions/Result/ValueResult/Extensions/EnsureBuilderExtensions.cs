@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace FluentUnions;
 
 /// <summary>
@@ -21,6 +23,7 @@ public static partial class EnsureBuilderExtensions
     /// This method is useful when you want to transform a validated value immediately after
     /// ensuring it meets all criteria, combining validation and transformation in a single fluent chain.
     /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result<TTarget> Map<TSource, TTarget>(
         in this EnsureBuilder<TSource> builder,
         Func<TSource, TTarget> mapper) =>
@@ -41,6 +44,7 @@ public static partial class EnsureBuilderExtensions
     /// This method allows chaining operations that may fail after validation,
     /// short-circuiting if any validation fails.
     /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result<TTarget> Bind<TSource, TTarget>(in this EnsureBuilder<TSource> builder,
         Func<TSource, Result<TTarget>> binder) =>
         builder.Build().Bind(binder);
@@ -60,72 +64,8 @@ public static partial class EnsureBuilderExtensions
     /// Unlike Bind, this method collects all errors rather than short-circuiting,
     /// useful for comprehensive validation scenarios.
     /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result<TTarget> BindAll<TSource, TTarget>(in this EnsureBuilder<TSource> builder,
         in Result<TTarget> binder)
         => builder.Build().BindAll(binder);
-
-    // public static async Task<Result<TValue>> BuildAsync<TValue>(this Task<EnsureBuilder<TValue>> builder) =>
-    //     (await builder.ConfigureAwait(false)).Build();
-    //
-    // public static async Task<Result<TTarget>> MapAsync<TSource, TTarget>(
-    //     this EnsureBuilder<TSource> builder, Func<TSource, Task<TTarget>> mapper)
-    // {
-    //     var result = builder.Build();
-    //
-    //     if (result.IsFailure) return Result.Failure<TTarget>(result.Error);
-    //     return Result.Success(await mapper(result.Value).ConfigureAwait(false));
-    // }
-    //
-    // public static async Task<Result<TTarget>> MapAsync<TSource, TTarget>(
-    //     this Task<EnsureBuilder<TSource>> builder, Func<TSource, TTarget> mapper) =>
-    //     (await builder.ConfigureAwait(false)).Map(mapper);
-    //
-    // public static async Task<Result<TTarget>> MapAsync<TSource, TTarget>(
-    //     this Task<EnsureBuilder<TSource>> builder, Func<TSource, Task<TTarget>> mapper) =>
-    //     await (await builder.ConfigureAwait(false)).MapAsync(mapper).ConfigureAwait(false);
-    //
-    // public static Task<Result<TTarget>> BindAsync<TSource, TTarget>(
-    //     in this EnsureBuilder<TSource> builder,
-    //     Func<TSource, Task<Result<TTarget>>> binder)
-    // {
-    //     var result = builder.Build();
-    //
-    //     if (result.IsFailure) return Task.FromResult(Result.Failure<TTarget>(result.Error));
-    //     return binder(result.Value);
-    // }
-    //
-    // public static async Task<Result<TTarget>> BindAsync<TSource, TTarget>(
-    //     this Task<EnsureBuilder<TSource>> builder,
-    //     Func<TSource, Result<TTarget>> binder) =>
-    //     (await builder.ConfigureAwait(false)).Bind(binder);
-    //
-    // public static async Task<Result<TTarget>> BindAsync<TSource, TTarget>(
-    //     this Task<EnsureBuilder<TSource>> builder,
-    //     Func<TSource, Task<Result<TTarget>>> binder)
-    //     => await (await builder.ConfigureAwait(false)).BindAsync(binder).ConfigureAwait(false);
-    //
-    // public static async Task<Result<TTarget>> BindAllAsync<TSource, TTarget>(
-    //     this EnsureBuilder<TSource> builder,
-    //     Task<Result<TTarget>> binder)
-    // {
-    //     var result = builder.Build();
-    //
-    //     var binderResult = await binder.ConfigureAwait(false);
-    //     if (result.IsSuccess) return binderResult;
-    //
-    //     return new ErrorBuilder()
-    //         .Append(result.Error)
-    //         .AppendOnFailure(binderResult)
-    //         .Build();
-    // }
-    //
-    // public static async Task<Result<TTarget>> BindAllAsync<TSource, TTarget>(
-    //     this Task<EnsureBuilder<TSource>> builder,
-    //     Result<TTarget> binder) =>
-    //     (await builder.ConfigureAwait(false)).BindAll(binder);
-    //
-    // public static async Task<Result<TTarget>> BindAllAsync<TSource, TTarget>(
-    //     this Task<EnsureBuilder<TSource>> builder,
-    //     Task<Result<TTarget>> binder) =>
-    //     await (await builder.ConfigureAwait(false)).BindAllAsync(binder).ConfigureAwait(false);
 }

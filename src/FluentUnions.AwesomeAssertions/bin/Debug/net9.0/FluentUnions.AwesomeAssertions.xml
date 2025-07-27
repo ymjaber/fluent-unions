@@ -34,7 +34,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>An <see cref="T:AwesomeAssertions.AndWhichConstraint`2"/> which can be used to chain assertions on the contained value.</returns>
-            <exception cref="!:AssertionException">The option is None.</exception>
+            <exception>The option is None.</exception>
             <example>
             <code>
             var option = Option.Some(42);
@@ -51,7 +51,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>An <see cref="T:AwesomeAssertions.AndWhichConstraint`2"/> which can be used to chain additional assertions.</returns>
-            <exception cref="!:AssertionException">The option is None or contains a different value.</exception>
+            <exception>The option is None or contains a different value.</exception>
             <example>
             <code>
             var option = Option.Some("Hello");
@@ -59,7 +59,22 @@
             </code>
             </example>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:AwesomeAssertions.OptionAssertions`1.BeSomeMatching(System.Func{`0,System.Boolean},System.String,System.Object[])" -->
+        <member name="M:AwesomeAssertions.OptionAssertions`1.BeSomeMatching(System.Func{`0,System.Boolean},System.String,System.Object[])">
+            <summary>
+            Asserts that the option has a value that matches the specified predicate.
+            </summary>
+            <param name="predicate">A function to test the option's value against a condition.</param>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>An <see cref="T:AwesomeAssertions.AndWhichConstraint`2"/> which can be used to chain additional assertions.</returns>
+            <exception>The option is None or the value doesn't match the predicate.</exception>
+            <example>
+            <code>
+            var option = Option.Some(42);
+            option.Should().BeSomeMatching(x => x > 40 &amp;&amp; x &lt; 50);
+            </code>
+            </example>
+        </member>
         <member name="M:AwesomeAssertions.OptionAssertions`1.NotBeSomeWithValue(`0,System.String,System.Object[])">
             <summary>
             Asserts that the option does not contain a specific value.
@@ -68,7 +83,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>An <see cref="T:AwesomeAssertions.AndConstraint`1"/> which can be used to chain additional assertions.</returns>
-            <exception cref="!:AssertionException">The option contains the unexpected value.</exception>
+            <exception>The option contains the unexpected value.</exception>
             <remarks>
             This assertion passes if the option is None or if it contains a different value than the unexpected one.
             </remarks>
@@ -90,7 +105,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>An <see cref="T:AwesomeAssertions.AndWhichConstraint`2"/> which can be used to chain additional assertions.</returns>
-            <exception cref="!:AssertionException">The option is None or the contained assertions fail.</exception>
+            <exception>The option is None or the contained assertions fail.</exception>
             <remarks>
             This method is useful for performing multiple assertions on the contained value in a fluent manner.
             </remarks>
@@ -112,7 +127,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>An <see cref="T:AwesomeAssertions.AndConstraint`1"/> which can be used to chain additional assertions.</returns>
-            <exception cref="!:AssertionException">The option has a value.</exception>
+            <exception>The option has a value.</exception>
             <example>
             <code>
             var option = Option&lt;string&gt;.None;
@@ -150,7 +165,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for chaining additional assertions.</returns>
-            <exception cref="!:AssertionException">The error is not of the expected type.</exception>
+            <exception>The error is not of the expected type.</exception>
             <example>
             <code>
             var result = Result.Failure(new ValidationError("VAL001", "Invalid input"));
@@ -167,7 +182,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for chaining additional assertions.</returns>
-            <exception cref="!:AssertionException">The error code does not match the expected value.</exception>
+            <exception>The error code does not match the expected value.</exception>
             <example>
             <code>
             var result = Result.Failure(new Error("ERR_NETWORK", "Network timeout"));
@@ -184,7 +199,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for chaining additional assertions.</returns>
-            <exception cref="!:AssertionException">The error message does not match the expected value.</exception>
+            <exception>The error message does not match the expected value.</exception>
             <example>
             <code>
             var result = Result.Failure(new Error("ERR001", "Operation failed"));
@@ -201,7 +216,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for chaining additional assertions.</returns>
-            <exception cref="!:AssertionException">The error does not equal the expected error.</exception>
+            <exception>The error does not equal the expected error.</exception>
             <remarks>
             This method performs a full equality comparison including type, code, message, and metadata.
             </remarks>
@@ -222,7 +237,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for chaining additional assertions.</returns>
-            <exception cref="!:AssertionException">The error message does not contain the expected substring.</exception>
+            <exception>The error message does not contain the expected substring.</exception>
             <example>
             <code>
             var result = Result.Failure(new Error("ERR001", "Connection to database failed"));
@@ -239,7 +254,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for chaining additional assertions.</returns>
-            <exception cref="!:AssertionException">The error message does not start with the expected prefix.</exception>
+            <exception>The error message does not start with the expected prefix.</exception>
             <example>
             <code>
             var result = Result.Failure(new Error("ERR001", "Validation failed: Invalid email"));
@@ -256,7 +271,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for chaining additional assertions.</returns>
-            <exception cref="!:AssertionException">The error message does not end with the expected suffix.</exception>
+            <exception>The error message does not end with the expected suffix.</exception>
             <example>
             <code>
             var result = Result.Failure(new Error("ERR001", "Operation timed out after 30 seconds"));
@@ -265,7 +280,27 @@
             </code>
             </example>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:AwesomeAssertions.FailedResultAssertions.WithErrorMessageMatching(System.Func{System.String,System.Boolean},System.String,System.Object[])" -->
+        <member name="M:AwesomeAssertions.FailedResultAssertions.WithErrorMessageMatching(System.Func{System.String,System.Boolean},System.String,System.Object[])">
+            <summary>
+            Asserts that the error message matches a custom predicate.
+            </summary>
+            <param name="predicate">A function to test the error message against a condition.</param>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for chaining additional assertions.</returns>
+            <exception>The error message does not match the predicate.</exception>
+            <remarks>
+            This method is useful for complex message validation scenarios that can't be expressed
+            with simple string comparisons.
+            </remarks>
+            <example>
+            <code>
+            var result = Result.Failure(new Error("ERR001", "Failed after 3 retries"));
+            result.Should().Fail()
+                .WithErrorMessageMatching(msg => msg.Contains("retries") &amp;&amp; msg.Any(char.IsDigit));
+            </code>
+            </example>
+        </member>
         <member name="T:AwesomeAssertions.ResultAssertions">
             <summary>
             Contains assertion methods for <see cref="T:FluentUnions.Result"/> instances (unit results without a value).
@@ -296,7 +331,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>An <see cref="T:AwesomeAssertions.AndConstraint`1"/> which can be used to chain additional assertions.</returns>
-            <exception cref="!:AssertionException">The result represents a failed operation.</exception>
+            <exception>The result represents a failed operation.</exception>
             <example>
             <code>
             var result = Result.Success();
@@ -311,7 +346,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for asserting against the error details.</returns>
-            <exception cref="!:AssertionException">The result represents a successful operation.</exception>
+            <exception>The result represents a successful operation.</exception>
             <remarks>
             This method not only asserts that the result failed but also returns a specialized assertions
             object that allows for detailed error validation including error type, code, and message.
@@ -357,7 +392,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>An <see cref="T:AwesomeAssertions.AndWhichConstraint`2"/> which can be used to chain assertions on the contained value.</returns>
-            <exception cref="!:AssertionException">The result represents a failed operation.</exception>
+            <exception>The result represents a failed operation.</exception>
             <example>
             <code>
             var result = Result.Success(42);
@@ -374,7 +409,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>An <see cref="T:AwesomeAssertions.AndWhichConstraint`2"/> which can be used to chain additional assertions.</returns>
-            <exception cref="!:AssertionException">The result is failed or contains a different value.</exception>
+            <exception>The result is failed or contains a different value.</exception>
             <example>
             <code>
             var result = Result.Success("Hello World");
@@ -382,7 +417,22 @@
             </code>
             </example>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:AwesomeAssertions.ResultAssertions`1.SucceedMatching(System.Func{`0,System.Boolean},System.String,System.Object[])" -->
+        <member name="M:AwesomeAssertions.ResultAssertions`1.SucceedMatching(System.Func{`0,System.Boolean},System.String,System.Object[])">
+            <summary>
+            Asserts that the result is successful and its value matches the specified predicate.
+            </summary>
+            <param name="predicate">A function to test the result's value against a condition.</param>
+            <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
+            <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
+            <returns>An <see cref="T:AwesomeAssertions.AndWhichConstraint`2"/> which can be used to chain additional assertions.</returns>
+            <exception>The result is failed or the value doesn't match the predicate.</exception>
+            <example>
+            <code>
+            var result = Result.Success(42);
+            result.Should().SucceedMatching(x => x > 40 &amp;&amp; x &lt; 50);
+            </code>
+            </example>
+        </member>
         <member name="M:AwesomeAssertions.ResultAssertions`1.SucceedSatisfying(System.Action{`0},System.String,System.Object[])">
             <summary>
             Asserts that the result is successful and its value satisfies the specified assertions.
@@ -391,7 +441,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>An <see cref="T:AwesomeAssertions.AndWhichConstraint`2"/> which can be used to chain additional assertions.</returns>
-            <exception cref="!:AssertionException">The result is failed or the contained assertions fail.</exception>
+            <exception>The result is failed or the contained assertions fail.</exception>
             <remarks>
             This method is useful for performing multiple assertions on the result value in a fluent manner.
             </remarks>
@@ -413,7 +463,7 @@
             <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
             <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
             <returns>A <see cref="T:AwesomeAssertions.FailedResultAssertions"/> object for asserting against the error details.</returns>
-            <exception cref="!:AssertionException">The result represents a successful operation.</exception>
+            <exception>The result represents a successful operation.</exception>
             <remarks>
             This method not only asserts that the result failed but also returns a specialized assertions
             object that allows for detailed error validation including error type, code, and message.

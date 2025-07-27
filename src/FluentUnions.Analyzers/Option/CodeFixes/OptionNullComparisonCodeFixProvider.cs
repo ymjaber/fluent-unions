@@ -1,8 +1,5 @@
 using System.Collections.Immutable;
 using System.Composition;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -67,7 +64,7 @@ public class OptionNullComparisonCodeFixProvider : CodeFixProvider
     /// </summary>
     /// <param name="context">The code fix context.</param>
     /// <param name="binaryExpression">The binary expression comparing with null.</param>
-    private async Task RegisterBinaryExpressionFixesAsync(CodeFixContext context, BinaryExpressionSyntax binaryExpression)
+    private Task RegisterBinaryExpressionFixesAsync(CodeFixContext context, BinaryExpressionSyntax binaryExpression)
     {
         var isEqualsOperator = binaryExpression.IsKind(SyntaxKind.EqualsExpression);
         var replacementProperty = isEqualsOperator ? "IsNone" : "IsSome";
@@ -79,6 +76,8 @@ public class OptionNullComparisonCodeFixProvider : CodeFixProvider
                     context.Document, binaryExpression, replacementProperty, c),
                 equivalenceKey: $"ReplaceWith{replacementProperty}"),
             context.Diagnostics.First());
+        
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -86,7 +85,7 @@ public class OptionNullComparisonCodeFixProvider : CodeFixProvider
     /// </summary>
     /// <param name="context">The code fix context.</param>
     /// <param name="isPattern">The is pattern expression.</param>
-    private async Task RegisterIsPatternFixesAsync(CodeFixContext context, IsPatternExpressionSyntax isPattern)
+    private Task RegisterIsPatternFixesAsync(CodeFixContext context, IsPatternExpressionSyntax isPattern)
     {
         context.RegisterCodeFix(
             CodeAction.Create(
@@ -95,6 +94,8 @@ public class OptionNullComparisonCodeFixProvider : CodeFixProvider
                     context.Document, isPattern, "IsNone", c),
                 equivalenceKey: "ReplaceWithIsNone"),
             context.Diagnostics.First());
+        
+        return Task.CompletedTask;
     }
 
     /// <summary>

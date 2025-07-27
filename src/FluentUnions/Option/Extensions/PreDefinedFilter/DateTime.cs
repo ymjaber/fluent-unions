@@ -4,66 +4,66 @@ namespace FluentUnions;
 public static partial class FilterBuilderExtensions
 {
     /// <summary>
-    /// Filters DateTime values that are in the future.
+    /// Filters options where the DateTime value is in the future.
     /// </summary>
-    /// <param name="filter">The filter builder to apply the condition to.</param>
-    /// <returns>A filter builder that continues the fluent chain.</returns>
+    /// <param name="filter">The filter builder for the DateTime value.</param>
+    /// <returns>A filter builder that validates the DateTime is after the current time.</returns>
     public static FilterBuilder<DateTime> InFuture(in this FilterBuilder<DateTime> filter)
         => filter.Satisfies(v => v > DateTime.Now);
 
     /// <summary>
-    /// Filters DateOnly values that are in the future.
+    /// Filters options where the DateOnly value is in the future.
     /// </summary>
-    /// <param name="filter">The filter builder to apply the condition to.</param>
-    /// <returns>A filter builder that continues the fluent chain.</returns>
+    /// <param name="filter">The filter builder for the DateOnly value.</param>
+    /// <returns>A filter builder that validates the DateOnly is after the current date.</returns>
     public static FilterBuilder<DateOnly> InFuture(in this FilterBuilder<DateOnly> filter)
         => filter.Satisfies(v => v > DateOnly.FromDateTime(DateTime.Now));
 
     /// <summary>
-    /// Filters TimeOnly values that are later than the current time.
+    /// Filters options where the TimeOnly value is in the future.
     /// </summary>
-    /// <param name="filter">The filter builder to apply the condition to.</param>
-    /// <returns>A filter builder that continues the fluent chain.</returns>
+    /// <param name="filter">The filter builder for the TimeOnly value.</param>
+    /// <returns>A filter builder that validates the TimeOnly is after the current time.</returns>
     public static FilterBuilder<TimeOnly> InFuture(in this FilterBuilder<TimeOnly> filter)
         => filter.Satisfies(v => v > TimeOnly.FromDateTime(DateTime.Now));
 
     /// <summary>
-    /// Filters DateTime values that are in the past.
+    /// Filters options where the DateTime value is in the past.
     /// </summary>
-    /// <param name="filter">The filter builder to apply the condition to.</param>
-    /// <returns>A filter builder that continues the fluent chain.</returns>
+    /// <param name="filter">The filter builder for the DateTime value.</param>
+    /// <returns>A filter builder that validates the DateTime is before the current time.</returns>
     public static FilterBuilder<DateTime> InPast(in this FilterBuilder<DateTime> filter)
         => filter.Satisfies(v => v < DateTime.Now);
 
     /// <summary>
-    /// Filters DateOnly values that are in the past.
+    /// Filters options where the DateOnly value is in the past.
     /// </summary>
-    /// <param name="filter">The filter builder to apply the condition to.</param>
-    /// <returns>A filter builder that continues the fluent chain.</returns>
+    /// <param name="filter">The filter builder for the DateOnly value.</param>
+    /// <returns>A filter builder that validates the DateOnly is before the current date.</returns>
     public static FilterBuilder<DateOnly> InPast(in this FilterBuilder<DateOnly> filter)
         => filter.Satisfies(v => v < DateOnly.FromDateTime(DateTime.Now));
 
     /// <summary>
-    /// Filters TimeOnly values that are earlier than the current time.
+    /// Filters options where the TimeOnly value is in the past.
     /// </summary>
-    /// <param name="filter">The filter builder to apply the condition to.</param>
-    /// <returns>A filter builder that continues the fluent chain.</returns>
+    /// <param name="filter">The filter builder for the TimeOnly value.</param>
+    /// <returns>A filter builder that validates the TimeOnly is before the current time.</returns>
     public static FilterBuilder<TimeOnly> InPast(in this FilterBuilder<TimeOnly> filter)
         => filter.Satisfies(v => v < TimeOnly.FromDateTime(DateTime.Now));
 
     /// <summary>
-    /// Filters DateOnly values that are today or in the future.
+    /// Filters options where the DateOnly value is in the future or present.
     /// </summary>
-    /// <param name="filter">The filter builder to apply the condition to.</param>
-    /// <returns>A filter builder that continues the fluent chain.</returns>
+    /// <param name="filter">The filter builder for the DateOnly value.</param>
+    /// <returns>A filter builder that validates the DateOnly is on or after the current date.</returns>
     public static FilterBuilder<DateOnly> InFutureOrPresent(in this FilterBuilder<DateOnly> filter)
         => filter.Satisfies(v => v >= DateOnly.FromDateTime(DateTime.Now));
 
     /// <summary>
-    /// Filters DateOnly values that are today or in the past.
+    /// Filters options where the DateOnly value is in the past or present.
     /// </summary>
-    /// <param name="filter">The filter builder to apply the condition to.</param>
-    /// <returns>A filter builder that continues the fluent chain.</returns>
+    /// <param name="filter">The filter builder for the DateOnly value.</param>
+    /// <returns>A filter builder that validates the DateOnly is on or before the current date.</returns>
     public static FilterBuilder<DateOnly> InPastOrPresent(in this FilterBuilder<DateOnly> filter)
         => filter.Satisfies(v => v <= DateOnly.FromDateTime(DateTime.Now));
 }

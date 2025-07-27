@@ -1,35 +1,11 @@
 namespace FluentUnions;
 
 /// <summary>
-/// Represents a composite error that contains multiple individual errors.
-/// This error type is used when multiple validation failures or other errors occur simultaneously
-/// and need to be reported together as a single unit.
+/// Represents a composite error containing multiple individual errors.
 /// </summary>
 /// <remarks>
-/// <para>
-/// AggregateError is particularly useful in scenarios where:
-/// - Multiple validation rules are checked and several fail
-/// - Batch operations encounter errors on multiple items
-/// - Complex business rules produce multiple error conditions
-/// </para>
-/// <para>
-/// The error automatically generates a standard code ("Errors.Aggregate") and message ("Multiple errors occurred.")
-/// while preserving all individual error details in the Errors collection.
-/// </para>
+/// Used when multiple errors occur simultaneously, such as validation failures or batch operation errors.
 /// </remarks>
-/// <example>
-/// <code>
-/// var errors = new List&lt;Error&gt;
-/// {
-///     new ValidationError("User.InvalidEmail", "Email format is invalid"),
-///     new ValidationError("User.PasswordTooShort", "Password must be at least 8 characters"),
-///     new ValidationError("User.UsernameTaken", "Username already exists")
-/// };
-/// 
-/// var aggregateError = new AggregateError(errors);
-/// // Returns a Result&lt;T&gt; with all validation errors combined
-/// </code>
-/// </example>
 [Serializable]
 public sealed class AggregateError : Error
 {

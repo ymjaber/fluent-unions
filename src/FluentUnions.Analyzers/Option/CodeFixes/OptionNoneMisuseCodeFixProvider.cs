@@ -1,8 +1,5 @@
 using System.Collections.Immutable;
 using System.Composition;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -108,7 +105,7 @@ public class OptionNoneMisuseCodeFixProvider : CodeFixProvider
     /// </summary>
     /// <param name="context">The code fix context.</param>
     /// <param name="assignment">The assignment expression with Option.None.</param>
-    private async Task RegisterAssignmentFixesAsync(CodeFixContext context, AssignmentExpressionSyntax assignment)
+    private Task RegisterAssignmentFixesAsync(CodeFixContext context, AssignmentExpressionSyntax assignment)
     {
         // For assignments, we can only suggest changing the variable declaration type
         // This would require finding the original declaration
@@ -118,6 +115,8 @@ public class OptionNoneMisuseCodeFixProvider : CodeFixProvider
                 createChangedDocument: c => Task.FromResult(context.Document), // Placeholder - would need more complex implementation
                 equivalenceKey: "ChangeVariableType"),
             context.Diagnostics.First());
+        
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -146,7 +145,7 @@ public class OptionNoneMisuseCodeFixProvider : CodeFixProvider
         var references = root.DescendantNodes()
             .OfType<IdentifierNameSyntax>()
             .Where(id => id.Identifier.Text == variableSymbol.Name)
-            .Where(id => semanticModel.GetSymbolInfo(id).Symbol?.Equals(variableSymbol) == true)
+            .Where(id => SymbolEqualityComparer.Default.Equals(semanticModel.GetSymbolInfo(id).Symbol, variableSymbol))
             .ToList();
 
         // Replace all references with Option.None

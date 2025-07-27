@@ -1,0 +1,17 @@
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/bin/Debug/net9.0/TestAnalyzerControlFlow.deps.json
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/bin/Debug/net9.0/TestAnalyzerControlFlow.dll
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/bin/Debug/net9.0/TestAnalyzerControlFlow.pdb
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/bin/Debug/net9.0/FluentUnions.dll
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/bin/Debug/net9.0/FluentUnions.pdb
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/bin/Debug/net9.0/FluentUnions.xml
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/obj/Debug/net9.0/TestAnalyzerControlFlow.csproj.AssemblyReference.cache
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/obj/Debug/net9.0/TestAnalyzerControlFlow.GeneratedMSBuildEditorConfig.editorconfig
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/obj/Debug/net9.0/TestAnalyzerControlFlow.AssemblyInfoInputs.cache
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/obj/Debug/net9.0/TestAnalyzerControlFlow.AssemblyInfo.cs
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/obj/Debug/net9.0/TestAnalyzerControlFlow.csproj.CoreCompileInputs.cache
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/obj/Debug/net9.0/TestAnalyzerControlFlow.sourcelink.json
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/obj/Debug/net9.0/TestAnal.891D4111.Up2Date
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/obj/Debug/net9.0/TestAnalyzerControlFlow.dll
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/obj/Debug/net9.0/refint/TestAnalyzerControlFlow.dll
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/obj/Debug/net9.0/TestAnalyzerControlFlow.pdb
+/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/obj/Debug/net9.0/ref/TestAnalyzerControlFlow.dll

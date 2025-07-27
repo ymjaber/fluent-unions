@@ -4,16 +4,16 @@ namespace FluentUnions;
 public static partial class FilterBuilderExtensions
 {
     /// <summary>
-    /// Checks if the boolean value is true.
+    /// Filters options where the boolean value is true.
     /// </summary>
-    /// <param name="filter">The filter builder to apply the condition to.</param>
-    /// <returns>True if the value is true; otherwise, false.</returns>
+    /// <param name="filter">The filter builder for the boolean value.</param>
+    /// <returns>True if the value passes the filter (is true); otherwise, false.</returns>
     public static bool True(in this FilterBuilder<bool> filter) => filter.Satisfies(v => v).Build().IsSome;
     
     /// <summary>
-    /// Checks if the boolean value is false.
+    /// Filters options where the boolean value is false.
     /// </summary>
-    /// <param name="filter">The filter builder to apply the condition to.</param>
-    /// <returns>True if the value is false; otherwise, false.</returns>
+    /// <param name="filter">The filter builder for the boolean value.</param>
+    /// <returns>True if the value passes the filter (is false); otherwise, false.</returns>
     public static bool False(in this FilterBuilder<bool> filter) => filter.Satisfies(v => !v).Build().IsSome;
 }

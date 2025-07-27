@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -60,7 +59,7 @@ public class UnhandledResultAnalyzer : DiagnosticAnalyzer
     private static readonly DiagnosticDescriptor Rule = new(
         id: DiagnosticIds.UnhandledResult,
         title: "Result should be handled",
-        messageFormat: "{0} is not being handled. {1}",
+        messageFormat: "{0} is not being handled. {1}.",
         category: Categories.Usage,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
@@ -177,9 +176,48 @@ public class UnhandledResultAnalyzer : DiagnosticAnalyzer
         // Result is being assigned to a variable or returned
         if (parent is AssignmentExpressionSyntax or 
             EqualsValueClauseSyntax or 
-            ReturnStatementSyntax or
-            ArrowExpressionClauseSyntax)
+            ReturnStatementSyntax)
             return true;
+            
+        // For expression-bodied members, check if the containing method returns void
+        if (parent is ArrowExpressionClauseSyntax arrowClause)
+        {
+            // Find the containing member declaration
+            var memberDeclaration = arrowClause.Parent;
+            
+            // Check if it's a method that returns void
+            if (memberDeclaration is MethodDeclarationSyntax methodDecl)
+            {
+                var methodSymbol = semanticModel.GetDeclaredSymbol(methodDecl);
+                if (methodSymbol?.ReturnsVoid == true)
+                {
+                    // This is a void method with expression body - the result is not handled
+                    return false;
+                }
+            }
+            else if (memberDeclaration is LocalFunctionStatementSyntax localFunc)
+            {
+                var localFuncSymbol = semanticModel.GetDeclaredSymbol(localFunc);
+                if (localFuncSymbol?.ReturnsVoid == true)
+                {
+                    // This is a void local function with expression body - the result is not handled
+                    return false;
+                }
+            }
+            else if (memberDeclaration is AccessorDeclarationSyntax accessor)
+            {
+                // Property setters and event accessors are void
+                if (accessor.Kind() == SyntaxKind.SetAccessorDeclaration ||
+                    accessor.Kind() == SyntaxKind.AddAccessorDeclaration ||
+                    accessor.Kind() == SyntaxKind.RemoveAccessorDeclaration)
+                {
+                    return false;
+                }
+            }
+            
+            // For non-void methods or other members, the result is being returned
+            return true;
+        }
 
         // Result is being passed as an argument
         if (parent is ArgumentSyntax)

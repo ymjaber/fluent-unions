@@ -33,6 +33,21 @@ namespace FluentUnions.Generators.Options
     [Generator]
     public class MatchExtensionsGenerator : IIncrementalGenerator
     {
+        private static string GetOrdinal(int number) => number switch
+        {
+            1 => "first",
+            2 => "second",
+            3 => "third",
+            4 => "fourth",
+            5 => "fifth",
+            6 => "sixth",
+            7 => "seventh",
+            8 => "eighth",
+            9 => "ninth",
+            10 => "tenth",
+            _ => $"{number}th"
+        };
+
         /// <summary>
         /// Initializes the generator and registers the source generation logic.
         /// </summary>
@@ -49,8 +64,24 @@ namespace FluentUnions.Generators.Options
                 {
                     string types = string.Join(", ", Enumerable.Range(1, i).Select(n => "TSource" + n));
                     string items = string.Join(", ", Enumerable.Range(1, i).Select(n => $"option.Value.Item{n}"));
+                    string typeParamDocs = string.Join("\n    /// ", Enumerable.Range(1, i).Select(n => $"<typeparam name=\"TSource{n}\">The type of the {GetOrdinal(n)} tuple element.</typeparam>"));
                     
                     builder.Append($$"""
+                                     /// <summary>
+                                     /// Matches on an <see cref="Option{T}"/> containing a tuple with {{i}} elements, executing one of two functions based on its state.
+                                     /// </summary>
+                                     /// {{typeParamDocs}}
+                                     /// <typeparam name="TTarget">The type of the value returned by the match functions.</typeparam>
+                                     /// <param name="option">The source <see cref="Option{T}"/> containing a tuple.</param>
+                                     /// <param name="some">A function to execute on the tuple elements if the Option has a value.</param>
+                                     /// <param name="none">A function to execute if the Option is None.</param>
+                                     /// <returns>The value returned by either the some or none function.</returns>
+                                     /// <remarks>
+                                     /// Match provides exhaustive pattern matching for Option types, ensuring both Some and None cases
+                                     /// are handled. This is a fundamental functional programming pattern that guarantees a value
+                                     /// is always produced, making it impossible to forget handling the None case.
+                                     /// The tuple elements are automatically destructured when passed to the some function.
+                                     /// </remarks>
                                      public static TTarget Match<{{types}}, TTarget>(
                                          in this Option<({{types}})> option,
                                          Func<{{types}}, TTarget> some,

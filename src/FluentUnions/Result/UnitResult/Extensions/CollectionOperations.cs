@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-
 namespace FluentUnions;
 
 /// <summary>
@@ -34,7 +31,7 @@ public static partial class UnitResultExtensions
             if (result.IsFailure)
                 return result;
         }
-        
+
         return Result.Success();
     }
 
@@ -68,7 +65,7 @@ public static partial class UnitResultExtensions
             if (result.IsFailure)
                 return result;
         }
-        
+
         return Result.Success();
     }
 
@@ -98,21 +95,21 @@ public static partial class UnitResultExtensions
     public static Result CollectAll(this IEnumerable<Result> results)
     {
         var errors = new List<Error>();
-        
+
         foreach (var result in results)
         {
             if (result.IsFailure)
                 errors.Add(result.Error);
         }
-        
+
         if (errors.Count > 0)
         {
-            var aggregateError = errors.Count == 1 
-                ? errors[0] 
+            var aggregateError = errors.Count == 1
+                ? errors[0]
                 : new AggregateError(errors.ToArray());
             return Result.Failure(aggregateError);
         }
-        
+
         return Result.Success();
     }
 
@@ -140,7 +137,7 @@ public static partial class UnitResultExtensions
     {
         var successCount = 0;
         var errors = new List<Error>();
-        
+
         foreach (var result in results)
         {
             if (result.IsSuccess)
@@ -148,7 +145,7 @@ public static partial class UnitResultExtensions
             else
                 errors.Add(result.Error);
         }
-        
+
         return (successCount, errors);
     }
 
@@ -221,10 +218,10 @@ public static partial class UnitResultExtensions
     {
         if (result1.IsFailure)
             return result1;
-        
+
         if (result2.IsFailure)
             return result2;
-        
+
         return Result.Success();
     }
 
@@ -245,13 +242,13 @@ public static partial class UnitResultExtensions
     {
         if (result1.IsFailure)
             return result1;
-        
+
         if (result2.IsFailure)
             return result2;
-        
+
         if (result3.IsFailure)
             return result3;
-        
+
         return Result.Success();
     }
 

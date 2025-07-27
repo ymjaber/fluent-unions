@@ -28,7 +28,7 @@ public class OptionNoneMisuseAnalyzer : DiagnosticAnalyzer
     private static readonly DiagnosticDescriptor Rule = new(
         id: DiagnosticIds.OptionNoneMisuse,
         title: "Avoid assigning Option.None to non-generic Option variable",
-        messageFormat: "Option.None should not be assigned to a variable of type Option. Use it directly or assign to Option<T>",
+        messageFormat: "Option.None should not be assigned to a variable of type Option. Use it directly or assign to Option<T>.",
         category: Categories.Usage,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,

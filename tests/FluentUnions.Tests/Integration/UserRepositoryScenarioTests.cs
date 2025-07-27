@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentUnions;
-using Xunit;
-
 namespace FluentUnions.Tests.Integration
 {
     /// <summary>
@@ -303,8 +296,10 @@ namespace FluentUnions.Tests.Integration
 
             public async Task<Result<UserProfile>> AuthenticateAndGetProfileAsync(string email, string password)
             {
-                var result = await _repository.FindByEmailAsync(email)
-                    .MapAsync(async user =>
+                var userOption = await _repository.FindByEmailAsync(email);
+                var result = await userOption
+                    .Match(
+                        some: async user =>
                     {
                         // Verify password
                         if (!VerifyPassword(password, user.PasswordHash))
@@ -315,9 +310,7 @@ namespace FluentUnions.Tests.Integration
                         await _repository.SaveAsync(user);
 
                         return Result.Success(user);
-                    })
-                    .MatchAsync(
-                        some: r => Task.FromResult(r),
+                    },
                         none: () => Task.FromResult(Result.Failure<User>(
                             new ValidationError("AUTH_FAILED", "Invalid email or password")
                         ))

@@ -67,6 +67,15 @@ public static class DiagnosticIds
     /// </remarks>
     public const string UnhandledOption = "FU0006";
     
+    /// <summary>
+    /// Diagnostic ID for detecting FilterBuilder that is not properly completed with Build() or implicit conversion.
+    /// </summary>
+    /// <remarks>
+    /// This diagnostic warns when a FilterBuilder is assigned to a variable, returned from a method,
+    /// or otherwise used without being completed with Build() or an implicit conversion to Option.
+    /// </remarks>
+    public const string FilterBuilderMisuse = "FU0007";
+    
     // Result<T> analyzers
     
     /// <summary>
@@ -104,4 +113,13 @@ public static class DiagnosticIds
     /// but their success/failure status is never examined, potentially ignoring errors.
     /// </remarks>
     public const string UnhandledResult = "FU0104";
+    
+    /// <summary>
+    /// Diagnostic ID for detecting EnsureBuilder that is not properly completed with Build() or implicit conversion.
+    /// </summary>
+    /// <remarks>
+    /// This diagnostic warns when an EnsureBuilder is assigned to a variable, returned from a method,
+    /// or otherwise used without being completed with Build(), Map(), Bind(), or an implicit conversion to Result.
+    /// </remarks>
+    public const string EnsureBuilderMisuse = "FU0105";
 }

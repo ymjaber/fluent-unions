@@ -39,7 +39,7 @@ public class OptionAssertions<T> : ReferenceTypeAssertions<Option<T>, OptionAsse
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>An <see cref="AndWhichConstraint{TParent,TSubject}"/> which can be used to chain assertions on the contained value.</returns>
-    /// <exception cref="AssertionException">The option is None.</exception>
+    /// <exception>The option is None.</exception>
     /// <example>
     /// <code>
     /// var option = Option.Some(42);
@@ -64,7 +64,7 @@ public class OptionAssertions<T> : ReferenceTypeAssertions<Option<T>, OptionAsse
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>An <see cref="AndWhichConstraint{TParent,TSubject}"/> which can be used to chain additional assertions.</returns>
-    /// <exception cref="AssertionException">The option is None or contains a different value.</exception>
+    /// <exception>The option is None or contains a different value.</exception>
     /// <example>
     /// <code>
     /// var option = Option.Some("Hello");
@@ -88,11 +88,11 @@ public class OptionAssertions<T> : ReferenceTypeAssertions<Option<T>, OptionAsse
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>An <see cref="AndWhichConstraint{TParent,TSubject}"/> which can be used to chain additional assertions.</returns>
-    /// <exception cref="AssertionException">The option is None or the value doesn't match the predicate.</exception>
+    /// <exception>The option is None or the value doesn't match the predicate.</exception>
     /// <example>
     /// <code>
     /// var option = Option.Some(42);
-    /// option.Should().BeSomeMatching(x => x > 40 && x < 50);
+    /// option.Should().BeSomeMatching(x => x > 40 &amp;&amp; x &lt; 50);
     /// </code>
     /// </example>
     public AndWhichConstraint<OptionAssertions<T>, T> BeSomeMatching(Func<T, bool> predicate, string because = "", params object[] becauseArgs)
@@ -114,7 +114,7 @@ public class OptionAssertions<T> : ReferenceTypeAssertions<Option<T>, OptionAsse
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>An <see cref="AndConstraint{T}"/> which can be used to chain additional assertions.</returns>
-    /// <exception cref="AssertionException">The option contains the unexpected value.</exception>
+    /// <exception>The option contains the unexpected value.</exception>
     /// <remarks>
     /// This assertion passes if the option is None or if it contains a different value than the unexpected one.
     /// </remarks>
@@ -149,7 +149,7 @@ public class OptionAssertions<T> : ReferenceTypeAssertions<Option<T>, OptionAsse
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>An <see cref="AndWhichConstraint{TParent,TSubject}"/> which can be used to chain additional assertions.</returns>
-    /// <exception cref="AssertionException">The option is None or the contained assertions fail.</exception>
+    /// <exception>The option is None or the contained assertions fail.</exception>
     /// <remarks>
     /// This method is useful for performing multiple assertions on the contained value in a fluent manner.
     /// </remarks>
@@ -178,7 +178,7 @@ public class OptionAssertions<T> : ReferenceTypeAssertions<Option<T>, OptionAsse
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>An <see cref="AndConstraint{T}"/> which can be used to chain additional assertions.</returns>
-    /// <exception cref="AssertionException">The option has a value.</exception>
+    /// <exception>The option has a value.</exception>
     /// <example>
     /// <code>
     /// var option = Option&lt;string&gt;.None;

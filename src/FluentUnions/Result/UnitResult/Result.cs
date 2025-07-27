@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace FluentUnions;
 
@@ -20,12 +21,20 @@ public readonly partial struct Result
     /// <summary>
     /// Gets a value indicating whether the result represents a successful operation.
     /// </summary>
-    public bool IsSuccess => _error is null;
+    public bool IsSuccess
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _error is null;
+    }
 
     /// <summary>
     /// Gets a value indicating whether the result represents a failed operation.
     /// </summary>
-    public bool IsFailure => !IsSuccess;
+    public bool IsFailure
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => !IsSuccess;
+    }
 
     /// <summary>
     /// Gets the error associated with a failed result.

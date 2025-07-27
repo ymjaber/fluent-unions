@@ -1,4 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace FluentUnions;
 
@@ -7,6 +9,7 @@ namespace FluentUnions;
 /// </summary>
 /// <typeparam name="TValue">The type of the value returned on success.</typeparam>
 [Serializable]
+[StructLayout(LayoutKind.Auto)]
 public readonly struct Result<TValue>
 {
     private readonly TValue? _value;
@@ -27,26 +30,42 @@ public readonly struct Result<TValue>
     /// <summary>
     /// Gets a value indicating whether the result represents a successful operation.
     /// </summary>
-    public bool IsSuccess => _error is null;
+    public bool IsSuccess
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _error is null;
+    }
 
     /// <summary>
     /// Gets a value indicating whether the result represents a failed operation.
     /// </summary>
-    public bool IsFailure => !IsSuccess;
+    public bool IsFailure
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => !IsSuccess;
+    }
 
     /// <summary>
     /// Gets the error associated with a failed result.
     /// </summary>
     /// <exception cref="InvalidOperationException">The result is in a success state.</exception>
-    public Error Error => _error ?? throw new InvalidOperationException("Result is not in a failure state.");
+    public Error Error
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _error ?? throw new InvalidOperationException("Result is not in a failure state.");
+    }
 
     /// <summary>
     /// Gets the value of a successful result.
     /// </summary>
     /// <exception cref="InvalidOperationException">The result is in a failure state.</exception>
-    public TValue Value => IsSuccess
-        ? _value!
-        : throw new InvalidOperationException("Result is not in a success state.");
+    public TValue Value
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => IsSuccess
+            ? _value!
+            : throw new InvalidOperationException("Result is not in a success state.");
+    }
 
     /// <summary>
     /// Implicitly converts a value to a successful <see cref="Result{TValue}"/>.
@@ -75,7 +94,8 @@ public readonly struct Result<TValue>
     /// </summary>
     /// <param name="value">When this method returns, contains the value if the result is in a success state; otherwise, the default value.</param>
     /// <returns><see langword="true"/> if the result is in a success state; otherwise, <see langword="false"/>.</returns>
-    public bool TryGetValue([NotNullWhen(true)] out TValue? value)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly bool TryGetValue([NotNullWhen(true)] out TValue? value)
     {
         value = _value;
         return IsSuccess;
@@ -86,7 +106,8 @@ public readonly struct Result<TValue>
     /// </summary>
     /// <param name="error">When this method returns, contains the error if the result is in a failure state; otherwise, null.</param>
     /// <returns><see langword="true"/> if the result is in a failure state; otherwise, <see langword="false"/>.</returns>
-    public bool TryGetError([NotNullWhen(true)] out Error? error)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly bool TryGetError([NotNullWhen(true)] out Error? error)
     {
         error = _error;
         return IsFailure;

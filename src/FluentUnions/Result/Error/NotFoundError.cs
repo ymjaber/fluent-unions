@@ -1,68 +1,13 @@
 namespace FluentUnions;
 
 /// <summary>
-/// Represents an error that occurs when a requested resource, entity, or item cannot be found.
-/// This error type is specifically designed for scenarios where lookups, queries, or searches
-/// fail to locate the expected data.
+/// Represents an error that occurs when a requested resource cannot be found.
 /// </summary>
 /// <remarks>
-/// <para>
-/// NotFoundError provides a semantic way to distinguish "not found" scenarios from other types
-/// of errors. This is particularly important in REST APIs and domain services where a 404-style
-/// error needs to be handled differently from validation errors or system failures.
-/// </para>
-/// <para>
-/// Common use cases include:
-/// - Database queries that return no results for a given ID
-/// - File system operations where a file or directory doesn't exist
-/// - API endpoints trying to access non-existent resources
-/// - Cache misses that should be treated as errors
-/// - Configuration or settings that are missing
-/// </para>
-/// <para>
-/// The error type helps in implementing proper error handling strategies, such as:
-/// - Returning HTTP 404 responses in web APIs
-/// - Triggering fallback mechanisms
-/// - Differentiating between "not found" and "access denied" scenarios
-/// - Providing helpful error messages to guide users
-/// </para>
+/// Used for missing database records, files, API resources, or configuration settings. Maps to HTTP 404 in web contexts.
 /// </remarks>
-/// <example>
-/// <code>
-/// // Simple not found error
-/// var error = new NotFoundError("User.NotFound", "User with ID '123' was not found");
-/// 
-/// // Not found error with metadata
-/// var metadata = new Dictionary&lt;string, object&gt;
-/// {
-///     ["UserId"] = userId,
-///     ["SearchCriteria"] = "ID",
-///     ["Timestamp"] = DateTime.UtcNow
-/// };
-/// var detailedError = new NotFoundError("User.NotFound", $"User with ID '{userId}' was not found", metadata);
-/// 
-/// // Used in a repository method
-/// public Result&lt;User&gt; GetUserById(int userId)
-/// {
-///     var user = database.Users.FindById(userId);
-///     if (user == null)
-///         return new NotFoundError("User.NotFound", $"User with ID '{userId}' was not found");
-///     
-///     return user;
-/// }
-/// 
-/// // Used in a file service
-/// public Result&lt;string&gt; ReadFile(string path)
-/// {
-///     if (!File.Exists(path))
-///         return new NotFoundError("File.NotFound", $"File '{path}' does not exist");
-///     
-///     return File.ReadAllText(path);
-/// }
-/// </code>
-/// </example>
 [Serializable]
-public class NotFoundError : Error
+public class NotFoundError : ErrorWithMetadata
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="NotFoundError"/> class with the specified code, message, and metadata.

@@ -37,7 +37,7 @@ public class FailedResultAssertions : ReferenceTypeAssertions<Error, FailedResul
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>A <see cref="FailedResultAssertions"/> object for chaining additional assertions.</returns>
-    /// <exception cref="AssertionException">The error is not of the expected type.</exception>
+    /// <exception>The error is not of the expected type.</exception>
     /// <example>
     /// <code>
     /// var result = Result.Failure(new ValidationError("VAL001", "Invalid input"));
@@ -67,7 +67,7 @@ public class FailedResultAssertions : ReferenceTypeAssertions<Error, FailedResul
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>A <see cref="FailedResultAssertions"/> object for chaining additional assertions.</returns>
-    /// <exception cref="AssertionException">The error code does not match the expected value.</exception>
+    /// <exception>The error code does not match the expected value.</exception>
     /// <example>
     /// <code>
     /// var result = Result.Failure(new Error("ERR_NETWORK", "Network timeout"));
@@ -98,7 +98,7 @@ public class FailedResultAssertions : ReferenceTypeAssertions<Error, FailedResul
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>A <see cref="FailedResultAssertions"/> object for chaining additional assertions.</returns>
-    /// <exception cref="AssertionException">The error message does not match the expected value.</exception>
+    /// <exception>The error message does not match the expected value.</exception>
     /// <example>
     /// <code>
     /// var result = Result.Failure(new Error("ERR001", "Operation failed"));
@@ -130,7 +130,7 @@ public class FailedResultAssertions : ReferenceTypeAssertions<Error, FailedResul
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>A <see cref="FailedResultAssertions"/> object for chaining additional assertions.</returns>
-    /// <exception cref="AssertionException">The error does not equal the expected error.</exception>
+    /// <exception>The error does not equal the expected error.</exception>
     /// <remarks>
     /// This method performs a full equality comparison including type, code, message, and metadata.
     /// </remarks>
@@ -160,7 +160,7 @@ public class FailedResultAssertions : ReferenceTypeAssertions<Error, FailedResul
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>A <see cref="FailedResultAssertions"/> object for chaining additional assertions.</returns>
-    /// <exception cref="AssertionException">The error message does not contain the expected substring.</exception>
+    /// <exception>The error message does not contain the expected substring.</exception>
     /// <example>
     /// <code>
     /// var result = Result.Failure(new Error("ERR001", "Connection to database failed"));
@@ -191,7 +191,7 @@ public class FailedResultAssertions : ReferenceTypeAssertions<Error, FailedResul
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>A <see cref="FailedResultAssertions"/> object for chaining additional assertions.</returns>
-    /// <exception cref="AssertionException">The error message does not start with the expected prefix.</exception>
+    /// <exception>The error message does not start with the expected prefix.</exception>
     /// <example>
     /// <code>
     /// var result = Result.Failure(new Error("ERR001", "Validation failed: Invalid email"));
@@ -222,7 +222,7 @@ public class FailedResultAssertions : ReferenceTypeAssertions<Error, FailedResul
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>A <see cref="FailedResultAssertions"/> object for chaining additional assertions.</returns>
-    /// <exception cref="AssertionException">The error message does not end with the expected suffix.</exception>
+    /// <exception>The error message does not end with the expected suffix.</exception>
     /// <example>
     /// <code>
     /// var result = Result.Failure(new Error("ERR001", "Operation timed out after 30 seconds"));
@@ -253,7 +253,7 @@ public class FailedResultAssertions : ReferenceTypeAssertions<Error, FailedResul
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>A <see cref="FailedResultAssertions"/> object for chaining additional assertions.</returns>
-    /// <exception cref="AssertionException">The error message does not match the predicate.</exception>
+    /// <exception>The error message does not match the predicate.</exception>
     /// <remarks>
     /// This method is useful for complex message validation scenarios that can't be expressed
     /// with simple string comparisons.
@@ -262,7 +262,7 @@ public class FailedResultAssertions : ReferenceTypeAssertions<Error, FailedResul
     /// <code>
     /// var result = Result.Failure(new Error("ERR001", "Failed after 3 retries"));
     /// result.Should().Fail()
-    ///     .WithErrorMessageMatching(msg => msg.Contains("retries") && msg.Any(char.IsDigit));
+    ///     .WithErrorMessageMatching(msg => msg.Contains("retries") &amp;&amp; msg.Any(char.IsDigit));
     /// </code>
     /// </example>
     public FailedResultAssertions WithErrorMessageMatching(

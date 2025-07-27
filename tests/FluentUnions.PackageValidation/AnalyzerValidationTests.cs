@@ -1,4 +1,3 @@
-using FluentUnions;
 using Xunit;
 
 namespace FluentUnions.PackageValidation;
@@ -66,7 +65,9 @@ public class AnalyzerValidationTests
         if (result.IsSuccess)
         {
             var value = result.Value;
+#pragma warning disable xUnit2020
             Assert.True(false, "Should not reach here");
+#pragma warning restore xUnit2020
         }
         
         var safeValue = result.Match(
@@ -92,7 +93,9 @@ public class AnalyzerValidationTests
         if (result.IsFailure)
         {
             var error = result.Error;
+#pragma warning disable xUnit2020
             Assert.True(false, "Should not reach here");
+#pragma warning restore xUnit2020
         }
         
         Assert.True(result.IsSuccess);

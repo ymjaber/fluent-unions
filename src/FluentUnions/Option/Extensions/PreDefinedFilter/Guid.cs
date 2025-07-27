@@ -4,18 +4,18 @@ namespace FluentUnions;
 public static partial class FilterBuilderExtensions
 {
     /// <summary>
-    /// Checks if the GUID value is empty (all zeros).
+    /// Filters options where the Guid value is empty (all zeros).
     /// </summary>
-    /// <param name="filter">The filter builder to apply the condition to.</param>
-    /// <returns>True if the GUID is empty; otherwise, false.</returns>
+    /// <param name="filter">The filter builder for the Guid value.</param>
+    /// <returns>True if the value passes the filter (is empty); otherwise, false.</returns>
     public static bool Empty(in this FilterBuilder<Guid> filter) =>
         filter.Satisfies(v => v == Guid.Empty).Build().IsSome;
 
     /// <summary>
-    /// Filters GUID values that are not empty.
+    /// Filters options where the Guid value is not empty (not all zeros).
     /// </summary>
-    /// <param name="filter">The filter builder to apply the condition to.</param>
-    /// <returns>A filter builder that continues the fluent chain.</returns>
+    /// <param name="filter">The filter builder for the Guid value.</param>
+    /// <returns>A filter builder that validates the Guid is not empty.</returns>
     public static FilterBuilder<Guid> NotEmpty(in this FilterBuilder<Guid> filter) =>
         filter.Satisfies(v => v != Guid.Empty);
 }

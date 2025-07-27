@@ -4,12 +4,12 @@ namespace FluentUnions;
 public static partial class FilterBuilderExtensions
 {
     /// <summary>
-    /// Checks if the value is equal to the specified value.
+    /// Filters options where the value is equal to the specified value.
     /// </summary>
-    /// <typeparam name="TValue">The type of the value, must implement IEquatable.</typeparam>
-    /// <param name="filter">The filter builder to apply the condition to.</param>
-    /// <param name="value">The value to compare for equality.</param>
-    /// <returns>True if the values are equal; otherwise, false.</returns>
+    /// <typeparam name="TValue">The type of the value to compare.</typeparam>
+    /// <param name="filter">The filter builder for the value.</param>
+    /// <param name="value">The value to compare with.</param>
+    /// <returns>True if the value passes the filter (is equal); otherwise, false.</returns>
     public static bool IsEqualTo<TValue>(
         in this FilterBuilder<TValue> filter,
         TValue value)
@@ -17,12 +17,12 @@ public static partial class FilterBuilderExtensions
         => filter.Satisfies(v => v.Equals(value)).Build().IsSome;
 
     /// <summary>
-    /// Filters values that are not equal to the specified value.
+    /// Filters options where the value is not equal to the specified value.
     /// </summary>
-    /// <typeparam name="TValue">The type of the value, must implement IEquatable.</typeparam>
-    /// <param name="filter">The filter builder to apply the condition to.</param>
-    /// <param name="value">The value to compare for inequality.</param>
-    /// <returns>A filter builder that continues the fluent chain.</returns>
+    /// <typeparam name="TValue">The type of the value to compare.</typeparam>
+    /// <param name="filter">The filter builder for the value.</param>
+    /// <param name="value">The value to compare with.</param>
+    /// <returns>A filter builder that validates the values are not equal.</returns>
     public static FilterBuilder<TValue> IsNotEqualTo<TValue>(
         in this FilterBuilder<TValue> filter,
         TValue value)

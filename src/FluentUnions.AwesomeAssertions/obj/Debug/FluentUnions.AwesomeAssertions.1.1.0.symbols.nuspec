@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>FluentUnions.AwesomeAssertions</id>
+    <version>1.1.0</version>
+    <authors>Yousef Jaber</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/ymjaber/fluent-unions</projectUrl>
+    <description>FluentUnions.AwesomeAssertions adds fluent assertion methods for Result and Option types from FluentUnions, integrating with AwesomeAssertions testing library.</description>
+    <tags>fluent unions testing assertions result option awesomeassertions</tags>
+    <repository type="git" url="https://github.com/ymjaber/fluent-unions" commit="e3a5c97fb20ce4fd10d2b018f4735426d3a860c2" />
+    <dependencies>
+      <group targetFramework="net9.0">
+        <dependency id="FluentUnions" version="1.1.0" exclude="Build,Analyzers" />
+        <dependency id="AwesomeAssertions" version="9.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.AwesomeAssertions/bin/Debug/net9.0/FluentUnions.AwesomeAssertions.pdb" target="lib/net9.0/FluentUnions.AwesomeAssertions.pdb" />
+  </files>
+</package>

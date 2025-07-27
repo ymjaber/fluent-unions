@@ -11,11 +11,10 @@ public readonly partial struct Result
     /// Unlike Ensure, this method evaluates all conditions regardless of failures and collects all errors.
     /// If multiple conditions fail, the result will contain an AggregateError with all the collected errors.
     /// </remarks>
-    public static Result EnsureAll(
-        params ReadOnlySpan<(bool Condition, Error Error)> predicates)
+    public static Result EnsureAll(params ReadOnlySpan<(bool Condition, Error Error)> predicates)
     {
         ErrorBuilder errorBuilder = new();
-        
+
         foreach (var (condition, error) in predicates)
         {
             if (!condition) errorBuilder.Append(error);

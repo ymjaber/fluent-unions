@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
 
         <PackageId>FluentUnions</PackageId>
-        <Version>1.0.0</Version>
+        <Version>1.1.0</Version>
         <Authors>Yousef Jaber</Authors>
         <Company>PalJaber</Company>
         <Description>FluentUnions handles expected errors with Result and Result&lt;T&gt;, and includes Option&lt;T&gt; for null handling. Features discriminated unions with monadic functions, source generators, and static analyzers to prevent common mistakes.</Description>
@@ -31,6 +31,10 @@
         <!-- Enable source generators -->
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
+        
+        <!-- Build Performance -->
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
         
         <!--        <OutputPath>..\..\artifacts\</OutputPath>-->
     </PropertyGroup>

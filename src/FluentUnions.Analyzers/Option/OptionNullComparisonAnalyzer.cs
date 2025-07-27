@@ -29,7 +29,7 @@ public class OptionNullComparisonAnalyzer : DiagnosticAnalyzer
     private static readonly DiagnosticDescriptor Rule = new(
         id: DiagnosticIds.OptionNullComparison,
         title: "Option<T> should not be compared with null",
-        messageFormat: "Option<T> is a value type and will never be null. Use IsNone or IsSome instead",
+        messageFormat: "Option<T> is a value type and will never be null. Use IsNone or IsSome instead.",
         category: Categories.Usage,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,

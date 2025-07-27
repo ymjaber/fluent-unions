@@ -84,4 +84,32 @@ public static class SymbolHelpers
                typeSymbol.ContainingNamespace?.ToString() == "FluentUnions" &&
                typeSymbol is INamedTypeSymbol { IsGenericType: false };
     }
+
+    /// <summary>
+    /// Determines whether a type symbol represents an EnsureBuilder type.
+    /// </summary>
+    /// <param name="typeSymbol">The type symbol to check.</param>
+    /// <returns>True if the type is EnsureBuilder&lt;T&gt;; otherwise, false.</returns>
+    public static bool IsEnsureBuilderType(ITypeSymbol? typeSymbol)
+    {
+        if (typeSymbol == null) return false;
+
+        return typeSymbol.Name == "EnsureBuilder" && 
+               typeSymbol.ContainingNamespace?.ToString() == "FluentUnions" &&
+               typeSymbol is INamedTypeSymbol { IsGenericType: true, TypeArguments.Length: 1 };
+    }
+
+    /// <summary>
+    /// Determines whether a type symbol represents a FilterBuilder type.
+    /// </summary>
+    /// <param name="typeSymbol">The type symbol to check.</param>
+    /// <returns>True if the type is FilterBuilder&lt;T&gt;; otherwise, false.</returns>
+    public static bool IsFilterBuilderType(ITypeSymbol? typeSymbol)
+    {
+        if (typeSymbol == null) return false;
+
+        return typeSymbol.Name == "FilterBuilder" && 
+               typeSymbol.ContainingNamespace?.ToString() == "FluentUnions" &&
+               typeSymbol is INamedTypeSymbol { IsGenericType: true, TypeArguments.Length: 1 };
+    }
 }

@@ -10,3 +10,16 @@
 /home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions.Analyzers/obj/Release/netstandard2.0/FluentUnions.Analyzers.dll
 /home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions.Analyzers/obj/Release/netstandard2.0/FluentUnions.Analyzers.xml
 /home/yousef/projects/paljaber/projects/FluentUnions/src/FluentUnions.Analyzers/obj/Release/netstandard2.0/FluentUnions.Analyzers.pdb
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/bin/Release/netstandard2.0/FluentUnions.Analyzers.deps.json
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/bin/Release/netstandard2.0/FluentUnions.Analyzers.dll
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/bin/Release/netstandard2.0/FluentUnions.Analyzers.pdb
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/bin/Release/netstandard2.0/FluentUnions.Analyzers.xml
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/obj/Release/netstandard2.0/FluentUnions.Analyzers.csproj.AssemblyReference.cache
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/obj/Release/netstandard2.0/FluentUnions.Analyzers.GeneratedMSBuildEditorConfig.editorconfig
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/obj/Release/netstandard2.0/FluentUnions.Analyzers.AssemblyInfoInputs.cache
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/obj/Release/netstandard2.0/FluentUnions.Analyzers.AssemblyInfo.cs
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/obj/Release/netstandard2.0/FluentUnions.Analyzers.csproj.CoreCompileInputs.cache
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/obj/Release/netstandard2.0/FluentUnions.Analyzers.sourcelink.json
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/obj/Release/netstandard2.0/FluentUnions.Analyzers.dll
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/obj/Release/netstandard2.0/FluentUnions.Analyzers.xml
+/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Analyzers/obj/Release/netstandard2.0/FluentUnions.Analyzers.pdb

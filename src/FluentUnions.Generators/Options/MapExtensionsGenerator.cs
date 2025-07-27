@@ -30,6 +30,21 @@ namespace FluentUnions.Generators.Options
     [Generator]
     public class MapExtensionsGenerator : IIncrementalGenerator
     {
+        private static string GetOrdinal(int number) => number switch
+        {
+            1 => "first",
+            2 => "second",
+            3 => "third",
+            4 => "fourth",
+            5 => "fifth",
+            6 => "sixth",
+            7 => "seventh",
+            8 => "eighth",
+            9 => "ninth",
+            10 => "tenth",
+            _ => $"{number}th"
+        };
+
         /// <summary>
         /// Initializes the generator and registers the source generation logic.
         /// </summary>
@@ -46,8 +61,22 @@ namespace FluentUnions.Generators.Options
                 {
                     string types = string.Join(", ", Enumerable.Range(1, i).Select(n => "TValue" + n));
                     string items = string.Join(", ", Enumerable.Range(1, i).Select(n => $"source.Value.Item{n}"));
+                    string typeParamDocs = string.Join("\n    /// ", Enumerable.Range(1, i).Select(n => $"<typeparam name=\"TValue{n}\">The type of the {GetOrdinal(n)} tuple element.</typeparam>"));
                     
                     builder.Append($$"""
+                                         /// <summary>
+                                         /// Transforms the value inside an <see cref="Option{T}"/> containing a tuple with {{i}} elements.
+                                         /// </summary>
+                                         /// {{typeParamDocs}}
+                                         /// <typeparam name="TTarget">The type of the transformed value.</typeparam>
+                                         /// <param name="source">The source <see cref="Option{T}"/> containing a tuple.</param>
+                                         /// <param name="mapper">A function that transforms the tuple elements into a new value.</param>
+                                         /// <returns>An <see cref="Option{T}"/> containing the transformed value if the source was Some; otherwise, None.</returns>
+                                         /// <remarks>
+                                         /// The Map operation is a fundamental functional programming concept that allows transformation
+                                         /// of wrapped values while preserving the wrapper's semantics. If the source Option is None,
+                                         /// the mapper function is not executed and None is returned, ensuring safe value transformation.
+                                         /// </remarks>
                                          public static Option<TTarget> Map<{{types}}, TTarget>(
                                              in this Option<({{types}})> source,
                                              Func<{{types}}, TTarget> mapper)

@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace FluentUnions;
 
 /// <summary>
@@ -20,6 +22,7 @@ public static partial class OptionExtensions
     /// This method applies the functor pattern to options. If the option is None, the mapping function is not called
     /// and None is returned. This allows for chaining transformations on optional values without explicit null checking.
     /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Option<TTarget> Map<TSource, TTarget>(
         in this Option<TSource> option,
         Func<TSource, TTarget> mapper)

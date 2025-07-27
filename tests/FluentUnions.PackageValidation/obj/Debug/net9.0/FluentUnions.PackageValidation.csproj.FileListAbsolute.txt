@@ -194,10 +194,10 @@
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.PackageValidation/obj/Debug/net9.0/FluentUnions.PackageValidation.AssemblyInfoInputs.cache
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.PackageValidation/obj/Debug/net9.0/FluentUnions.PackageValidation.AssemblyInfo.cs
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.PackageValidation/obj/Debug/net9.0/FluentUnions.PackageValidation.csproj.CoreCompileInputs.cache
+/home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.PackageValidation/obj/Debug/net9.0/FluentUnions.PackageValidation.sourcelink.json
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.PackageValidation/obj/Debug/net9.0/FluentUn.2279475B.Up2Date
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.PackageValidation/obj/Debug/net9.0/FluentUnions.PackageValidation.dll
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.PackageValidation/obj/Debug/net9.0/refint/FluentUnions.PackageValidation.dll
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.PackageValidation/obj/Debug/net9.0/FluentUnions.PackageValidation.pdb
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.PackageValidation/obj/Debug/net9.0/FluentUnions.PackageValidation.genruntimeconfig.cache
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.PackageValidation/obj/Debug/net9.0/ref/FluentUnions.PackageValidation.dll
-/home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.PackageValidation/obj/Debug/net9.0/FluentUnions.PackageValidation.sourcelink.json

@@ -297,10 +297,10 @@
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.Tests/obj/Debug/net9.0/FluentUnions.Tests.AssemblyInfoInputs.cache
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.Tests/obj/Debug/net9.0/FluentUnions.Tests.AssemblyInfo.cs
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.Tests/obj/Debug/net9.0/FluentUnions.Tests.csproj.CoreCompileInputs.cache
+/home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.Tests/obj/Debug/net9.0/FluentUnions.Tests.sourcelink.json
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.Tests/obj/Debug/net9.0/FluentUn.C5D12DC6.Up2Date
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.Tests/obj/Debug/net9.0/FluentUnions.Tests.dll
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.Tests/obj/Debug/net9.0/refint/FluentUnions.Tests.dll
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.Tests/obj/Debug/net9.0/FluentUnions.Tests.pdb
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.Tests/obj/Debug/net9.0/FluentUnions.Tests.genruntimeconfig.cache
 /home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.Tests/obj/Debug/net9.0/ref/FluentUnions.Tests.dll
-/home/yousef/projects/paljaber/fluent-unions/tests/FluentUnions.Tests/obj/Debug/net9.0/FluentUnions.Tests.sourcelink.json

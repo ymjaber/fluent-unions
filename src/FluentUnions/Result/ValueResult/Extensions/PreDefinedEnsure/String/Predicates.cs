@@ -214,7 +214,7 @@ public static partial class EnsureBuilderExtensions
         in this EnsureBuilder<string> ensure,
         Error? error = null) =>
         ensure.Satisfies(
-            s => System.Text.RegularExpressions.Regex.IsMatch(s, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"),
+            s => RegexPatterns.EmailRegex().IsMatch(s),
             error ?? StringErrors.NotEmail);
 
     /// <summary>
@@ -230,7 +230,7 @@ public static partial class EnsureBuilderExtensions
         in this EnsureBuilder<string> ensure,
         Error? error = null) =>
         ensure.Satisfies(
-            s => System.Text.RegularExpressions.Regex.IsMatch(s, @"^http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?$"),
+            s => RegexPatterns.UrlRegex().IsMatch(s),
             error ?? StringErrors.NotUrl);
 
     /// <summary>
@@ -246,7 +246,7 @@ public static partial class EnsureBuilderExtensions
         in this EnsureBuilder<string> ensure,
         Error? error = null) =>
         ensure.Satisfies(
-            s => System.Text.RegularExpressions.Regex.IsMatch(s, @"^\+?(\d[\d-. ]+)?(\([\d-. ]+\))?[\d-. ]+\d$"),
+            s => RegexPatterns.PhoneNumberRegex().IsMatch(s),
             error ?? StringErrors.NotPhoneNumber);
 
     /// <summary>
@@ -262,7 +262,7 @@ public static partial class EnsureBuilderExtensions
         in this EnsureBuilder<string> ensure,
         Error? error = null) =>
         ensure.Satisfies(
-            s => System.Text.RegularExpressions.Regex.IsMatch(s, @"^(\d{1,3}\.){3}\d{1,3}$"),
+            s => RegexPatterns.IpAddressRegex().IsMatch(s),
             error ?? StringErrors.NotIpAddress);
 
     /// <summary>
@@ -278,7 +278,6 @@ public static partial class EnsureBuilderExtensions
         in this EnsureBuilder<string> ensure,
         Error? error = null) =>
         ensure.Satisfies(
-            s => System.Text.RegularExpressions.Regex.IsMatch(s,
-                @"^(\{){0,1}[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(\}){0,1}$"),
+            s => RegexPatterns.GuidRegex().IsMatch(s),
             error ?? StringErrors.NotGuid);
 }

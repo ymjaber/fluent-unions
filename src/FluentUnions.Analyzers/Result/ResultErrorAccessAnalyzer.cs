@@ -53,7 +53,7 @@ public class ResultErrorAccessAnalyzer : DiagnosticAnalyzer
     private static readonly DiagnosticDescriptor Rule = new(
         id: DiagnosticIds.ResultErrorAccessWithoutCheck,
         title: "Avoid accessing Result.Error without checking IsFailure",
-        messageFormat: "Result.Error is accessed without checking IsFailure. This may throw an InvalidOperationException",
+        messageFormat: "Result.Error is accessed without checking IsFailure. This may throw an InvalidOperationException.",
         category: Categories.Usage,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
@@ -115,6 +115,7 @@ public class ResultErrorAccessAnalyzer : DiagnosticAnalyzer
     /// - If statements with negated IsSuccess conditions
     /// - Conditional expressions with failure checks
     /// - Inside Match method failure callbacks (second argument)
+    /// - After IsSuccess checks that exit the control flow (throw, return, etc.)
     /// </remarks>
     private static bool IsInSafeContext(MemberAccessExpressionSyntax errorAccess, SemanticModel semanticModel)
     {
@@ -159,6 +160,10 @@ public class ResultErrorAccessAnalyzer : DiagnosticAnalyzer
                         return true;
                 }
             }
+            
+            // Check if we're after an IsSuccess check that exits the method
+            if (IsAfterSuccessExit(errorAccess, semanticModel))
+                return true;
             
             // Don't look beyond method boundaries
             if (currentNode is MethodDeclarationSyntax or LocalFunctionStatementSyntax or LambdaExpressionSyntax)
@@ -219,7 +224,7 @@ public class ResultErrorAccessAnalyzer : DiagnosticAnalyzer
         var symbol1 = semanticModel.GetSymbolInfo(expr1).Symbol;
         var symbol2 = semanticModel.GetSymbolInfo(expr2).Symbol;
         
-        return symbol1 != null && symbol1.Equals(symbol2);
+        return symbol1 != null && SymbolEqualityComparer.Default.Equals(symbol1, symbol2);
     }
 
     /// <summary>
@@ -242,5 +247,106 @@ public class ResultErrorAccessAnalyzer : DiagnosticAnalyzer
         var methodSymbol = semanticModel.GetSymbolInfo(invocation).Symbol as IMethodSymbol;
         return methodSymbol?.ContainingType != null && 
                SymbolHelpers.IsResultType(methodSymbol.ContainingType);
+    }
+
+    /// <summary>
+    /// Determines if a Result.Error access occurs after an IsSuccess check that exits the current control flow.
+    /// </summary>
+    /// <param name="errorAccess">The member access expression for Result.Error.</param>
+    /// <param name="semanticModel">The semantic model for symbol resolution.</param>
+    /// <returns>True if the access is after an IsSuccess check with control flow exit; otherwise, false.</returns>
+    /// <remarks>
+    /// This method recognizes patterns like:
+    /// if (result.IsSuccess) return;
+    /// var error = result.Error; // Safe because success case exits
+    /// </remarks>
+    private static bool IsAfterSuccessExit(MemberAccessExpressionSyntax errorAccess, SemanticModel semanticModel)
+    {
+        var block = errorAccess.FirstAncestorOrSelf<BlockSyntax>();
+        if (block == null)
+        {
+            // Check if we're in a top-level program
+            var compilation = errorAccess.FirstAncestorOrSelf<CompilationUnitSyntax>();
+            if (compilation != null)
+            {
+                return CheckForSuccessExitInStatements(compilation.Members.OfType<GlobalStatementSyntax>()
+                    .SelectMany(g => g.Statement.DescendantNodesAndSelf().OfType<StatementSyntax>()), 
+                    errorAccess, semanticModel);
+            }
+            return false;
+        }
+
+        return CheckForSuccessExitInStatements(block.Statements, errorAccess, semanticModel);
+    }
+
+    /// <summary>
+    /// Checks if there's an IsSuccess check with control flow exit before the error access in a sequence of statements.
+    /// </summary>
+    private static bool CheckForSuccessExitInStatements(IEnumerable<StatementSyntax> statements, 
+        MemberAccessExpressionSyntax errorAccess, SemanticModel semanticModel)
+    {
+        var errorAccessPosition = errorAccess.SpanStart;
+        
+        foreach (var statement in statements)
+        {
+            if (statement.SpanStart >= errorAccessPosition)
+                break;
+
+            // Check for if (result.IsSuccess) with exit statement
+            if (statement is IfStatementSyntax ifStatement)
+            {
+                if (HasIsSuccessCheck(ifStatement.Condition, errorAccess.Expression, semanticModel))
+                {
+                    // Check if the if body contains an exit statement
+                    if (ContainsExitStatement(ifStatement.Statement))
+                    {
+                        // Check that there's no else clause or the else also exits
+                        if (ifStatement.Else == null || ContainsExitStatement(ifStatement.Else.Statement))
+                            return true;
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    /// <summary>
+    /// Checks if an expression contains an IsSuccess property check for the given result expression.
+    /// </summary>
+    private static bool HasIsSuccessCheck(ExpressionSyntax condition, ExpressionSyntax resultExpression, SemanticModel semanticModel)
+    {
+        // Handle direct IsSuccess property access
+        if (condition is MemberAccessExpressionSyntax memberAccess &&
+            memberAccess.Name.Identifier.Text == "IsSuccess")
+        {
+            return AreExpressionsEquivalent(memberAccess.Expression, resultExpression, semanticModel);
+        }
+        
+        // Handle negated IsFailure (!result.IsFailure)
+        if (condition is PrefixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.LogicalNotExpression } notExpr &&
+            notExpr.Operand is MemberAccessExpressionSyntax innerMemberAccess &&
+            innerMemberAccess.Name.Identifier.Text == "IsFailure")
+        {
+            return AreExpressionsEquivalent(innerMemberAccess.Expression, resultExpression, semanticModel);
+        }
+        
+        return false;
+    }
+
+    /// <summary>
+    /// Determines if a statement contains a control flow exit (throw, return, break, continue).
+    /// </summary>
+    private static bool ContainsExitStatement(StatementSyntax statement)
+    {
+        return statement switch
+        {
+            ThrowStatementSyntax => true,
+            ReturnStatementSyntax => true,
+            BreakStatementSyntax => true,
+            ContinueStatementSyntax => true,
+            BlockSyntax block => block.Statements.Any(ContainsExitStatement),
+            _ => false
+        };
     }
 }

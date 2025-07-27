@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Text.Json;
-using FluentUnions;
 using FluentUnions.Serialization;
-using Xunit;
+using FluentUnions.Tests.Errors;
 
 namespace FluentUnions.Tests.Serialization
 {
@@ -42,7 +39,7 @@ namespace FluentUnions.Tests.Serialization
                 ["timestamp"] = "2023-12-25T10:00:00Z",
                 ["details"] = new { action = "delete", resource = "user" }
             };
-            var error = new Error("E001", "Operation failed", metadata);
+            var error = new TestError("E001", "Operation failed", metadata);
 
             // Act
             var json = JsonSerializer.Serialize(error, _options);
@@ -83,8 +80,6 @@ namespace FluentUnions.Tests.Serialization
             Assert.NotNull(error);
             Assert.Equal("E001", error.Code);
             Assert.Equal("Test error", error.Message);
-            Assert.NotNull(error.Metadata);
-            Assert.Equal(2, error.Metadata.Count);
         }
 
         [Fact]
@@ -221,7 +216,7 @@ namespace FluentUnions.Tests.Serialization
                     ["count"] = 10
                 }
             };
-            var error = new Error("E001", "Complex error", metadata);
+            var error = new TestError("E001", "Complex error", metadata);
 
             // Act
             var json = JsonSerializer.Serialize(error, _options);
@@ -294,8 +289,6 @@ namespace FluentUnions.Tests.Serialization
             Assert.NotNull(error);
             Assert.Equal("E001", error.Code);
             Assert.Equal("Test", error.Message);
-            Assert.NotNull(error.Metadata);
-            Assert.Empty(error.Metadata);
         }
 
         [Fact]

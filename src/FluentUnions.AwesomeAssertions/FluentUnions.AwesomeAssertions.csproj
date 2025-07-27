@@ -14,7 +14,7 @@
     <Nullable>enable</Nullable>
     
     <PackageId>FluentUnions.AwesomeAssertions</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Authors>Yousef Jaber</Authors>
     <Company>PalJaber</Company>
     <Description>FluentUnions.AwesomeAssertions adds fluent assertion methods for Result and Option types from FluentUnions, integrating with AwesomeAssertions testing library.</Description>
@@ -36,6 +36,10 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+    
+    <!-- Build Performance -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
   </PropertyGroup>
 
   <ItemGroup>

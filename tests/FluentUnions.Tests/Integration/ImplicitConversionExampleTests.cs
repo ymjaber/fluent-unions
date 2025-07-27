@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using FluentUnions;
-using Xunit;
-
 namespace FluentUnions.Tests.Integration
 {
     /// <summary>

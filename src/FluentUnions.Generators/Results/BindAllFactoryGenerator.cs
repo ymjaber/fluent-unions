@@ -38,6 +38,21 @@ namespace FluentUnions.Generators.Results
     [Generator]
     public class BindAllFactoryGenerator : IIncrementalGenerator
     {
+        private static string GetOrdinal(int number) => number switch
+        {
+            1 => "first",
+            2 => "second",
+            3 => "third",
+            4 => "fourth",
+            5 => "fifth",
+            6 => "sixth",
+            7 => "seventh",
+            8 => "eighth",
+            9 => "ninth",
+            10 => "tenth",
+            _ => $"{number}th"
+        };
+
         /// <summary>
         /// Initializes the generator and registers the source generation logic.
         /// </summary>
@@ -54,6 +69,27 @@ namespace FluentUnions.Generators.Results
                 for (int i = 2; i <= MaxElements; i++)
                 {
                     string types = string.Join(", ", Enumerable.Range(1, i).Select(n => "TValue" + n));
+                    string typeParamDocs = string.Join("\n", Enumerable.Range(1, i).Select(n => $"{Tab(1)}/// <typeparam name=\"TValue{n}\">The type of the {GetOrdinal(n)} value in the resulting tuple.</typeparam>"));
+                    
+                    builder.Append($"{Tab(1)}/// <summary>\n");
+                    builder.Append($"{Tab(1)}/// Combines {i} Result values into a single Result containing a tuple, accumulating all errors if any fail.\n");
+                    builder.Append($"{Tab(1)}/// </summary>\n");
+                    builder.Append(typeParamDocs + "\n");
+                    builder.Append(string.Join("\n", Enumerable.Range(1, i).Select(n => $"{Tab(1)}/// <param name=\"result{n}\">The {GetOrdinal(n)} Result value to combine.</param>")));
+                    builder.Append($"\n{Tab(1)}/// <returns>A <see cref=\"Result{{T}}\"/> containing a tuple with all values if all Results succeed; otherwise, a failure with all accumulated errors.</returns>\n");
+                    builder.Append($"{Tab(1)}/// <remarks>\n");
+                    builder.Append($"{Tab(1)}/// The BindAll factory method combines multiple Result values with comprehensive error accumulation:\n");
+                    builder.Append($"{Tab(1)}/// - All Result values are evaluated (no short-circuiting)\n");
+                    builder.Append($"{Tab(1)}/// - If any Results fail, ALL errors are collected using ErrorBuilder\n");
+                    builder.Append($"{Tab(1)}/// - Returns a composite error containing all failure information\n");
+                    builder.Append($"{Tab(1)}/// - Only if ALL Results succeed are their values combined into a tuple\n");
+                    builder.Append($"{Tab(1)}/// \n");
+                    builder.Append($"{Tab(1)}/// This differs from Bind which uses short-circuit evaluation. Use BindAll when you need\n");
+                    builder.Append($"{Tab(1)}/// comprehensive error reporting, such as in validation scenarios where users benefit from\n");
+                    builder.Append($"{Tab(1)}/// seeing all errors at once rather than fixing them one at a time.\n");
+                    builder.Append($"{Tab(1)}/// \n");
+                    builder.Append($"{Tab(1)}/// The 'in' parameter modifier provides performance optimization for value types.\n");
+                    builder.Append($"{Tab(1)}/// </remarks>\n");
                     builder.Append(Tab(1) + $"public static Result<({types})> BindAllAppend<{types}>(\n");
                     builder.Append(string.Join(",\n",
                         Enumerable.Range(1, i).Select(n => $"{Tab(2)}in Result<TValue{n}> result{n}")));

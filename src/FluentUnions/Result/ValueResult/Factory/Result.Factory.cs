@@ -11,16 +11,8 @@ public readonly partial struct Result
     /// <typeparam name="TValue">The type of the value.</typeparam>
     /// <param name="value">The value of the successful result.</param>
     /// <returns>A successful result containing the specified value.</returns>
-    public static Result<TValue> Create<TValue>(TValue value) => new(value);
-    
-    /// <summary>
-    /// Creates a successful result with the specified value.
-    /// </summary>
-    /// <typeparam name="TValue">The type of the value.</typeparam>
-    /// <param name="value">The value of the successful result.</param>
-    /// <returns>A successful result containing the specified value.</returns>
     public static Result<TValue> Success<TValue>(TValue value) => new(value);
-    
+
     /// <summary>
     /// Creates a failed result with the specified error.
     /// </summary>

@@ -43,6 +43,21 @@ namespace FluentUnions.Generators.Results
     [Generator]
     public class BindAppendExtensionsGenerator : IIncrementalGenerator
     {
+        private static string GetOrdinal(int number) => number switch
+        {
+            1 => "first",
+            2 => "second",
+            3 => "third",
+            4 => "fourth",
+            5 => "fifth",
+            6 => "sixth",
+            7 => "seventh",
+            8 => "eighth",
+            9 => "ninth",
+            10 => "tenth",
+            _ => $"{number}th"
+        };
+
         /// <summary>
         /// Initializes the generator and registers the source generation logic.
         /// </summary>
@@ -85,7 +100,33 @@ namespace FluentUnions.Generators.Results
                             ? "target"
                             : string.Join(", ", Enumerable.Range(1, k).Select(n => $"target.Item{n}"));
 
+                        string sourceTypeParamDocs = j == 1
+                            ? "    /// <typeparam name=\"TSource\">The type of the source value.</typeparam>"
+                            : string.Join("\n", Enumerable.Range(1, j).Select(n => $"    /// <typeparam name=\"TSource{n}\">The type of the {GetOrdinal(n)} source tuple element.</typeparam>"));
+                        
+                        string targetTypeParamDocs = k == 1
+                            ? "    /// <typeparam name=\"TTarget\">The type of the target value to append.</typeparam>"
+                            : string.Join("\n", Enumerable.Range(1, k).Select(n => $"    /// <typeparam name=\"TTarget{n}\">The type of the {GetOrdinal(n)} target tuple element to append.</typeparam>"));
+
                         builder.Append($$"""
+                                             /// <summary>
+                                             /// Chains a Result-returning operation and appends its value(s) to form a larger tuple Result.
+                                             /// </summary>
+                                             {{sourceTypeParamDocs}}
+                                             {{targetTypeParamDocs}}
+                                             /// <param name="result">The source <see cref="Result{T}"/> containing {{(j == 1 ? "a value" : $"a tuple with {j} elements")}}.</param>
+                                             /// <param name="binder">A function that takes the source value(s) and returns a Result containing {{(k == 1 ? "a value" : $"a tuple with {k} elements")}} to append.</param>
+                                             /// <returns>A <see cref="Result{T}"/> containing a tuple with all source and target values if both operations succeed; otherwise, the first error encountered.</returns>
+                                             /// <remarks>
+                                             /// BindAppend is a monadic bind operation that accumulates values into larger tuples. It's part of the
+                                             /// railway-oriented programming pattern where:
+                                             /// - If the source Result is a failure, that error is propagated immediately
+                                             /// - If the source is successful, the binder function is called with the value(s)
+                                             /// - If the binder returns a failure, that error is propagated
+                                             /// - If both succeed, all values are combined into a larger tuple
+                                             /// This enables building up complex data structures through a series of Result-returning operations
+                                             /// while maintaining proper error handling throughout the chain.
+                                             /// </remarks>
                                              public static Result<({{sourceTypes}}, {{targetTypes}})> BindAppend<{{sourceTypes}}, {{targetTypes}}>(
                                                  in this Result<{{tupleSourceTypes}}> result,
                                                  Func<{{sourceTypes}}, Result<{{tupleTargetTypes}}>> binder)

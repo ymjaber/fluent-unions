@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace FluentUnions;
 
 /// <summary>
@@ -22,6 +24,7 @@ public static partial class ValueResultExtensions
     /// The mapping function is only called if the result is successful, allowing safe transformation
     /// of values without explicit null or error checking.
     /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result<TTarget> Map<TSource, TTarget>(
         in this Result<TSource> result,
         Func<TSource, TTarget> mapper)

@@ -4,6 +4,24 @@
         <name>FluentUnions.Analyzers</name>
     </assembly>
     <members>
+        <member name="T:FluentUnions.Analyzers.Common.BuilderMisuseAnalyzer">
+            <summary>
+            Analyzer that detects misuse of builder types (EnsureBuilder and FilterBuilder) that should be
+            completed with terminal operations or implicit conversions.
+            </summary>
+            <remarks>
+            This analyzer helps prevent incorrect usage of builder pattern types by detecting when they are:
+            - Assigned to variables without completion
+            - Returned from methods without proper conversion
+            - Used in expression-bodied void methods
+            - Passed as arguments without conversion
+            
+            The builders should always be completed with:
+            - Build() method call
+            - Map/Bind/BindAll methods (for EnsureBuilder)
+            - Implicit conversion to Result/Option
+            </remarks>
+        </member>
         <member name="T:FluentUnions.Analyzers.Common.Categories">
             <summary>
             Defines diagnostic categories used by FluentUnions analyzers to classify the types of issues they detect.
@@ -105,6 +123,15 @@
             but their value is never examined, potentially ignoring important data.
             </remarks>
         </member>
+        <member name="F:FluentUnions.Analyzers.Common.DiagnosticIds.FilterBuilderMisuse">
+            <summary>
+            Diagnostic ID for detecting FilterBuilder that is not properly completed with Build() or implicit conversion.
+            </summary>
+            <remarks>
+            This diagnostic warns when a FilterBuilder is assigned to a variable, returned from a method,
+            or otherwise used without being completed with Build() or an implicit conversion to Option.
+            </remarks>
+        </member>
         <member name="F:FluentUnions.Analyzers.Common.DiagnosticIds.ResultValueAccessWithoutCheck">
             <summary>
             Diagnostic ID for detecting unsafe access to Result.Value without checking if the result is successful.
@@ -139,6 +166,15 @@
             <remarks>
             This diagnostic helps prevent bugs where operations that return Result are called
             but their success/failure status is never examined, potentially ignoring errors.
+            </remarks>
+        </member>
+        <member name="F:FluentUnions.Analyzers.Common.DiagnosticIds.EnsureBuilderMisuse">
+            <summary>
+            Diagnostic ID for detecting EnsureBuilder that is not properly completed with Build() or implicit conversion.
+            </summary>
+            <remarks>
+            This diagnostic warns when an EnsureBuilder is assigned to a variable, returned from a method,
+            or otherwise used without being completed with Build(), Map(), Bind(), or an implicit conversion to Result.
             </remarks>
         </member>
         <member name="T:FluentUnions.Analyzers.Common.SymbolHelpers">
@@ -196,6 +232,20 @@
             This method checks for the non-generic Result type that represents operations
             that can succeed or fail but don't return a value on success.
             </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Common.SymbolHelpers.IsEnsureBuilderType(Microsoft.CodeAnalysis.ITypeSymbol)">
+            <summary>
+            Determines whether a type symbol represents an EnsureBuilder type.
+            </summary>
+            <param name="typeSymbol">The type symbol to check.</param>
+            <returns>True if the type is EnsureBuilder&lt;T&gt;; otherwise, false.</returns>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Common.SymbolHelpers.IsFilterBuilderType(Microsoft.CodeAnalysis.ITypeSymbol)">
+            <summary>
+            Determines whether a type symbol represents a FilterBuilder type.
+            </summary>
+            <param name="typeSymbol">The type symbol to check.</param>
+            <returns>True if the type is FilterBuilder&lt;T&gt;; otherwise, false.</returns>
         </member>
         <member name="T:FluentUnions.Analyzers.Option.CodeFixes.OptionNoneMisuseCodeFixProvider">
             <summary>
@@ -694,6 +744,34 @@
             <param name="semanticModel">The semantic model for symbol resolution.</param>
             <returns>true if the invocation is an Option.Match call; otherwise, false.</returns>
         </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionValueAccessAnalyzer.IsAfterNoneExit(Microsoft.CodeAnalysis.CSharp.Syntax.MemberAccessExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines if an Option.Value access occurs after an IsNone check that exits the current control flow.
+            </summary>
+            <param name="valueAccess">The member access expression for Option.Value.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>True if the access is after an IsNone check with control flow exit; otherwise, false.</returns>
+            <remarks>
+            This method recognizes patterns like:
+            if (option.IsNone) throw new Exception();
+            var value = option.Value; // Safe because none case exits
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionValueAccessAnalyzer.CheckForNoneExitInStatements(System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.CSharp.Syntax.StatementSyntax},Microsoft.CodeAnalysis.CSharp.Syntax.MemberAccessExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Checks if there's an IsNone check with control flow exit before the value access in a sequence of statements.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionValueAccessAnalyzer.HasIsNoneCheck(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Checks if an expression contains an IsNone property check for the given option expression.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Option.OptionValueAccessAnalyzer.ContainsExitStatement(Microsoft.CodeAnalysis.CSharp.Syntax.StatementSyntax)">
+            <summary>
+            Determines if a statement contains a control flow exit (throw, return, break, continue).
+            </summary>
+        </member>
         <member name="T:FluentUnions.Analyzers.Option.UnhandledOptionAnalyzer">
             <summary>
             Analyzer that detects Option values that are created but never consumed or checked.
@@ -891,6 +969,7 @@
             - If statements with negated IsSuccess conditions
             - Conditional expressions with failure checks
             - Inside Match method failure callbacks (second argument)
+            - After IsSuccess checks that exit the control flow (throw, return, etc.)
             </remarks>
         </member>
         <member name="M:FluentUnions.Analyzers.Result.ResultErrorAccessAnalyzer.HasIsFailureCheck(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
@@ -924,6 +1003,34 @@
             <remarks>
             In Match method calls, the Error property can be safely accessed within the failure handler (typically the second argument).
             </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultErrorAccessAnalyzer.IsAfterSuccessExit(Microsoft.CodeAnalysis.CSharp.Syntax.MemberAccessExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines if a Result.Error access occurs after an IsSuccess check that exits the current control flow.
+            </summary>
+            <param name="errorAccess">The member access expression for Result.Error.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>True if the access is after an IsSuccess check with control flow exit; otherwise, false.</returns>
+            <remarks>
+            This method recognizes patterns like:
+            if (result.IsSuccess) return;
+            var error = result.Error; // Safe because success case exits
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultErrorAccessAnalyzer.CheckForSuccessExitInStatements(System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.CSharp.Syntax.StatementSyntax},Microsoft.CodeAnalysis.CSharp.Syntax.MemberAccessExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Checks if there's an IsSuccess check with control flow exit before the error access in a sequence of statements.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultErrorAccessAnalyzer.HasIsSuccessCheck(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Checks if an expression contains an IsSuccess property check for the given result expression.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultErrorAccessAnalyzer.ContainsExitStatement(Microsoft.CodeAnalysis.CSharp.Syntax.StatementSyntax)">
+            <summary>
+            Determines if a statement contains a control flow exit (throw, return, break, continue).
+            </summary>
         </member>
         <member name="T:FluentUnions.Analyzers.Result.ResultPreferMatchAnalyzer">
             <summary>
@@ -1109,6 +1216,7 @@
             - Conditional expressions with IsSuccess checks
             - Inside Match method callbacks
             - After ThrowIfFailure method calls
+            - After IsFailure checks that exit the control flow (throw, return, etc.)
             </remarks>
         </member>
         <member name="M:FluentUnions.Analyzers.Result.ResultValueAccessAnalyzer.HasIsSuccessCheck(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
@@ -1150,6 +1258,34 @@
             <remarks>
             Match method provides safe pattern matching on Result, making Value access within its callbacks safe.
             </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultValueAccessAnalyzer.IsAfterFailureExit(Microsoft.CodeAnalysis.CSharp.Syntax.MemberAccessExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Determines if a Result.Value access occurs after an IsFailure check that exits the current control flow.
+            </summary>
+            <param name="valueAccess">The member access expression for Result.Value.</param>
+            <param name="semanticModel">The semantic model for symbol resolution.</param>
+            <returns>True if the access is after an IsFailure check with control flow exit; otherwise, false.</returns>
+            <remarks>
+            This method recognizes patterns like:
+            if (result.IsFailure) throw new Exception();
+            var value = result.Value; // Safe because failure case exits
+            </remarks>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultValueAccessAnalyzer.CheckForFailureExitInStatements(System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.CSharp.Syntax.StatementSyntax},Microsoft.CodeAnalysis.CSharp.Syntax.MemberAccessExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Checks if there's an IsFailure check with control flow exit before the value access in a sequence of statements.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultValueAccessAnalyzer.HasIsFailureCheck(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SemanticModel)">
+            <summary>
+            Checks if an expression contains an IsFailure property check for the given result expression.
+            </summary>
+        </member>
+        <member name="M:FluentUnions.Analyzers.Result.ResultValueAccessAnalyzer.ContainsExitStatement(Microsoft.CodeAnalysis.CSharp.Syntax.StatementSyntax)">
+            <summary>
+            Determines if a statement contains a control flow exit (throw, return, break, continue).
+            </summary>
         </member>
         <member name="T:FluentUnions.Analyzers.Result.UnhandledResultAnalyzer">
             <summary>

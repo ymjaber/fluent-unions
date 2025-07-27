@@ -52,7 +52,7 @@
           "buildMultiTargeting/Microsoft.SourceLink.GitHub.targets": {}
         }
       },
-      "FluentUnions/1.0.0": {
+      "FluentUnions/1.1.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "compile": {
@@ -230,7 +230,7 @@
         "tools/net472/zh-Hant/Microsoft.SourceLink.GitHub.resources.dll"
       ]
     },
-    "FluentUnions/1.0.0": {
+    "FluentUnions/1.1.0": {
       "type": "project",
       "path": "../FluentUnions/FluentUnions.csproj",
       "msbuildProject": "../FluentUnions/FluentUnions.csproj"
@@ -239,7 +239,7 @@
   "projectFileDependencyGroups": {
     "net9.0": [
       "AwesomeAssertions >= 9.0.0",
-      "FluentUnions >= 1.0.0",
+      "FluentUnions >= 1.1.0",
       "Microsoft.SourceLink.GitHub >= 8.0.0"
     ]
   },
@@ -247,7 +247,7 @@
     "/home/yousef/.nuget/packages/": {}
   },
   "project": {
-    "version": "1.0.0",
+    "version": "1.1.0",
     "restore": {
       "projectUniqueName": "/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.AwesomeAssertions/FluentUnions.AwesomeAssertions.csproj",
       "projectName": "FluentUnions.AwesomeAssertions",
@@ -278,6 +278,9 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreLockProperties": {
+        "restorePackagesWithLockFile": "true"
       },
       "restoreAuditProperties": {
         "enableAudit": "true",

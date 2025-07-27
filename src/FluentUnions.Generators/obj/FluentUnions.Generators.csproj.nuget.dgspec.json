@@ -5,7 +5,7 @@
   },
   "projects": {
     "/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Generators/FluentUnions.Generators.csproj": {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "restore": {
         "projectUniqueName": "/home/yousef/projects/paljaber/fluent-unions/src/FluentUnions.Generators/FluentUnions.Generators.csproj",
         "projectName": "FluentUnions.Generators",

@@ -39,7 +39,7 @@ public class ResultAssertions<T> : ReferenceTypeAssertions<Result<T>, ResultAsse
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>An <see cref="AndWhichConstraint{TParent,TSubject}"/> which can be used to chain assertions on the contained value.</returns>
-    /// <exception cref="AssertionException">The result represents a failed operation.</exception>
+    /// <exception>The result represents a failed operation.</exception>
     /// <example>
     /// <code>
     /// var result = Result.Success(42);
@@ -64,7 +64,7 @@ public class ResultAssertions<T> : ReferenceTypeAssertions<Result<T>, ResultAsse
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>An <see cref="AndWhichConstraint{TParent,TSubject}"/> which can be used to chain additional assertions.</returns>
-    /// <exception cref="AssertionException">The result is failed or contains a different value.</exception>
+    /// <exception>The result is failed or contains a different value.</exception>
     /// <example>
     /// <code>
     /// var result = Result.Success("Hello World");
@@ -90,11 +90,11 @@ public class ResultAssertions<T> : ReferenceTypeAssertions<Result<T>, ResultAsse
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>An <see cref="AndWhichConstraint{TParent,TSubject}"/> which can be used to chain additional assertions.</returns>
-    /// <exception cref="AssertionException">The result is failed or the value doesn't match the predicate.</exception>
+    /// <exception>The result is failed or the value doesn't match the predicate.</exception>
     /// <example>
     /// <code>
     /// var result = Result.Success(42);
-    /// result.Should().SucceedMatching(x => x > 40 && x < 50);
+    /// result.Should().SucceedMatching(x => x > 40 &amp;&amp; x &lt; 50);
     /// </code>
     /// </example>
     public AndWhichConstraint<ResultAssertions<T>, T> SucceedMatching(Func<T, bool> predicate, string because = "", params object[] becauseArgs)
@@ -116,7 +116,7 @@ public class ResultAssertions<T> : ReferenceTypeAssertions<Result<T>, ResultAsse
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>An <see cref="AndWhichConstraint{TParent,TSubject}"/> which can be used to chain additional assertions.</returns>
-    /// <exception cref="AssertionException">The result is failed or the contained assertions fail.</exception>
+    /// <exception>The result is failed or the contained assertions fail.</exception>
     /// <remarks>
     /// This method is useful for performing multiple assertions on the result value in a fluent manner.
     /// </remarks>
@@ -145,7 +145,7 @@ public class ResultAssertions<T> : ReferenceTypeAssertions<Result<T>, ResultAsse
     /// <param name="because">A formatted phrase explaining why the assertion should be satisfied.</param>
     /// <param name="becauseArgs">Zero or more objects to format using the placeholders in <paramref name="because"/>.</param>
     /// <returns>A <see cref="FailedResultAssertions"/> object for asserting against the error details.</returns>
-    /// <exception cref="AssertionException">The result represents a successful operation.</exception>
+    /// <exception>The result represents a successful operation.</exception>
     /// <remarks>
     /// This method not only asserts that the result failed but also returns a specialized assertions
     /// object that allows for detailed error validation including error type, code, and message.

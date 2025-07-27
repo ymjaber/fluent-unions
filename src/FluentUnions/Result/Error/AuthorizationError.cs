@@ -1,85 +1,13 @@
 namespace FluentUnions;
 
 /// <summary>
-/// Represents an error that occurs when a user lacks the necessary permissions to perform an operation.
-/// This error type is specifically designed for scenarios where user identity is known but they lack
-/// the required authorization to access a resource or perform an action.
+/// Represents an error that occurs when a user lacks necessary permissions.
 /// </summary>
 /// <remarks>
-/// <para>
-/// AuthorizationError provides a semantic way to distinguish authorization failures from authentication
-/// or other types of errors. This is critical for implementing proper access control and security
-/// policies in applications where different users have different levels of access.
-/// </para>
-/// <para>
-/// Common use cases include:
-/// - Insufficient role or permissions (user lacks admin role)
-/// - Resource-based authorization failures (user can't access another user's data)
-/// - Feature-based restrictions (feature not available in user's subscription plan)
-/// - Time-based access restrictions (access outside allowed hours)
-/// - Geographic restrictions (content not available in user's region)
-/// - Policy-based access control violations
-/// </para>
-/// <para>
-/// The error type helps in implementing proper authorization handling strategies, such as:
-/// - Returning HTTP 403 (Forbidden) responses in web APIs
-/// - Providing guidance on how to obtain necessary permissions
-/// - Implementing principle of least privilege
-/// - Audit logging for compliance and security monitoring
-/// - Distinguishing between "not authenticated" (401) and "not authorized" (403)
-/// </para>
+/// Used for insufficient roles, resource access denial, or policy violations. Maps to HTTP 403 in web contexts.
 /// </remarks>
-/// <example>
-/// <code>
-/// // Simple authorization error
-/// var error = new AuthorizationError("Auth.InsufficientPermissions", "User lacks admin privileges");
-/// 
-/// // Authorization error with metadata
-/// var metadata = new Dictionary&lt;string, object&gt;
-/// {
-///     ["RequiredRole"] = "Admin",
-///     ["UserRole"] = "Member",
-///     ["Resource"] = "UserManagement",
-///     ["Action"] = "Delete"
-/// };
-/// var detailedError = new AuthorizationError("Auth.RoleRequired", 
-///     "Admin role required to delete users", metadata);
-/// 
-/// // Used in an authorization service
-/// public Result&lt;T&gt; AuthorizeAction&lt;T&gt;(User user, string resource, string action, Func&lt;Result&lt;T&gt;&gt; operation)
-/// {
-///     if (!HasPermission(user, resource, action))
-///     {
-///         var metadata = new Dictionary&lt;string, object&gt;
-///         {
-///             ["UserId"] = user.Id,
-///             ["Resource"] = resource,
-///             ["Action"] = action
-///         };
-///         return new AuthorizationError("Auth.AccessDenied", 
-///             $"Access denied to {action} {resource}", metadata);
-///     }
-///     
-///     return operation();
-/// }
-/// 
-/// // Resource-based authorization
-/// public Result&lt;Document&gt; GetDocument(User user, int documentId)
-/// {
-///     var document = documentRepository.FindById(documentId);
-///     if (document == null)
-///         return new NotFoundError("Document.NotFound", $"Document {documentId} not found");
-///     
-///     if (document.OwnerId != user.Id &amp;&amp; !user.IsAdmin)
-///         return new AuthorizationError("Auth.ResourceAccessDenied", 
-///             "You don't have permission to access this document");
-///     
-///     return document;
-/// }
-/// </code>
-/// </example>
 [Serializable]
-public class AuthorizationError : Error
+public class AuthorizationError : ErrorWithMetadata
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="AuthorizationError"/> class with the specified code, message, and metadata.

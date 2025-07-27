@@ -1,4 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace FluentUnions;
 
@@ -7,6 +9,7 @@ namespace FluentUnions;
 /// </summary>
 /// <typeparam name="TValue">The type of the value.</typeparam>
 [Serializable]
+[StructLayout(LayoutKind.Auto)]
 public readonly struct Option<TValue> : IEquatable<Option<TValue>>, IEquatable<TValue>
     where TValue : notnull
 {
@@ -31,18 +34,30 @@ public readonly struct Option<TValue> : IEquatable<Option<TValue>>, IEquatable<T
     /// <summary>
     /// Gets a value indicating whether the option has a value.
     /// </summary>
-    public bool IsSome => _isSome;
+    public bool IsSome
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _isSome;
+    }
 
     /// <summary>
     /// Gets a value indicating whether the option has no value.
     /// </summary>
-    public bool IsNone => !_isSome;
+    public bool IsNone
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => !_isSome;
+    }
 
     /// <summary>
     /// Gets the value of the option if it has one; otherwise, throws an <see cref="InvalidOperationException"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">The option is None.</exception>
-    public TValue Value => _isSome ? _value! : throw new InvalidOperationException("Option is None");
+    public TValue Value
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _isSome ? _value! : throw new InvalidOperationException("Option is None");
+    }
 
     /// <summary>
     /// Implicitly converts a value to an <see cref="Option{TValue}"/> containing that value.
@@ -160,7 +175,8 @@ public readonly struct Option<TValue> : IEquatable<Option<TValue>>, IEquatable<T
     /// </summary>
     /// <param name="value">The value of the option if it has one; otherwise, the default value of <typeparamref name="TValue"/>.</param>
     /// <returns><see langword="true"/> if the option has a value; otherwise, <see langword="false"/>.</returns>
-    public bool TryGetValue([MaybeNullWhen(false)] out TValue value)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly bool TryGetValue([MaybeNullWhen(false)] out TValue value)
     {
         value = _value!;
         return _isSome;

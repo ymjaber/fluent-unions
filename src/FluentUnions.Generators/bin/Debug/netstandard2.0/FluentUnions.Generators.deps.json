@@ -7,7 +7,7 @@
   "targets": {
     ".NETStandard,Version=v2.0": {},
     ".NETStandard,Version=v2.0/": {
-      "FluentUnions.Generators/1.0.0": {
+      "FluentUnions.Generators/1.1.0": {
         "dependencies": {
           "Microsoft.CodeAnalysis.Analyzers": "3.11.0",
           "Microsoft.CodeAnalysis.CSharp": "4.12.0-3.final",
@@ -232,7 +232,7 @@
     }
   },
   "libraries": {
-    "FluentUnions.Generators/1.0.0": {
+    "FluentUnions.Generators/1.1.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -37,6 +37,21 @@ namespace FluentUnions.Generators.Results
     [Generator]
     public class BindFactoryGenerator : IIncrementalGenerator
     {
+        private static string GetOrdinal(int number) => number switch
+        {
+            1 => "first",
+            2 => "second",
+            3 => "third",
+            4 => "fourth",
+            5 => "fifth",
+            6 => "sixth",
+            7 => "seventh",
+            8 => "eighth",
+            9 => "ninth",
+            10 => "tenth",
+            _ => $"{number}th"
+        };
+
         /// <summary>
         /// Initializes the generator and registers the source generation logic.
         /// </summary>
@@ -53,6 +68,24 @@ namespace FluentUnions.Generators.Results
                 for (int i = 2; i <= MaxElements; i++)
                 {
                     string types = string.Join(", ", Enumerable.Range(1, i).Select(n => "TValue" + n));
+                    string typeParamDocs = string.Join("\n", Enumerable.Range(1, i).Select(n => $"{Tab(1)}/// <typeparam name=\"TValue{n}\">The type of the {GetOrdinal(n)} value in the resulting tuple.</typeparam>"));
+                    
+                    builder.Append($"{Tab(1)}/// <summary>\n");
+                    builder.Append($"{Tab(1)}/// Combines {i} Result-returning operations into a single Result containing a tuple, using short-circuit evaluation.\n");
+                    builder.Append($"{Tab(1)}/// </summary>\n");
+                    builder.Append(typeParamDocs + "\n");
+                    builder.Append(string.Join("\n", Enumerable.Range(1, i).Select(n => $"{Tab(1)}/// <param name=\"result{n}\">A function that returns the {GetOrdinal(n)} Result value.</param>")));
+                    builder.Append($"\n{Tab(1)}/// <returns>A <see cref=\"Result{{T}}\"/> containing a tuple with all values if all operations succeed; otherwise, the first error encountered.</returns>\n");
+                    builder.Append($"{Tab(1)}/// <remarks>\n");
+                    builder.Append($"{Tab(1)}/// The Bind factory method executes Result-returning operations sequentially with short-circuit evaluation:\n");
+                    builder.Append($"{Tab(1)}/// - Each function is executed in order\n");
+                    builder.Append($"{Tab(1)}/// - If any function returns a failure, execution stops and that error is returned immediately\n");
+                    builder.Append($"{Tab(1)}/// - Only if all functions succeed are their values combined into a tuple Result\n");
+                    builder.Append($"{Tab(1)}/// \n");
+                    builder.Append($"{Tab(1)}/// This differs from BindAll which accumulates all errors. Use Bind when you want fail-fast behavior\n");
+                    builder.Append($"{Tab(1)}/// and don't need to collect all possible errors. The sequential execution means later operations\n");
+                    builder.Append($"{Tab(1)}/// won't run if earlier ones fail, which can be more efficient for expensive operations.\n");
+                    builder.Append($"{Tab(1)}/// </remarks>\n");
                     builder.Append(Tab(1) + $"public static Result<({types})> BindAppend<{types}>(\n");
                     builder.Append(string.Join(",\n",
                         Enumerable.Range(1, i).Select(n => $"{Tab(2)}Func<Result<TValue{n}>> result{n}")));

@@ -1,31 +1,20 @@
 namespace FluentUnions;
 
 /// <summary>
-/// Represents an error that can occur during an operation, containing a code, message, and optional metadata.
+/// Represents an error that can occur during an operation, containing a code and message.
 /// </summary>
 [Serializable]
 public class Error
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Error"/> class with a code, message, and metadata.
-    /// </summary>
-    /// <param name="code">A unique identifier for the error type.</param>
-    /// <param name="message">A human-readable description of the error.</param>
-    /// <param name="metadata">Additional contextual information about the error.</param>
-    public Error(string code, string message, IDictionary<string, object> metadata)
-    {
-        Code = code;
-        Message = message;
-        Metadata = metadata.AsReadOnly();
-    }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="Error"/> class with a code and message.
     /// </summary>
     /// <param name="code">A unique identifier for the error type.</param>
     /// <param name="message">A human-readable description of the error.</param>
-    public Error(string code, string message) : this(code, message, new Dictionary<string, object>())
+    public Error(string code, string message)
     {
+        Code = code;
+        Message = message;
     }
 
     /// <summary>
@@ -33,7 +22,7 @@ public class Error
     /// The error code will be set to an empty string.
     /// </summary>
     /// <param name="message">A human-readable description of the error.</param>
-    public Error(string message) : this(string.Empty, message, new Dictionary<string, object>())
+    public Error(string message) : this(string.Empty, message)
     {
     }
 
@@ -46,11 +35,6 @@ public class Error
     /// Gets the human-readable description of the error.
     /// </summary>
     public string Message { get; }
-
-    /// <summary>
-    /// Gets additional contextual information about the error.
-    /// </summary>
-    public IReadOnlyDictionary<string, object> Metadata { get; }
 
     /// <summary>
     /// Determines whether two error instances are equal.
@@ -74,7 +58,7 @@ public class Error
     /// <param name="obj">The object to compare with the current error.</param>
     /// <returns><see langword="true"/> if the specified object is equal to the current error; otherwise, <see langword="false"/>.</returns>
     /// <remarks>
-    /// Two errors are considered equal if they have the same type, code, message, and metadata.
+    /// Two errors are considered equal if they have the same type, code, and message.
     /// </remarks>
     public override bool Equals(object? obj)
     {
@@ -83,8 +67,7 @@ public class Error
         if (GetType() != other.GetType()) return false;
 
         return Code == other.Code &&
-               Message == other.Message &&
-               MetadataEquals(other.Metadata);
+               Message == other.Message;
     }
 
     /// <summary>
@@ -93,37 +76,15 @@ public class Error
     /// <returns>A hash code for the current error based on its type and code.</returns>
     public override int GetHashCode() => HashCode.Combine(GetType(), Code);
 
-    private bool MetadataEquals(IReadOnlyDictionary<string, object> other)
-    {
-        if (Metadata.Count != other.Count) return false;
-
-        foreach (var kvp in Metadata)
-        {
-            if (!other.TryGetValue(kvp.Key, out var value) ||
-                !Equals(kvp.Value, value))
-                return false;
-        }
-
-        return true;
-    }
-
     /// <summary>
     /// Returns a string representation of the error.
     /// </summary>
-    /// <returns>A string containing the error type, code, message, and metadata if present.</returns>
+    /// <returns>A string containing the error type, code, and message.</returns>
     public override string ToString()
     {
-        string result = Code == string.Empty
+        return Code == string.Empty
             ? $"{GetType().Name} {Message}"
             : $"{GetType().Name}: {Code} - {Message}";
-
-        if (Metadata.Count > 0)
-        {
-            var metadata = string.Join(", ", Metadata.Select(kvp => $"{kvp.Key}: {kvp.Value}"));
-            result += $" - Metadata: {metadata}";
-        }
-
-        return result;
     }
 
     /// <summary>

@@ -1,3 +1,6 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
 namespace FluentUnions;
 
 /// <summary>
@@ -8,6 +11,7 @@ namespace FluentUnions;
 /// The EnsureBuilder allows chaining multiple validation conditions. If any validation fails,
 /// the first error is captured and subsequent validations are skipped (short-circuit evaluation).
 /// </remarks>
+[StructLayout(LayoutKind.Auto)]
 public readonly struct EnsureBuilder<TValue>
 {
     private readonly TValue? _value;
@@ -38,6 +42,7 @@ public readonly struct EnsureBuilder<TValue>
     /// </summary>
     /// <param name="builder">The ensure builder to convert.</param>
     /// <returns>A result containing either the validated value or the first validation error.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator Result<TValue>(EnsureBuilder<TValue> builder) => builder.Build();
 
     /// <summary>
@@ -45,6 +50,7 @@ public readonly struct EnsureBuilder<TValue>
     /// </summary>
     /// <param name="builder">The ensure builder to convert.</param>
     /// <returns>A unit result preserving the success/failure state but discarding any value.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator Result(EnsureBuilder<TValue> builder) =>
         builder._error ?? Result.Success();
 
@@ -52,6 +58,7 @@ public readonly struct EnsureBuilder<TValue>
     /// Determines whether the builder is in a success state.
     /// </summary>
     /// <returns><see langword="true"/> if no validation has failed; otherwise, <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool IsSuccess() => _error is null;
 
     /// <summary>
@@ -64,6 +71,7 @@ public readonly struct EnsureBuilder<TValue>
     /// If a previous validation has already failed, this method returns immediately without
     /// evaluating the predicate (short-circuit evaluation).
     /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public EnsureBuilder<TValue> Satisfies(Func<TValue, bool> predicate, Error error)
     {
         if (_error is not null) return new(_error);
@@ -76,5 +84,6 @@ public readonly struct EnsureBuilder<TValue>
     /// Builds the final <see cref="Result{TValue}"/> from the validation chain.
     /// </summary>
     /// <returns>A successful result containing the value if all validations passed; otherwise, a failed result with the first error.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Result<TValue> Build() => IsSuccess() ? _value! : _error!;
 }

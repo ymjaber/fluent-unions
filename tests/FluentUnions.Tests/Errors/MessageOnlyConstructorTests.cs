@@ -1,7 +1,3 @@
-using System;
-using FluentUnions;
-using Xunit;
-
 namespace FluentUnions.Tests.Errors
 {
     public class MessageOnlyConstructorTests
@@ -15,7 +11,6 @@ namespace FluentUnions.Tests.Errors
             // Assert
             Assert.Equal(string.Empty, error.Code);
             Assert.Equal("Something went wrong", error.Message);
-            Assert.Empty(error.Metadata);
         }
 
         [Fact]
@@ -27,7 +22,6 @@ namespace FluentUnions.Tests.Errors
             // Assert
             Assert.Equal(string.Empty, error.Code);
             Assert.Equal("Invalid input provided", error.Message);
-            Assert.Empty(error.Metadata);
             Assert.IsType<ValidationError>(error);
         }
 
@@ -40,7 +34,6 @@ namespace FluentUnions.Tests.Errors
             // Assert
             Assert.Equal(string.Empty, error.Code);
             Assert.Equal("Resource could not be found", error.Message);
-            Assert.Empty(error.Metadata);
             Assert.IsType<NotFoundError>(error);
         }
 
@@ -53,7 +46,6 @@ namespace FluentUnions.Tests.Errors
             // Assert
             Assert.Equal(string.Empty, error.Code);
             Assert.Equal("Operation conflicts with existing state", error.Message);
-            Assert.Empty(error.Metadata);
             Assert.IsType<ConflictError>(error);
         }
 
@@ -66,7 +58,6 @@ namespace FluentUnions.Tests.Errors
             // Assert
             Assert.Equal(string.Empty, error.Code);
             Assert.Equal("Authentication failed", error.Message);
-            Assert.Empty(error.Metadata);
             Assert.IsType<AuthenticationError>(error);
         }
 
@@ -79,7 +70,6 @@ namespace FluentUnions.Tests.Errors
             // Assert
             Assert.Equal(string.Empty, error.Code);
             Assert.Equal("Access denied", error.Message);
-            Assert.Empty(error.Metadata);
             Assert.IsType<AuthorizationError>(error);
         }
 
@@ -92,7 +82,6 @@ namespace FluentUnions.Tests.Errors
             // Assert
             Assert.Equal(string.Empty, error.Code);
             Assert.Equal("This is an error message", error.Message);
-            Assert.Empty(error.Metadata);
             Assert.IsType<Error>(error);
             Assert.IsNotType<ValidationError>(error);
         }

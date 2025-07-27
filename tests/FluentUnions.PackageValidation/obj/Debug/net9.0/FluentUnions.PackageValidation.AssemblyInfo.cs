@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FluentUnions.PackageValidation")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8ea0db4ec642158552fc0b287ca5927502e5ea27")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e3a5c97fb20ce4fd10d2b018f4735426d3a860c2")]
 [assembly: System.Reflection.AssemblyProductAttribute("FluentUnions.PackageValidation")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FluentUnions.PackageValidation")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

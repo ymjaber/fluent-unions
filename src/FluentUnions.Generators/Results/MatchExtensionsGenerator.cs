@@ -28,6 +28,21 @@ namespace FluentUnions.Generators.Results
     [Generator]
     public class MatchExtensionsGenerator : IIncrementalGenerator
     {
+        private static string GetOrdinal(int number) => number switch
+        {
+            1 => "first",
+            2 => "second",
+            3 => "third",
+            4 => "fourth",
+            5 => "fifth",
+            6 => "sixth",
+            7 => "seventh",
+            8 => "eighth",
+            9 => "ninth",
+            10 => "tenth",
+            _ => $"{number}th"
+        };
+
         /// <summary>
         /// Initializes the generator and registers the source generation logic.
         /// </summary>
@@ -44,8 +59,24 @@ namespace FluentUnions.Generators.Results
                 {
                     string types = string.Join(", ", Enumerable.Range(1, i).Select(n => "TSource" + n));
                     string items = string.Join(", ", Enumerable.Range(1, i).Select(n => $"result.Value.Item{n}"));
+                    string typeParamDocs = string.Join("\n    /// ", Enumerable.Range(1, i).Select(n => $"<typeparam name=\"TSource{n}\">The type of the {GetOrdinal(n)} tuple element in the source Result.</typeparam>"));
                     
                     builder.Append($$"""
+                                     /// <summary>
+                                     /// Pattern matches on a <see cref="Result{T}"/> containing a tuple with {{i}} elements, executing different functions based on success or failure.
+                                     /// </summary>
+                                     /// {{typeParamDocs}}
+                                     /// <typeparam name="TTarget">The type of the value returned by the match operation.</typeparam>
+                                     /// <param name="result">The source <see cref="Result{T}"/> containing a tuple to match on.</param>
+                                     /// <param name="success">The function to execute if the Result is successful, receiving the tuple elements as separate parameters.</param>
+                                     /// <param name="failure">The function to execute if the Result is a failure, receiving the error.</param>
+                                     /// <returns>The value returned by either the success or failure function.</returns>
+                                     /// <remarks>
+                                     /// The Match operation provides exhaustive pattern matching for Result types, ensuring both success and failure
+                                     /// cases are handled. This is a key pattern in railway-oriented programming, forcing explicit handling of both
+                                     /// the happy path (success) and error cases. Unlike Option's Match which handles Some/None, Result's Match
+                                     /// handles Success/Failure with explicit error information in the failure case.
+                                     /// </remarks>
                                      public static TTarget Match<{{types}}, TTarget>(
                                          in this Result<({{types}})> result,
                                          Func<{{types}}, TTarget> success,

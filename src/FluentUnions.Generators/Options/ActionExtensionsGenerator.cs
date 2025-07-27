@@ -40,6 +40,21 @@ namespace FluentUnions.Generators.Options
     [Generator]
     public class ActionExtensionsGenerator : IIncrementalGenerator
     {
+        private static string GetOrdinal(int number) => number switch
+        {
+            1 => "first",
+            2 => "second",
+            3 => "third",
+            4 => "fourth",
+            5 => "fifth",
+            6 => "sixth",
+            7 => "seventh",
+            8 => "eighth",
+            9 => "ninth",
+            10 => "tenth",
+            _ => $"{number}th"
+        };
+
         /// <summary>
         /// Initializes the generator and registers the source generation logic.
         /// </summary>
@@ -55,16 +70,45 @@ namespace FluentUnions.Generators.Options
                 for (int i = 2; i <= MaxElements; i++)
                 {
                     string types = string.Join(", ", Enumerable.Range(1, i).Select(n => "TValue" + n));
+                    string typeParamDocs = string.Join("\n    /// ", Enumerable.Range(1, i).Select(n => $"<typeparam name=\"TValue{n}\">The type of the {GetOrdinal(n)} tuple element.</typeparam>"));
+                    string items = string.Join(", ", Enumerable.Range(1, i).Select(n => $"option.Value.Item{n}"));
+                    
                     builder.Append($$"""
+                                     /// <summary>
+                                     /// Executes an action on the value inside an <see cref="Option{T}"/> containing a tuple with {{i}} elements if it has a value.
+                                     /// </summary>
+                                     /// {{typeParamDocs}}
+                                     /// <param name="option">The source <see cref="Option{T}"/> containing a tuple.</param>
+                                     /// <param name="action">An action to execute on the tuple elements if the Option has a value.</param>
+                                     /// <returns>The original Option to enable fluent chaining.</returns>
+                                     /// <remarks>
+                                     /// OnSome is useful for performing side effects (such as logging, debugging, or updating external state)
+                                     /// when an Option has a value. The action is only executed if the Option is Some.
+                                     /// The original Option is always returned unchanged, allowing for method chaining.
+                                     /// </remarks>
                                      public static Option<({{types}})> OnSome<{{types}}>(in this Option<({{types}})> option, Action<{{types}}> action)
                                      {
-                                         if (option.IsSome) action({{string.Join(", ", Enumerable.Range(1, i).Select(n => $"option.Value.Item{n}"))}});
+                                         if (option.IsSome) action({{items}});
                                          return option;
                                      }
                                      
+                                     /// <summary>
+                                     /// Executes one of two actions based on whether an <see cref="Option{T}"/> containing a tuple with {{i}} elements has a value.
+                                     /// </summary>
+                                     /// {{typeParamDocs}}
+                                     /// <param name="option">The source <see cref="Option{T}"/> containing a tuple.</param>
+                                     /// <param name="some">An action to execute on the tuple elements if the Option has a value.</param>
+                                     /// <param name="none">An action to execute if the Option is None.</param>
+                                     /// <returns>The original Option to enable fluent chaining.</returns>
+                                     /// <remarks>
+                                     /// OnEither ensures that exactly one action is executed based on the Option's state.
+                                     /// This is useful for handling both Some and None cases with side effects, such as logging
+                                     /// different messages or updating UI based on presence or absence of a value.
+                                     /// The original Option is always returned unchanged.
+                                     /// </remarks>
                                      public static Option<({{types}})> OnEither<{{types}}>(in this Option<({{types}})> option, Action<{{types}}> some, Action none)
                                      {
-                                         if (option.IsSome) some({{string.Join(", ", Enumerable.Range(1, i).Select(n => $"option.Value.Item{n}"))}});
+                                         if (option.IsSome) some({{items}});
                                          else none();
                                          return option;
                                      }

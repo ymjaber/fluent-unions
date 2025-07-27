@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -161,7 +160,7 @@ public class OptionPreferMatchAnalyzer : DiagnosticAnalyzer
         var accessedSymbol = semanticModel.GetSymbolInfo(memberAccess.Expression).Symbol;
         var optionSymbol = semanticModel.GetSymbolInfo(optionExpression).Symbol;
         
-        return accessedSymbol != null && accessedSymbol.Equals(optionSymbol);
+        return accessedSymbol != null && SymbolEqualityComparer.Default.Equals(accessedSymbol, optionSymbol);
     }
 
     /// <summary>

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FluentUnions.Analyzers")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1504313dc0e3cf6c8d4789b352033f4ca05a9ad9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e3a5c97fb20ce4fd10d2b018f4735426d3a860c2")]
 [assembly: System.Reflection.AssemblyProductAttribute("FluentUnions.Analyzers")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FluentUnions.Analyzers")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

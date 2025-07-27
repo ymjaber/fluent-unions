@@ -1,6 +1,3 @@
-using FluentUnions;
-using Xunit;
-
 namespace FluentUnions.Tests.OptionTests.Extensions;
 
 public class FilterTests

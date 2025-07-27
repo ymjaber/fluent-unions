@@ -31,6 +31,21 @@ namespace FluentUnions.Generators.Options
     [Generator]
     public class BindExtensionsGenerator : IIncrementalGenerator
     {
+        private static string GetOrdinal(int number) => number switch
+        {
+            1 => "first",
+            2 => "second",
+            3 => "third",
+            4 => "fourth",
+            5 => "fifth",
+            6 => "sixth",
+            7 => "seventh",
+            8 => "eighth",
+            9 => "ninth",
+            10 => "tenth",
+            _ => $"{number}th"
+        };
+
         /// <summary>
         /// Initializes the generator and registers the source generation logic.
         /// </summary>
@@ -46,13 +61,30 @@ namespace FluentUnions.Generators.Options
                 for (int i = 2; i <= MaxElements; i++)
                 {
                     string types = string.Join(", ", Enumerable.Range(1, i).Select(n => "TValue" + n));
+                    string typeParamDocs = string.Join("\n    /// ", Enumerable.Range(1, i).Select(n => $"<typeparam name=\"TValue{n}\">The type of the {GetOrdinal(n)} tuple element.</typeparam>"));
+                    string items = string.Join(", ", Enumerable.Range(1, i).Select(n => $"source.Value.Item{n}"));
+                    
                     builder.Append($$"""
+                                         /// <summary>
+                                         /// Applies a binder function to the value inside an <see cref="Option{T}"/> containing a tuple with {{i}} elements.
+                                         /// </summary>
+                                         /// {{typeParamDocs}}
+                                         /// <typeparam name="TTarget">The type of the value in the resulting Option.</typeparam>
+                                         /// <param name="source">The source <see cref="Option{T}"/> containing a tuple.</param>
+                                         /// <param name="binder">A function that takes the tuple elements and returns a new Option.</param>
+                                         /// <returns>The Option returned by the binder if the source was Some; otherwise, None.</returns>
+                                         /// <remarks>
+                                         /// Bind (also known as flatMap or >>=) is the fundamental monadic composition operation.
+                                         /// It allows chaining operations that may fail or produce no value. If the source Option is None,
+                                         /// the binder function is not executed and None is returned. This enables safe composition
+                                         /// of operations without explicit null checking.
+                                         /// </remarks>
                                          public static Option<TTarget> Bind<{{types}}, TTarget>(
                                              in this Option<({{types}})> source,
                                              Func<{{types}}, Option<TTarget>> binder)
                                          {
                                              if (source.IsNone) return Option<TTarget>.None;
-                                             return binder({{string.Join(", ", Enumerable.Range(1, i).Select(n => $"source.Value.Item{n}"))}});
+                                             return binder({{items}});
                                          }
                                          
                                      

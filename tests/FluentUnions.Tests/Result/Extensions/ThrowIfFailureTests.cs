@@ -1,6 +1,4 @@
-using System;
-using FluentUnions;
-using Xunit;
+using FluentUnions.Tests.Errors;
 
 namespace FluentUnions.Tests.ResultTests.Extensions;
 
@@ -51,14 +49,15 @@ public class ThrowIfFailureTests
             ["UserId"] = "123", 
             ["Timestamp"] = "2023-01-01" 
         };
-        var error = new Error("E001", "Error with metadata", metadata);
+        var error = new TestError("E001", "Error with metadata", metadata);
         var result = Result.Failure(error);
 
         // Act & Assert
         var exception = Assert.Throws<Exception>(() =>
             result.ThrowIfFailure(err =>
             {
-                var userId = err.Metadata.GetValueOrDefault("UserId");
+                var testError = err as TestError;
+                var userId = testError?.Metadata.GetValueOrDefault("UserId");
                 return new Exception($"Error for user {userId}");
             }));
         Assert.Equal("Error for user 123", exception.Message);

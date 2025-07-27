@@ -1,7 +1,3 @@
-using System;
-using FluentUnions;
-using Xunit;
-
 namespace FluentUnions.Tests.ResultTests.Extensions;
 
 public class GetValueOrThrowTests

@@ -30,7 +30,7 @@ public class OptionValueAccessAnalyzer : DiagnosticAnalyzer
     private static readonly DiagnosticDescriptor Rule = new(
         id: DiagnosticIds.OptionValueAccessWithoutCheck,
         title: "Avoid accessing Option.Value without checking IsSome",
-        messageFormat: "Option.Value is accessed without checking IsSome. This may throw an InvalidOperationException",
+        messageFormat: "Option.Value is accessed without checking IsSome. This may throw an InvalidOperationException.",
         category: Categories.Usage,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
@@ -123,6 +123,10 @@ public class OptionValueAccessAnalyzer : DiagnosticAnalyzer
                     return true;
             }
             
+            // Check if we're after an IsNone check that exits the method
+            if (IsAfterNoneExit(valueAccess, semanticModel))
+                return true;
+            
             // Don't look beyond method boundaries
             if (currentNode is MethodDeclarationSyntax or LocalFunctionStatementSyntax or LambdaExpressionSyntax)
                 break;
@@ -171,7 +175,7 @@ public class OptionValueAccessAnalyzer : DiagnosticAnalyzer
         var symbol1 = semanticModel.GetSymbolInfo(expr1).Symbol;
         var symbol2 = semanticModel.GetSymbolInfo(expr2).Symbol;
         
-        return symbol1 != null && symbol1.Equals(symbol2);
+        return symbol1 != null && SymbolEqualityComparer.Default.Equals(symbol1, symbol2);
     }
 
     /// <summary>
@@ -191,5 +195,106 @@ public class OptionValueAccessAnalyzer : DiagnosticAnalyzer
         var methodSymbol = semanticModel.GetSymbolInfo(invocation).Symbol as IMethodSymbol;
         return methodSymbol?.ContainingType != null && 
                SymbolHelpers.IsOptionType(methodSymbol.ContainingType);
+    }
+
+    /// <summary>
+    /// Determines if an Option.Value access occurs after an IsNone check that exits the current control flow.
+    /// </summary>
+    /// <param name="valueAccess">The member access expression for Option.Value.</param>
+    /// <param name="semanticModel">The semantic model for symbol resolution.</param>
+    /// <returns>True if the access is after an IsNone check with control flow exit; otherwise, false.</returns>
+    /// <remarks>
+    /// This method recognizes patterns like:
+    /// if (option.IsNone) throw new Exception();
+    /// var value = option.Value; // Safe because none case exits
+    /// </remarks>
+    private static bool IsAfterNoneExit(MemberAccessExpressionSyntax valueAccess, SemanticModel semanticModel)
+    {
+        var block = valueAccess.FirstAncestorOrSelf<BlockSyntax>();
+        if (block == null)
+        {
+            // Check if we're in a top-level program
+            var compilation = valueAccess.FirstAncestorOrSelf<CompilationUnitSyntax>();
+            if (compilation != null)
+            {
+                return CheckForNoneExitInStatements(compilation.Members.OfType<GlobalStatementSyntax>()
+                    .SelectMany(g => g.Statement.DescendantNodesAndSelf().OfType<StatementSyntax>()), 
+                    valueAccess, semanticModel);
+            }
+            return false;
+        }
+
+        return CheckForNoneExitInStatements(block.Statements, valueAccess, semanticModel);
+    }
+
+    /// <summary>
+    /// Checks if there's an IsNone check with control flow exit before the value access in a sequence of statements.
+    /// </summary>
+    private static bool CheckForNoneExitInStatements(IEnumerable<StatementSyntax> statements, 
+        MemberAccessExpressionSyntax valueAccess, SemanticModel semanticModel)
+    {
+        var valueAccessPosition = valueAccess.SpanStart;
+        
+        foreach (var statement in statements)
+        {
+            if (statement.SpanStart >= valueAccessPosition)
+                break;
+
+            // Check for if (option.IsNone) with exit statement
+            if (statement is IfStatementSyntax ifStatement)
+            {
+                if (HasIsNoneCheck(ifStatement.Condition, valueAccess.Expression, semanticModel))
+                {
+                    // Check if the if body contains an exit statement
+                    if (ContainsExitStatement(ifStatement.Statement))
+                    {
+                        // Check that there's no else clause or the else also exits
+                        if (ifStatement.Else == null || ContainsExitStatement(ifStatement.Else.Statement))
+                            return true;
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    /// <summary>
+    /// Checks if an expression contains an IsNone property check for the given option expression.
+    /// </summary>
+    private static bool HasIsNoneCheck(ExpressionSyntax condition, ExpressionSyntax optionExpression, SemanticModel semanticModel)
+    {
+        // Handle direct IsNone property access
+        if (condition is MemberAccessExpressionSyntax memberAccess &&
+            memberAccess.Name.Identifier.Text == "IsNone")
+        {
+            return AreExpressionsEquivalent(memberAccess.Expression, optionExpression, semanticModel);
+        }
+        
+        // Handle negated IsSome (!option.IsSome)
+        if (condition is PrefixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.LogicalNotExpression } notExpr &&
+            notExpr.Operand is MemberAccessExpressionSyntax innerMemberAccess &&
+            innerMemberAccess.Name.Identifier.Text == "IsSome")
+        {
+            return AreExpressionsEquivalent(innerMemberAccess.Expression, optionExpression, semanticModel);
+        }
+        
+        return false;
+    }
+
+    /// <summary>
+    /// Determines if a statement contains a control flow exit (throw, return, break, continue).
+    /// </summary>
+    private static bool ContainsExitStatement(StatementSyntax statement)
+    {
+        return statement switch
+        {
+            ThrowStatementSyntax => true,
+            ReturnStatementSyntax => true,
+            BreakStatementSyntax => true,
+            ContinueStatementSyntax => true,
+            BlockSyntax block => block.Statements.Any(ContainsExitStatement),
+            _ => false
+        };
     }
 }

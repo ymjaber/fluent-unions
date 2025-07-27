@@ -39,6 +39,21 @@ namespace FluentUnions.Generators.Results
     [Generator]
     public class BindAllAppendExtensionsGenerator : IIncrementalGenerator
     {
+        private static string GetOrdinal(int number) => number switch
+        {
+            1 => "first",
+            2 => "second",
+            3 => "third",
+            4 => "fourth",
+            5 => "fifth",
+            6 => "sixth",
+            7 => "seventh",
+            8 => "eighth",
+            9 => "ninth",
+            10 => "tenth",
+            _ => $"{number}th"
+        };
+
         /// <summary>
         /// Initializes the generator and registers the source generation logic.
         /// </summary>
@@ -81,7 +96,35 @@ namespace FluentUnions.Generators.Results
                             ? "binder.Value"
                             : string.Join(", ", Enumerable.Range(1, k).Select(n => $"binder.Value.Item{n}"));
 
+                        string sourceTypeParamDocs = j == 1
+                            ? "    /// <typeparam name=\"TSource\">The type of the source value.</typeparam>"
+                            : string.Join("\n", Enumerable.Range(1, j).Select(n => $"    /// <typeparam name=\"TSource{n}\">The type of the {GetOrdinal(n)} source tuple element.</typeparam>"));
+                        
+                        string targetTypeParamDocs = k == 1
+                            ? "    /// <typeparam name=\"TTarget\">The type of the target value to append.</typeparam>"
+                            : string.Join("\n", Enumerable.Range(1, k).Select(n => $"    /// <typeparam name=\"TTarget{n}\">The type of the {GetOrdinal(n)} target tuple element to append.</typeparam>"));
+
                         builder.Append($$"""
+                                             /// <summary>
+                                             /// Combines two Result values by appending their values into a larger tuple, accumulating all errors if any fail.
+                                             /// </summary>
+                                             {{sourceTypeParamDocs}}
+                                             {{targetTypeParamDocs}}
+                                             /// <param name="result">The source <see cref="Result{T}"/> containing {{(j == 1 ? "a value" : $"a tuple with {j} elements")}}.</param>
+                                             /// <param name="binder">The target <see cref="Result{T}"/> containing {{(k == 1 ? "a value" : $"a tuple with {k} elements")}} to append.</param>
+                                             /// <returns>A <see cref="Result{T}"/> containing a tuple with all values if both Results succeed; otherwise, a failure with accumulated errors.</returns>
+                                             /// <remarks>
+                                             /// BindAllAppend differs from BindAppend in its error handling strategy:
+                                             /// - It takes a Result value directly rather than a function returning a Result
+                                             /// - It uses ErrorBuilder to accumulate ALL errors from both Results
+                                             /// - If both Results fail, it returns a composite error containing all error information
+                                             /// - If either Result succeeds while the other fails, it returns the error(s)
+                                             /// - Only if both Results succeed does it combine values into a tuple
+                                             /// 
+                                             /// This is particularly useful in validation scenarios where you want comprehensive error reporting
+                                             /// rather than fail-fast behavior. It enables collecting all validation errors in a single pass
+                                             /// through your data processing pipeline.
+                                             /// </remarks>
                                              public static Result<({{sourceTypes}}, {{targetTypes}})> BindAllAppend<{{sourceTypes}}, {{targetTypes}}>(
                                                  in this Result<{{tupleSourceTypes}}> result,
                                                  in Result<{{tupleTargetTypes}}> binder)

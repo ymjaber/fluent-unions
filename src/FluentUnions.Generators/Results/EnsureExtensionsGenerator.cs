@@ -33,6 +33,21 @@ namespace FluentUnions.Generators.Results
     [Generator]
     public class EnsureExtensionsGenerator : IIncrementalGenerator
     {
+        private static string GetOrdinal(int number) => number switch
+        {
+            1 => "first",
+            2 => "second",
+            3 => "third",
+            4 => "fourth",
+            5 => "fifth",
+            6 => "sixth",
+            7 => "seventh",
+            8 => "eighth",
+            9 => "ninth",
+            10 => "tenth",
+            _ => $"{number}th"
+        };
+
         /// <summary>
         /// Initializes the generator and registers the source generation logic.
         /// </summary>
@@ -49,8 +64,24 @@ namespace FluentUnions.Generators.Results
                 {
                     string types = string.Join(", ", Enumerable.Range(1, i).Select(n => "TValue" + n));
                     string items = string.Join(", ", Enumerable.Range(1, i).Select(n => $"result.Value.Item{n}"));
+                    string typeParamDocs = string.Join("\n    /// ", Enumerable.Range(1, i).Select(n => $"<typeparam name=\"TValue{n}\">The type of the {GetOrdinal(n)} tuple element.</typeparam>"));
                     
                     builder.Append($$"""
+                                     /// <summary>
+                                     /// Validates that a successful <see cref="Result{T}"/> containing a tuple with {{i}} elements satisfies a predicate, converting to failure if not.
+                                     /// </summary>
+                                     /// {{typeParamDocs}}
+                                     /// <param name="result">The source <see cref="Result{T}"/> containing a tuple to validate.</param>
+                                     /// <param name="predicate">A function that validates the tuple elements, returning true if valid.</param>
+                                     /// <param name="error">The error to return if the predicate returns false.</param>
+                                     /// <returns>The original Result if already failed or if the predicate returns true; otherwise, a failure Result with the specified error.</returns>
+                                     /// <remarks>
+                                     /// Ensure is a validation operation in the railway-oriented programming pattern. It adds a guard clause
+                                     /// to the success track, allowing you to validate business rules and constraints on successful values.
+                                     /// If the Result is already a failure, the validation is skipped and the existing error is propagated.
+                                     /// This differs from Option's Filter operation as it explicitly provides error information when validation fails,
+                                     /// maintaining the rich error context that Result types provide.
+                                     /// </remarks>
                                      public static Result<({{types}})> Ensure<{{types}}>(
                                          in this Result<({{types}})> result,
                                          Func<{{types}}, bool> predicate,

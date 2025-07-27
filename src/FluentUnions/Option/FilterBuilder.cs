@@ -1,3 +1,6 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
 namespace FluentUnions;
 
 /// <summary>
@@ -8,6 +11,7 @@ namespace FluentUnions;
 /// The FilterBuilder allows chaining multiple filter conditions. If any condition fails,
 /// the result becomes None. This provides a more readable way to apply multiple validations.
 /// </remarks>
+[StructLayout(LayoutKind.Auto)]
 public readonly struct FilterBuilder<TValue>
     where TValue : notnull
 {
@@ -35,6 +39,7 @@ public readonly struct FilterBuilder<TValue>
     /// </summary>
     /// <param name="builder">The filter builder to convert.</param>
     /// <returns>An option containing the filtered value or None if any filter failed.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator Option<TValue>(FilterBuilder<TValue> builder) => builder.Build();
 
     /// <summary>
@@ -46,6 +51,7 @@ public readonly struct FilterBuilder<TValue>
     /// Multiple calls to Satisfies can be chained. If any condition fails, all subsequent
     /// conditions are skipped and the final result will be None.
     /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public FilterBuilder<TValue> Satisfies(Func<TValue, bool> predicate)
     {
         if (!_isSome) return this;
@@ -59,5 +65,6 @@ public readonly struct FilterBuilder<TValue>
     /// Builds the final <see cref="Option{TValue}"/> result.
     /// </summary>
     /// <returns>Some containing the value if all filter conditions were satisfied; otherwise, None.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Option<TValue> Build() => _isSome ? Option.Some(_value!) : Option.None;
 }

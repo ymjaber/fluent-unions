@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Text.Json;
-using FluentUnions;
 using FluentUnions.Serialization;
-using Xunit;
+using FluentUnions.Tests.Errors;
 
 namespace FluentUnions.Tests.Serialization
 {
@@ -293,7 +290,7 @@ namespace FluentUnions.Tests.Serialization
                 ["userId"] = 123,
                 ["timestamp"] = "2023-12-25T10:00:00Z"
             };
-            var error = new Error("E001", "Error with metadata", metadata);
+            var error = new TestError("E001", "Error with metadata", metadata);
             var result = Result.Failure<int>(error);
 
             // Act

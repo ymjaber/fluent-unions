@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -194,7 +193,7 @@ public class ResultPreferMatchAnalyzer : DiagnosticAnalyzer
         var accessedSymbol = semanticModel.GetSymbolInfo(memberAccess.Expression).Symbol;
         var resultSymbol = semanticModel.GetSymbolInfo(resultExpression).Symbol;
         
-        return accessedSymbol != null && accessedSymbol.Equals(resultSymbol);
+        return accessedSymbol != null && SymbolEqualityComparer.Default.Equals(accessedSymbol, resultSymbol);
     }
 
     /// <summary>

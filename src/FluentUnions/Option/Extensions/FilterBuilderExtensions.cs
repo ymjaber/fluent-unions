@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace FluentUnions;
 
 /// <summary>
@@ -21,6 +23,7 @@ public static partial class FilterBuilderExtensions
     /// configured in the builder, and if the value passes all filters, it applies the mapping function.
     /// This is more efficient than calling Build() followed by Map() separately.
     /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Option<TTarget> Map<TSource, TTarget>(
         in this FilterBuilder<TSource> builder,
         Func<TSource, TTarget> mapper)
@@ -44,6 +47,7 @@ public static partial class FilterBuilderExtensions
     /// configured in the builder, and if the value passes all filters, it applies the binder function.
     /// This is useful when the transformation itself might fail and return None.
     /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Option<TTarget> Bind<TSource, TTarget>(in this FilterBuilder<TSource> builder,
         Func<TSource, Option<TTarget>> binder)
         where TSource : notnull

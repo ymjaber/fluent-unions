@@ -1794,7 +1794,7 @@
           "build/net6.0/xunit.runner.visualstudio.props": {}
         }
       },
-      "FluentUnions/1.0.0": {
+      "FluentUnions/1.1.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "compile": {
@@ -1804,7 +1804,7 @@
           "bin/placeholder/FluentUnions.dll": {}
         }
       },
-      "FluentUnions.Analyzers/1.0.0": {
+      "FluentUnions.Analyzers/1.1.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
@@ -5912,12 +5912,12 @@
         "xunit.runner.visualstudio.nuspec"
       ]
     },
-    "FluentUnions/1.0.0": {
+    "FluentUnions/1.1.0": {
       "type": "project",
       "path": "../../src/FluentUnions/FluentUnions.csproj",
       "msbuildProject": "../../src/FluentUnions/FluentUnions.csproj"
     },
-    "FluentUnions.Analyzers/1.0.0": {
+    "FluentUnions.Analyzers/1.1.0": {
       "type": "project",
       "path": "../../src/FluentUnions.Analyzers/FluentUnions.Analyzers.csproj",
       "msbuildProject": "../../src/FluentUnions.Analyzers/FluentUnions.Analyzers.csproj"
@@ -5925,8 +5925,8 @@
   },
   "projectFileDependencyGroups": {
     "net9.0": [
-      "FluentUnions >= 1.0.0",
-      "FluentUnions.Analyzers >= 1.0.0",
+      "FluentUnions >= 1.1.0",
+      "FluentUnions.Analyzers >= 1.1.0",
       "Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit >= 1.1.2",
       "Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.XUnit >= 1.1.2",
       "Microsoft.CodeAnalysis.CSharp.Workspaces >= 4.12.0-3.final",

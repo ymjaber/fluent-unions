@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "VyFQksaYeeM=",
+  "success": true,
+  "projectFilePath": "/home/yousef/projects/paljaber/fluent-unions/tests/TestAnalyzerControlFlow/TestAnalyzerControlFlow.csproj",
+  "expectedPackageFiles": [
+    "/home/yousef/.nuget/packages/fluentunions/1.0.0/fluentunions.1.0.0.nupkg.sha512",
+    "/home/yousef/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.5/microsoft.aspnetcore.app.ref.9.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}
