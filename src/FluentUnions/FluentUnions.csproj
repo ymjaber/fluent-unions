@@ -1,0 +1,70 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+        <PackageId>FluentUnions</PackageId>
+        <Version>2.0.0</Version>
+        <Authors>Yousef Jaber</Authors>
+        <Company>PalJaber</Company>
+        <Description>FluentUnions handles expected errors with Result and Result&lt;T&gt;, and includes Option&lt;T&gt; for null handling. Features discriminated unions with monadic functions, source generators, and static analyzers to prevent common mistakes.</Description>
+        <PackageTags>fluent;unions;result;option;discriminated-unions;error-handling;monads;source-generators</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/ymjaber/fluent-unions</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/ymjaber/fluent-unions</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <Deterministic>true</Deterministic>
+        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>CS1591</NoWarn>
+        
+        <!-- Enable source generators -->
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
+        
+        <!-- Build Performance -->
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+        
+        <!--        <OutputPath>..\..\artifacts\</OutputPath>-->
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>FluentUnions.Tests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Generators are used during build to generate code for THIS project -->
+        <ProjectReference Include="..\FluentUnions.Generators\FluentUnions.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        
+        <!-- Analyzers are NOT used during build but are packaged for consumers -->
+        <ProjectReference Include="..\FluentUnions.Analyzers\FluentUnions.Analyzers.csproj" ReferenceOutputAssembly="false" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Only package the analyzer assembly, NOT the generator -->
+        <None Include="..\FluentUnions.Analyzers\bin\$(Configuration)\netstandard2.0\FluentUnions.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="../../README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,85 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DF77FC86-2143-411F-987D-337FE0F2722A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentUnions", "src\FluentUnions\FluentUnions.csproj", "{B792959F-0224-4F2E-89A5-87F09E7F62F9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{60A95DB1-9761-4BA5-843C-89B5CC3CAAD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentUnions.Tests", "tests\FluentUnions.Tests\FluentUnions.Tests.csproj", "{F3C7CBD6-06DD-4DBE-99D4-FB8B6D18607B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentUnions.AwesomeAssertions", "src\FluentUnions.AwesomeAssertions\FluentUnions.AwesomeAssertions.csproj", "{423653A8-0A5B-4098-A43A-D3E202FF202E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentUnions.Generators", "src\FluentUnions.Generators\FluentUnions.Generators.csproj", "{913EBE60-5E8D-4524-805F-A4CE39B52D74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentUnions.Analyzers", "src\FluentUnions.Analyzers\FluentUnions.Analyzers.csproj", "{2495249F-11D6-48AB-95EA-1A0C35E8A158}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentUnions.Analyzers.Tests", "tests\FluentUnions.Analyzers.Tests\FluentUnions.Analyzers.Tests.csproj", "{20F07256-C364-4E28-BC27-F4BBC29A7F46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentUnions.PackageValidation", "tests\FluentUnions.PackageValidation\FluentUnions.PackageValidation.csproj", "{105B7BE1-C8E5-45D1-B3FE-D49E9DE420FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAnalyzerControlFlow", "tests\TestAnalyzerControlFlow\TestAnalyzerControlFlow.csproj", "{923EFC1D-F6F3-4FFB-81FE-E15EF4A3CB8D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentUnions.AwesomeAssertions.Tests", "tests\FluentUnions.AwesomeAssertions.Tests\FluentUnions.AwesomeAssertions.Tests.csproj", "{4E0BA765-1FDA-4D90-A6F3-6185AE7269E9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B792959F-0224-4F2E-89A5-87F09E7F62F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B792959F-0224-4F2E-89A5-87F09E7F62F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B792959F-0224-4F2E-89A5-87F09E7F62F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B792959F-0224-4F2E-89A5-87F09E7F62F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3C7CBD6-06DD-4DBE-99D4-FB8B6D18607B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3C7CBD6-06DD-4DBE-99D4-FB8B6D18607B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3C7CBD6-06DD-4DBE-99D4-FB8B6D18607B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3C7CBD6-06DD-4DBE-99D4-FB8B6D18607B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{423653A8-0A5B-4098-A43A-D3E202FF202E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{423653A8-0A5B-4098-A43A-D3E202FF202E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{423653A8-0A5B-4098-A43A-D3E202FF202E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{423653A8-0A5B-4098-A43A-D3E202FF202E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{913EBE60-5E8D-4524-805F-A4CE39B52D74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{913EBE60-5E8D-4524-805F-A4CE39B52D74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{913EBE60-5E8D-4524-805F-A4CE39B52D74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{913EBE60-5E8D-4524-805F-A4CE39B52D74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2495249F-11D6-48AB-95EA-1A0C35E8A158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2495249F-11D6-48AB-95EA-1A0C35E8A158}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2495249F-11D6-48AB-95EA-1A0C35E8A158}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2495249F-11D6-48AB-95EA-1A0C35E8A158}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20F07256-C364-4E28-BC27-F4BBC29A7F46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20F07256-C364-4E28-BC27-F4BBC29A7F46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20F07256-C364-4E28-BC27-F4BBC29A7F46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20F07256-C364-4E28-BC27-F4BBC29A7F46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{105B7BE1-C8E5-45D1-B3FE-D49E9DE420FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{105B7BE1-C8E5-45D1-B3FE-D49E9DE420FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{105B7BE1-C8E5-45D1-B3FE-D49E9DE420FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{105B7BE1-C8E5-45D1-B3FE-D49E9DE420FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{923EFC1D-F6F3-4FFB-81FE-E15EF4A3CB8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{923EFC1D-F6F3-4FFB-81FE-E15EF4A3CB8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{923EFC1D-F6F3-4FFB-81FE-E15EF4A3CB8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{923EFC1D-F6F3-4FFB-81FE-E15EF4A3CB8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E0BA765-1FDA-4D90-A6F3-6185AE7269E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E0BA765-1FDA-4D90-A6F3-6185AE7269E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E0BA765-1FDA-4D90-A6F3-6185AE7269E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E0BA765-1FDA-4D90-A6F3-6185AE7269E9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B792959F-0224-4F2E-89A5-87F09E7F62F9} = {DF77FC86-2143-411F-987D-337FE0F2722A}
+		{F3C7CBD6-06DD-4DBE-99D4-FB8B6D18607B} = {60A95DB1-9761-4BA5-843C-89B5CC3CAAD0}
+		{423653A8-0A5B-4098-A43A-D3E202FF202E} = {DF77FC86-2143-411F-987D-337FE0F2722A}
+		{913EBE60-5E8D-4524-805F-A4CE39B52D74} = {DF77FC86-2143-411F-987D-337FE0F2722A}
+		{2495249F-11D6-48AB-95EA-1A0C35E8A158} = {DF77FC86-2143-411F-987D-337FE0F2722A}
+		{20F07256-C364-4E28-BC27-F4BBC29A7F46} = {60A95DB1-9761-4BA5-843C-89B5CC3CAAD0}
+		{105B7BE1-C8E5-45D1-B3FE-D49E9DE420FE} = {60A95DB1-9761-4BA5-843C-89B5CC3CAAD0}
+		{923EFC1D-F6F3-4FFB-81FE-E15EF4A3CB8D} = {60A95DB1-9761-4BA5-843C-89B5CC3CAAD0}
+		{4E0BA765-1FDA-4D90-A6F3-6185AE7269E9} = {60A95DB1-9761-4BA5-843C-89B5CC3CAAD0}
+	EndGlobalSection
+EndGlobal
